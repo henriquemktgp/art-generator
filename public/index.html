@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delinte — Gerador de Artes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ═══ PAINEL DE CONTROLES ════════════════════════════════════════════ -->
+    <aside class="sidebar" role="complementary" aria-label="Controles">
+
+      <div class="sidebar-brand">
+        <img
+          src="https://cdn.jsdelivr.net/gh/marketing-gp/delinte@main/Delinte%20-%20S%20Slogan.svg"
+          alt="Delinte" class="sidebar-logo"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'sidebar-logo-fallback',textContent:'DELINTE'}))"
+        >
+        <p class="sidebar-tagline">Gerador de Artes Padronizadas</p>
+      </div>
+
+      <form class="controls" id="controls-form" autocomplete="off" novalidate>
+
+        <fieldset class="control-group">
+          <legend class="control-label">Formato</legend>
+          <div class="btn-group" role="group" aria-label="Escolha o formato">
+            <button type="button" class="btn-opt active" data-field="formato" data-val="feed"   aria-pressed="true" >Feed 1:1</button>
+            <button type="button" class="btn-opt"        data-field="formato" data-val="story"  aria-pressed="false">Story 9:16</button>
+            <button type="button" class="btn-opt"        data-field="formato" data-val="banner" aria-pressed="false">Banner</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend class="control-label">Objetivo</legend>
+          <div class="btn-group" role="group" aria-label="Escolha o objetivo">
+            <button type="button" class="btn-opt active" data-field="objetivo" data-val="promocao"   aria-pressed="true" >Promoção</button>
+            <button type="button" class="btn-opt"        data-field="objetivo" data-val="lancamento" aria-pressed="false">Lançamento</button>
+            <button type="button" class="btn-opt"        data-field="objetivo" data-val="aviso"      aria-pressed="false">Aviso</button>
+          </div>
+        </fieldset>
+
+        <div class="control-group">
+          <label class="control-label" for="sel-produto">Produto</label>
+          <select id="sel-produto" class="ctrl-select">
+            <!-- Populado via app.js -->
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="inp-titulo">
+            Título
+            <span class="char-count" id="cnt-titulo" aria-live="polite">0 / 40</span>
+          </label>
+          <input
+            type="text" id="inp-titulo" class="ctrl-input"
+            placeholder="PNEU DE ALTA PERFORMANCE"
+            maxlength="40"
+          >
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="inp-sub">
+            Subtítulo
+            <span class="char-count" id="cnt-sub" aria-live="polite">0 / 80</span>
+          </label>
+          <textarea
+            id="inp-sub" class="ctrl-input ctrl-textarea"
+            placeholder="Tecnologia de ponta desenvolvida para quem exige mais da pista."
+            maxlength="80" rows="2"
+          ></textarea>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="inp-cta">
+            Chamada para Ação (CTA)
+            <span class="char-count" id="cnt-cta" aria-live="polite">0 / 25</span>
+          </label>
+          <input
+            type="text" id="inp-cta" class="ctrl-input"
+            placeholder="SAIBA MAIS"
+            maxlength="25"
+          >
+        </div>
+
+      </form>
+
+      <!-- ── Área de ação ─────────────────────────────────────────────── -->
+      <div class="action-section">
+
+        <!-- Botão principal: gerar fundo -->
+        <button class="btn-gerar" id="btn-gerar" type="button" aria-live="polite">
+          <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+          </svg>
+          <svg class="btn-icon-loading" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+            <path d="M12 2a10 10 0 0 1 10 10" />
+          </svg>
+          <span class="btn-text">Gerar Fundo com IA</span>
+        </button>
+
+        <!-- Mensagem de erro inline -->
+        <div class="error-msg" id="error-msg" role="alert" hidden></div>
+
+        <!-- Exportar -->
+        <div class="export-row">
+          <button class="btn-export" id="btn-png" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="btn-text">PNG</span>
+          </button>
+          <button class="btn-export btn-export-alt" id="btn-pdf" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="btn-text">PDF</span>
+          </button>
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- ═══ ÁREA DE PREVIEW ════════════════════════════════════════════════ -->
+    <main class="preview-area" role="main">
+
+      <div class="preview-meta" id="preview-meta">Feed 1:1 · 1080 × 1080 px</div>
+
+      <div class="preview-stage">
+        <div class="preview-wrapper" id="preview-wrapper">
+
+          <!-- ══ CANVAS DA ARTE ══════════════════════════════════════════ -->
+          <div id="art-canvas" class="art format-feed obj-promocao">
+
+            <!-- Camada 0: fundo sólido preto (fallback) -->
+            <div class="art-bg"></div>
+
+            <!-- Camada 1: fundo gerado por IA (fade-in quando chegar) -->
+            <div class="art-bg-img" id="art-bg-img"></div>
+
+            <!-- Elemento xadrez decorativo -->
+            <img class="art-elem" id="art-elem"
+              src="https://cdn.jsdelivr.net/gh/marketing-gp/delinte@main/Delinte%20-%20Elemento.svg"
+              crossorigin="anonymous" alt="" aria-hidden="true"
+              onerror="this.style.display='none'">
+
+            <!-- Tira de acento amarela -->
+            <div class="art-stripe"></div>
+
+            <!-- Cabeçalho: logo + badge objetivo -->
+            <header class="art-header">
+              <img class="art-logo" id="art-logo"
+                src="https://cdn.jsdelivr.net/gh/marketing-gp/delinte@main/Delinte%20-%20S%20Slogan.svg"
+                crossorigin="anonymous" alt="Delinte"
+                onerror="this.style.display='none'">
+              <div class="art-badge" id="art-badge">PROMOÇÃO</div>
+            </header>
+
+            <!-- Corpo: textos + imagem do produto -->
+            <div class="art-body">
+              <div class="art-text" id="art-text">
+                <div class="art-pname"  id="art-pname"></div>
+                <div class="art-title"  id="art-title">TÍTULO DA ARTE</div>
+                <div class="art-sub"    id="art-sub">Subtítulo descritivo da campanha ou produto.</div>
+                <div class="art-cta"    id="art-cta">SAIBA MAIS</div>
+                <div class="art-specs"  id="art-specs"></div>
+              </div>
+              <div class="art-img-wrap" id="art-img-wrap">
+                <img class="art-product" id="art-product" src="" crossorigin="anonymous" alt="">
+                <div class="art-img-grad"></div>
+              </div>
+            </div>
+
+          </div>
+          <!-- ══ fim do canvas ══ -->
+
+          <!-- Overlay de carregamento (fora do canvas, não exportado) -->
+          <div class="loading-overlay" id="loading-overlay" hidden aria-live="assertive" aria-label="Gerando fundo">
+            <div class="loading-rings" aria-hidden="true">
+              <div class="loading-ring ring-outer"></div>
+              <div class="loading-ring ring-inner"></div>
+              <div class="loading-dot"></div>
+            </div>
+            <div class="loading-label">CRIANDO FUNDO</div>
+            <div class="loading-sub">Processando cena automotiva...</div>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="preview-note" id="preview-note">Configure os campos e clique em <strong>Gerar Fundo com IA</strong> para iniciar.</p>
+
+    </main>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
