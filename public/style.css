@@ -43,7 +43,10 @@
    próprias variáveis de marca sem depender de um ancestral. */
 .app[data-marca="denali"],
 .art[data-marca="denali"],
-.artm[data-marca="denali"] {
+.artm[data-marca="denali"],
+.art3p[data-marca="denali"], .artp45[data-marca="denali"],
+.artcf[data-marca="denali"], .artcl[data-marca="denali"], .artpf[data-marca="denali"],
+.artt[data-marca="denali"], .arttd[data-marca="denali"] {
   --brand-accent:   #FF2C14;
   --accent-rgb:     255,44,20;
   --brand-accent-2: #FF5D1E;
@@ -184,14 +187,96 @@ body {
 .app[data-tipo-arte="medida"] #grupo-cta,
 .app[data-tipo-arte="medida"] #btn-formato-banner { display: none; }
 
+/* Banner ainda não existe para os 5 novos modelos de Arte Livre — só Feed/Story */
+.app:not([data-modelo="padrao"]) #btn-formato-banner { display: none; }
+
 .app:not([data-tipo-arte="medida"]) #grupo-medida { display: none; }
 
-/* Canvas: só um dos dois fica visível por vez. #art-canvas-medida é
-   display:flex (coluna) — não "block" — porque .artm empilha suas faixas
-   com flex-direction:column (ver seção "ARTE DE MEDIDA" mais abaixo). */
-#art-canvas-medida { display: none; }
+/* "Modelo" (Arte Livre e Arte de Medida têm, cada um, seu próprio seletor —
+   só um dos dois aparece por vez, conforme o Tipo de Arte ativo) */
+.app[data-tipo-arte="medida"] #grupo-modelo { display: none; }
+.app[data-tipo-arte="livre"]  #grupo-modelo-medida { display: none; }
+
+/* ── Alternância entre os modelos de Arte de Medida ───────────────────────── */
+/* Campos exclusivos de "Medida Única" (o template original: 1 produto, 1
+   medida, fotos do pneu) — somem nos modelos de tabela, que não dependem de
+   produto nenhum, só de uma lista livre de medida+valor. */
+.app[data-modelo-medida="tabela"]      #grupo-produto-unico,
+.app[data-modelo-medida="tabeladupla"] #grupo-produto-unico,
+.app[data-modelo-medida="tabela"]      #grupo-medida,
+.app[data-modelo-medida="tabeladupla"] #grupo-medida { display: none; }
+
+/* Campos exclusivos dos modelos de tabela */
+.app[data-tipo-arte="medida"][data-modelo-medida="unica"] #grupo-tabela-linhas,
+.app[data-tipo-arte="medida"][data-modelo-medida="unica"] #grupo-validade-tabela,
+.app[data-tipo-arte="medida"][data-modelo-medida="unica"] #grupo-desconto-unidade,
+.app[data-tipo-arte="medida"][data-modelo-medida="unica"] #grupo-cta-tabela,
+.app[data-tipo-arte="livre"] #grupo-tabela-linhas,
+.app[data-tipo-arte="livre"] #grupo-validade-tabela,
+.app[data-tipo-arte="livre"] #grupo-desconto-unidade,
+.app[data-tipo-arte="livre"] #grupo-cta-tabela { display: none; }
+
+/* Nenhum dos dois modelos de tabela gera fundo por IA — é sempre a mesma
+   textura fixa da marca (clara/Denali ou escura/Delinte). */
+.app[data-modelo-medida="tabela"]      #btn-gerar,
+.app[data-modelo-medida="tabeladupla"] #btn-gerar,
+.app[data-modelo-medida="tabela"]      .prompt-section,
+.app[data-modelo-medida="tabeladupla"] .prompt-section { display: none; }
+
+/* ── Alternância entre os modelos de Arte Livre ───────────────────────────── */
+/* Produto único: some no modelo "3 pneus" (usa 3 selects próprios) */
+.app[data-modelo="3pneus"] #grupo-produto-unico { display: none; }
+
+/* Pneus 1/2/3: só existem no modelo "3 pneus" */
+.app:not([data-modelo="3pneus"]) #grupo-3pneus { display: none; }
+
+/* Destaque da caixa inferior: só existe no modelo "3 pneus" */
+.app:not([data-modelo="3pneus"]) #grupo-destaque { display: none; }
+
+/* Sugestão de carro: só existe nos modelos com carro-herói gerado por IA */
+.app:not([data-modelo="carrofrente"]):not([data-modelo="carrolado"]) #grupo-sugestao-carro { display: none; }
+
+/* Título: não existe no modelo "3 pneus" (headline institucional fixa) */
+.app[data-modelo="3pneus"] #grupo-titulo { display: none; }
+
+/* Subtítulo: só existe nos modelos com parágrafo curto (padrão / pneu 45°) —
+   nos modelos com carro-herói e no "pneu de frente" a frase toda vem do
+   Título (headline única, que pode quebrar em mais de uma linha sozinha). */
+.app[data-modelo="pneufrente"]  #grupo-sub,
+.app[data-modelo="carrofrente"] #grupo-sub,
+.app[data-modelo="carrolado"]   #grupo-sub { display: none; }
+
+/* CTA: só faz sentido no modelo padrão */
+.app[data-modelo="3pneus"]      #grupo-cta,
+.app[data-modelo="pneu45"]      #grupo-cta,
+.app[data-modelo="carrofrente"] #grupo-cta,
+.app[data-modelo="carrolado"]   #grupo-cta,
+.app[data-modelo="pneufrente"]  #grupo-cta { display: none; }
+
+/* Objetivo/fundo por IA: "pneu de frente" usa fundo fixo da marca (sem IA) */
+.app[data-modelo="pneufrente"] #grupo-objetivo,
+.app[data-modelo="pneufrente"] .prompt-section,
+.app[data-modelo="pneufrente"] #btn-gerar { display: none; }
+
+/* Canvas: só um fica visível por vez. #art-canvas-medida e os demais canvases
+   de modelo são display:flex (coluna) — não "block" — porque todos empilham
+   suas faixas com flex-direction:column. */
+#art-canvas-medida,
+#art-canvas-3pneus, #art-canvas-pneu45,
+#art-canvas-carrofrente, #art-canvas-carrolado, #art-canvas-pneufrente,
+#art-canvas-tabela, #art-canvas-tabeladupla { display: none; }
+
 .app[data-tipo-arte="medida"] #art-canvas        { display: none; }
-.app[data-tipo-arte="medida"] #art-canvas-medida { display: flex; }
+.app[data-tipo-arte="medida"][data-modelo-medida="unica"]      #art-canvas-medida       { display: flex; }
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]     #art-canvas-tabela       { display: flex; }
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #art-canvas-tabeladupla { display: flex; }
+
+.app:not([data-tipo-arte="medida"]):not([data-modelo="padrao"]) #art-canvas { display: none; }
+.app[data-tipo-arte="livre"][data-modelo="3pneus"]     #art-canvas-3pneus     { display: flex; }
+.app[data-tipo-arte="livre"][data-modelo="pneu45"]     #art-canvas-pneu45     { display: flex; }
+.app[data-tipo-arte="livre"][data-modelo="carrofrente"] #art-canvas-carrofrente { display: flex; }
+.app[data-tipo-arte="livre"][data-modelo="carrolado"]   #art-canvas-carrolado   { display: flex; }
+.app[data-tipo-arte="livre"][data-modelo="pneufrente"]  #art-canvas-pneufrente  { display: flex; }
 
 /* Contador de caracteres */
 .char-count {
@@ -243,6 +328,46 @@ body {
 .ctrl-input:hover { border-color: rgba(var(--accent-rgb),0.3); }
 .ctrl-input:focus { outline: none; border-color: var(--brand-accent); box-shadow: var(--focus-ring); }
 .ctrl-textarea { resize: vertical; min-height: 60px; }
+
+/* ── Editor de linhas (Tabela de Medidas / Tabela Dupla) ─────────────────── */
+.linhas-tabela-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linha-tabela-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.linha-tabela-row .linha-medida { flex: 1.6; min-width: 0; }
+.linha-tabela-row .linha-valor  { flex: 1;   min-width: 0; }
+
+.btn-linha-remove {
+  flex-shrink: 0;
+  width: 30px;
+  height: 36px;
+  background: rgba(255,60,60,0.1);
+  border: 1px solid rgba(255,60,60,0.3);
+  color: #ff9090;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-linha-remove:hover { background: rgba(255,60,60,0.2); border-color: rgba(255,60,60,0.5); }
+
+.btn-add-linha {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+.btn-add-linha:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ── Painel Personalizar Prompt ───────────────────────────────────────────── */
 .prompt-section {
@@ -415,7 +540,6 @@ body {
 .btn-export:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .btn-export:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
-.btn-export-alt { /* mesma base — diferenciação visual pode ser adicionada aqui */ }
 
 /* ── Área de preview ──────────────────────────────────────────────────────── */
 .preview-area {
@@ -1237,6 +1361,466 @@ body {
 .artm-story .artm-header-denali { height: 165px; }
 .artm-feed .artm-logo-header    { height: 60px; }
 .artm-story .artm-logo-header   { height: 72px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARTE DE MEDIDA — MODELOS "TABELA DE MEDIDAS" / "TABELA DUPLA"
+   Baseados em public/artmodel/artemedida/{tabela.png,tabeladupla.jpg}.
+   Delinte mantém o fundo escuro padrão do app; Denali inverte para fundo
+   claro com tabelas laranja e texto escuro (ver bloco [data-marca="denali"]
+   mais abaixo — mesmo princípio já usado em "Arte de Medida" single).
+   O espaço do topo (.artt-logo-reservado) fica sempre vazio de propósito —
+   a equipe de Marketing cola a arte promocional ali por fora do app.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.artt, .arttd {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.artt-bg, .arttd-bg { position: absolute; inset: 0; background: var(--brand-black); z-index: 0; }
+
+.artt-logo-reservado { position: relative; z-index: 1; flex: 0 0 auto; }
+
+.artt-tabela-wrap    { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch; }
+.arttd-tabelas-wrap  { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch; }
+.arttd-tabelas-sep   { flex: 0 0 auto; width: 2px; background: rgba(var(--white-rgb),0.15); }
+
+.artt-tabela        { display: flex; flex-direction: column; width: 100%; }
+.arttd-tabelas-wrap .artt-tabela { flex: 1 1 0; min-width: 0; }
+.artt-tabela-body   { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+
+.artt-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--brand-accent);
+  flex: 1 1 0;
+  /* sem isso, o mínimo de um flex item é o tamanho do seu conteúdo (regra
+     "min-height: auto" do spec) — com muitas linhas, cada uma se recusaria
+     a ficar menor que o texto pediria, e a tabela vazaria por baixo em vez
+     de continuar dividindo a altura disponível igualmente entre todas. */
+  min-height: 0;
+}
+.artt-linha-header { border-bottom: 3px solid var(--brand-accent); flex: 0 0 auto; }
+
+.artt-col-medida {
+  font-family: 'Poppins', sans-serif; font-weight: 700;
+  color: var(--brand-white);
+  flex: 1 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 4px 16px 4px 0;
+}
+.artt-linha-header .artt-col-medida { text-transform: uppercase; }
+
+.artt-col-valor {
+  font-family: 'Poppins', sans-serif; font-weight: 700;
+  color: var(--brand-white);
+  border-left: 2px solid var(--brand-accent);
+  text-align: center;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  padding: 4px 0;
+}
+.artt-linha-header .artt-col-valor { text-transform: uppercase; }
+
+.artt-notas   { position: relative; z-index: 1; flex: 0 0 auto; }
+.artt-nota    { font-family: 'Poppins', sans-serif; font-weight: 400; color: rgba(var(--white-rgb),0.75); }
+.artt-nota:empty { display: none; }
+
+.artt-cta     { position: relative; z-index: 1; flex: 0 0 auto; text-align: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--brand-white); }
+.artt-cta:empty { display: none; }
+
+.artt-footer  { position: relative; z-index: 1; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+.artt-footer-sep { flex: 0 0 auto; width: 2px; background: rgba(var(--white-rgb),0.3); }
+.artt-logo-marca { height: auto; width: auto; object-fit: contain; display: block; }
+/* Logo GP recortada diretamente do modelo de referência (ver
+   public/artmodel/artemedida/tabela.png) — assets/gp/logo-gp-branca.png,
+   fundo transparente. Denali troca para a versão escura (logo-gp-preta.png)
+   já que o fundo destes dois modelos vira claro só para essa marca. */
+.artt-logo-gp { height: auto; width: auto; object-fit: contain; display: block; }
+
+.artt.format-feed, .arttd.format-feed { padding: 50px 70px 40px; }
+.format-feed .artt-logo-reservado { height: 280px; }
+.format-feed .artt-tabela-wrap, .format-feed .arttd-tabelas-wrap { margin: 20px 0; }
+.format-feed .arttd-tabelas-sep { margin: 0 30px; }
+.format-feed .artt-col-valor { width: 270px; padding-left: 24px; }
+/* Tabela Dupla: coluna mais estreita (preço nunca é tão longo quanto a
+   medida) — sobra mais espaço pro texto da medida na metade do canvas. */
+.format-feed .arttd-tabelas-wrap .artt-col-valor { width: 150px; padding-left: 14px; }
+.format-feed .artt-linha-header .artt-col-medida,
+.format-feed .artt-linha-header .artt-col-valor { font-size: 0.72em; }
+.format-feed .artt-notas   { margin-bottom: 18px; }
+.format-feed .artt-nota    { font-size: 20px; line-height: 1.5; }
+.format-feed .artt-cta     { font-size: 26px; margin-bottom: 34px; }
+.format-feed .artt-footer > * + * { margin-left: 22px; }
+.format-feed .artt-footer-sep { height: 34px; }
+.format-feed .artt-logo-marca  { height: 48px; }
+.format-feed .artt-logo-gp     { height: 48px; }
+
+.artt.format-story, .arttd.format-story { padding: 70px 60px 60px; }
+.format-story .artt-logo-reservado { height: 360px; }
+.format-story .artt-tabela-wrap, .format-story .arttd-tabelas-wrap { margin: 26px 0; }
+.format-story .arttd-tabelas-sep { margin: 0 24px; }
+.format-story .artt-col-valor { width: 270px; padding-left: 20px; }
+.format-story .artt-linha-header .artt-col-medida,
+.format-story .artt-linha-header .artt-col-valor { font-size: 0.72em; }
+.format-story .artt-notas   { margin-bottom: 22px; }
+.format-story .artt-nota    { font-size: 24px; line-height: 1.5; }
+.format-story .artt-cta     { font-size: 30px; margin-bottom: 40px; }
+.format-story .artt-footer > * + * { margin-left: 26px; }
+.format-story .artt-footer-sep { height: 40px; }
+.format-story .artt-logo-marca  { height: 58px; }
+.format-story .artt-logo-gp     { height: 58px; }
+
+/* Layout empilhado (uma tabela por vez) no formato Story — lado a lado
+   (Feed) fica apertado demais numa coluna estreita de 1080px de largura. */
+.format-story .arttd-tabelas-wrap { flex-direction: column; }
+.format-story .arttd-tabelas-sep  { width: auto; height: 2px; margin: 16px 0; }
+
+/* ── Denali: inverte para fundo claro, tabelas laranja, texto escuro ─────── */
+.artt[data-marca="denali"], .arttd[data-marca="denali"] {
+  background-color: #f2f2f4;
+  background-image:
+    repeating-linear-gradient(45deg,  rgba(11,11,11,0.035) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(-45deg, rgba(11,11,11,0.035) 0 2px, transparent 2px 64px);
+  color: var(--brand-black);
+}
+.artt[data-marca="denali"] .artt-bg,
+.arttd[data-marca="denali"] .arttd-bg { display: none; }
+.artt[data-marca="denali"] .artt-col-medida,
+.arttd[data-marca="denali"] .artt-col-medida,
+.artt[data-marca="denali"] .artt-col-valor,
+.arttd[data-marca="denali"] .artt-col-valor,
+.artt[data-marca="denali"] .artt-cta,
+.arttd[data-marca="denali"] .artt-cta {
+  color: #1a1a1a;
+}
+.artt[data-marca="denali"] .artt-nota,
+.arttd[data-marca="denali"] .artt-nota {
+  color: rgba(0,0,0,0.65);
+}
+.artt[data-marca="denali"] .artt-footer-sep,
+.arttd[data-marca="denali"] .artt-footer-sep,
+.artt[data-marca="denali"] .arttd-tabelas-sep,
+.arttd[data-marca="denali"] .arttd-tabelas-sep {
+  background: rgba(0,0,0,0.2);
+}
+/* Linhas de destaque por trás de cada fileira, alternadas, pra reforçar a
+   leitura "tabela laranja" sobre o fundo claro (como no modelo de referência) */
+.artt[data-marca="denali"] .artt-linha:not(.artt-linha-header):nth-child(odd),
+.arttd[data-marca="denali"] .artt-linha:not(.artt-linha-header):nth-child(odd) {
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODELOS DE ARTE LIVRE — baseados em public/artmodel/arteLivre/*.png
+   Cada modelo abaixo reutiliza os tokens de marca (--brand-* e --font-display)
+   já definidos no topo do arquivo; nenhuma cor fica fora da paleta oficial.
+   Os 5 mockups de referência são só da Denali — a versão Delinte usa a
+   mesma estrutura com a paleta amarelo/preto/Anton no lugar da laranja/
+   Nasalization (mesmo padrão já usado em "Arte de Medida").
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Esconde qualquer foto de pneu ainda não cadastrada (src vazio) em vez de
+   mostrar o ícone de imagem quebrada — comum nesses modelos novos porque
+   foto45/fotoPerfil/fotoFrente ainda são placeholder para vários produtos. */
+.art3p-tire-img[src=""], .artp45-tire[src=""],
+.artcf-tire[src=""], .artcl-tire[src=""], .artpf-tire[src=""] {
+  display: none;
+}
+
+/* ── MODELO: ARTE COM 3 PNEUS ────────────────────────────────────────────── */
+.art3p {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.art3p-bg { position: absolute; inset: 0; background: var(--brand-black); z-index: 0; }
+.art3p-bg-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 1; opacity: 0; transition: opacity 0.7s ease; display: block;
+}
+.art3p-bg-img.loaded { opacity: 1; }
+.art3p-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.5) 68%, rgba(0,0,0,0.92) 100%);
+}
+
+.art3p-header { position: relative; z-index: 5; flex: 0 0 auto; display: flex; justify-content: center; }
+.art3p-logo { height: auto; width: auto; object-fit: contain; display: block; }
+
+.art3p-headline {
+  position: relative; z-index: 5; flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.art3p-headline-sm {
+  font-family: 'Poppins', sans-serif; font-weight: 300; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--brand-white);
+}
+.art3p-headline-lg {
+  font-family: var(--font-display); color: var(--brand-accent);
+  text-transform: uppercase; line-height: 0.95;
+}
+
+.art3p-tires {
+  position: relative; z-index: 5; flex: 1 1 auto; min-height: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.art3p-tire-col { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+.art3p-tire-name { font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase; text-align: center; }
+.art3p-tire-img  { width: auto; object-fit: contain; display: block; }
+.art3p-divider   { align-self: stretch; width: 3px; background: linear-gradient(180deg, transparent, var(--brand-accent), transparent); }
+
+.art3p-footer {
+  position: relative; z-index: 5; flex: 0 0 auto;
+  display: flex; align-items: center;
+  border: 3px solid var(--brand-accent); border-radius: 14px;
+  background: rgba(0,0,0,0.35);
+}
+.art3p-footer-destaque { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
+.art3p-footer-label    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); }
+.art3p-footer-bold     { font-family: var(--font-display); color: var(--brand-accent); text-transform: uppercase; line-height: 1; }
+.art3p-footer-sep      { align-self: stretch; width: 2px; background: var(--brand-accent); opacity: 0.6; }
+.art3p-footer-texto    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); line-height: 1.4; }
+
+/* NOTA: html2canvas não captura a propriedade CSS "gap" em flexbox — todo
+   espaçamento entre irmãos flex nestes modelos usa margin (via seletor
+   "owl" > * + *) em vez de gap, senão o espaçamento desaparece só na
+   exportação (PNG/PDF), embora fique correto na pré-visualização. */
+.format-feed .art3p { padding: 60px 60px 50px; }
+.format-feed .art3p-headline { margin-top: 24px; }
+.format-feed .art3p-footer   { margin-top: 24px; }
+.format-feed .art3p-logo { height: 64px; }
+.format-feed .art3p-headline-sm { font-size: 26px; margin-bottom: 4px; }
+.format-feed .art3p-headline-lg { font-size: 88px; }
+.format-feed .art3p-tires { padding-bottom: 10px; }
+.format-feed .art3p-divider   { margin: 0 11px; }
+.format-feed .art3p-tire-name { font-size: 30px; margin-bottom: 14px; }
+.format-feed .art3p-tire-img  { height: 320px; }
+.format-feed .art3p-footer { padding: 22px 30px; }
+.format-feed .art3p-footer > * + * { margin-left: 26px; }
+.format-feed .art3p-footer-label { font-size: 20px; }
+.format-feed .art3p-footer-bold  { font-size: 42px; }
+.format-feed .art3p-footer-texto { font-size: 20px; flex: 1; }
+
+.format-story .art3p { padding: 90px 50px 70px; }
+.format-story .art3p-headline { margin-top: 36px; }
+.format-story .art3p-footer   { margin-top: 36px; }
+.format-story .art3p-logo { height: 76px; }
+.format-story .art3p-headline-sm { font-size: 30px; margin-bottom: 6px; }
+.format-story .art3p-headline-lg { font-size: 110px; }
+.format-story .art3p-tires { padding-bottom: 10px; }
+.format-story .art3p-divider   { margin: 0 9px; }
+.format-story .art3p-tire-name { font-size: 32px; margin-bottom: 16px; }
+.format-story .art3p-tire-img  { height: 380px; }
+.format-story .art3p-footer { flex-direction: column; align-items: stretch; padding: 30px 34px; }
+.format-story .art3p-footer > * + * { margin-top: 18px; margin-left: 0; }
+.format-story .art3p-footer-destaque { flex-direction: row; align-items: baseline; }
+.format-story .art3p-footer-destaque > * + * { margin-left: 12px; }
+.format-story .art3p-footer-label { font-size: 24px; }
+.format-story .art3p-footer-bold  { font-size: 56px; }
+.format-story .art3p-footer-sep   { display: none; }
+.format-story .art3p-footer-texto { font-size: 26px; }
+
+/* ── MODELO: ARTE DE PNEU 45° ────────────────────────────────────────────── */
+.artp45 {
+  position: relative;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.artp45-bg { position: absolute; inset: 0; background: var(--brand-black); z-index: 0; }
+.artp45-bg-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 1; opacity: 0; transition: opacity 0.7s ease; display: block;
+}
+.artp45-bg-img.loaded { opacity: 1; }
+.artp45-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(100deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.05) 60%, transparent 75%);
+}
+.artp45-text  { position: absolute; z-index: 5; }
+.artp45-titulo { font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase; line-height: 0.95; }
+.artp45-sub    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); }
+.artp45-pills  { display: flex; flex-direction: column; align-items: flex-start; }
+.artp45-pill {
+  display: inline-block; border: 2px solid var(--brand-accent); border-radius: 999px;
+  color: var(--brand-white); font-family: 'Poppins', sans-serif; font-weight: 600; text-transform: capitalize;
+}
+.artp45-tire     { position: absolute; object-fit: contain; z-index: 4; display: block; }
+.artp45-logo-wrap{ position: absolute; z-index: 5; left: 0; right: 0; display: flex; justify-content: center; }
+.artp45-logo     { height: auto; width: auto; object-fit: contain; display: block; }
+
+.format-feed .artp45-text   { left: 70px; top: 90px; right: 480px; }
+.format-feed .artp45-titulo { font-size: 74px; margin-bottom: 14px; }
+.format-feed .artp45-sub    { font-size: 30px; margin-bottom: 34px; }
+.format-feed .artp45-pills > * + * { margin-top: 16px; }
+.format-feed .artp45-pill   { font-size: 24px; padding: 12px 26px; }
+.format-feed .artp45-tire   { right: -40px; bottom: 40px; height: 780px; }
+.format-feed .artp45-logo-wrap { bottom: 40px; }
+.format-feed .artp45-logo   { height: 50px; }
+
+.format-story .artp45-text   { left: 70px; top: 130px; right: 70px; }
+.format-story .artp45-titulo { font-size: 92px; margin-bottom: 18px; }
+.format-story .artp45-sub    { font-size: 36px; margin-bottom: 44px; }
+.format-story .artp45-pills > * + * { margin-top: 20px; }
+.format-story .artp45-pill   { font-size: 28px; padding: 14px 30px; }
+.format-story .artp45-tire   { left: 50%; top: 900px; transform: translateX(-50%); height: 820px; }
+.format-story .artp45-logo-wrap { bottom: 60px; }
+.format-story .artp45-logo   { height: 60px; }
+
+/* ── MODELO: PNEU + CARRO DE FRENTE ──────────────────────────────────────── */
+.artcf {
+  position: relative;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.artcf-bg { position: absolute; inset: 0; background: var(--brand-black); z-index: 0; }
+.artcf-bg-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 1; opacity: 0; transition: opacity 0.7s ease; display: block;
+}
+.artcf-bg-img.loaded { opacity: 1; }
+.artcf-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 30%, transparent 60%, rgba(0,0,0,0.5) 100%);
+}
+.artcf-headline { position: absolute; z-index: 5; left: 0; right: 0; text-align: center; padding: 0 60px; }
+.artcf-titulo {
+  font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase;
+  line-height: 1.05; text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+}
+.artcf-tire { position: absolute; left: 50%; transform: translateX(-50%); object-fit: contain; z-index: 4; display: block; }
+.artcf-logo-wrap { position: absolute; z-index: 5; left: 0; right: 0; display: flex; justify-content: center; }
+.artcf-logo { height: auto; width: auto; object-fit: contain; display: block; }
+
+.format-feed .artcf-headline { top: 70px; }
+.format-feed .artcf-titulo { font-size: 56px; }
+.format-feed .artcf-tire   { bottom: -160px; width: 980px; }
+.format-feed .artcf-logo-wrap { bottom: 44px; }
+.format-feed .artcf-logo   { height: 52px; }
+
+.format-story .artcf-headline { top: 110px; }
+.format-story .artcf-titulo { font-size: 70px; }
+.format-story .artcf-tire   { bottom: -120px; width: 1000px; }
+.format-story .artcf-logo-wrap { bottom: 70px; }
+.format-story .artcf-logo   { height: 62px; }
+
+/* ── MODELO: PNEU + CARRO DE LADO ────────────────────────────────────────── */
+.artcl {
+  position: relative;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.artcl-bg { position: absolute; inset: 0; background: var(--brand-black); z-index: 0; }
+.artcl-bg-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 1; opacity: 0; transition: opacity 0.7s ease; display: block;
+}
+.artcl-bg-img.loaded { opacity: 1; }
+.artcl-shape {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.35), transparent 60%);
+  clip-path: polygon(100% 0, 100% 100%, 35% 100%);
+}
+.artcl-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(120deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 45%, transparent 65%);
+}
+.artcl-headline { position: absolute; z-index: 5; max-width: 60%; }
+.artcl-titulo { font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase; line-height: 1.05; text-shadow: 0 4px 24px rgba(0,0,0,0.6); }
+.artcl-tire { position: absolute; object-fit: contain; z-index: 4; display: block; }
+.artcl-logo-wrap { position: absolute; z-index: 5; left: 0; right: 0; display: flex; justify-content: center; }
+.artcl-logo { height: auto; width: auto; object-fit: contain; display: block; }
+
+.format-feed .artcl-headline { top: 70px; left: 64px; }
+.format-feed .artcl-titulo { font-size: 62px; }
+.format-feed .artcl-tire   { right: -160px; top: 0; height: 100%; }
+.format-feed .artcl-logo-wrap { bottom: 44px; }
+.format-feed .artcl-logo   { height: 52px; }
+
+.format-story .artcl-headline { top: 110px; left: 64px; }
+.format-story .artcl-titulo { font-size: 74px; }
+.format-story .artcl-tire   { right: -140px; top: 45%; height: 60%; }
+.format-story .artcl-logo-wrap { bottom: 70px; }
+.format-story .artcl-logo   { height: 62px; }
+
+/* ── MODELO: ARTE DE PNEU DE FRENTE (sem IA — fundo fixo da marca) ───────── */
+.artpf {
+  position: relative;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.artpf-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(160deg, var(--brand-accent) 0%, var(--brand-accent-2) 100%);
+}
+.artpf-watermark {
+  position: absolute; z-index: 1; pointer-events: none;
+  top: 50%; left: 50%; width: 140%; aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: rgba(var(--white-rgb), 0.06);
+}
+.artpf-watermark::before { content: ''; position: absolute; inset: 12%; background: rgba(var(--white-rgb), 0.05); }
+.artpf-headline { position: absolute; z-index: 5; left: 0; right: 0; text-align: center; }
+.artpf-titulo   { font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase; line-height: 1; }
+.artpf-tire     { position: absolute; left: 50%; top: 55%; transform: translate(-50%, -50%); object-fit: contain; z-index: 4; display: block; }
+.artpf-logo-wrap{ position: absolute; z-index: 5; left: 0; right: 0; display: flex; justify-content: center; }
+/* Força silhueta branca sólida — o fundo aqui é sempre a cor de destaque da
+   marca (amarelo/laranja), então a logo Delinte (que tem letras amarelas)
+   ficaria "invisível" por cima do próprio amarelo sem este filtro. */
+.artpf-logo     { height: auto; width: auto; object-fit: contain; display: block; filter: brightness(0) invert(1); }
+
+.format-feed .artpf-headline { top: 70px; }
+.format-feed .artpf-titulo { font-size: 78px; }
+.format-feed .artpf-tire   { width: 560px; }
+.format-feed .artpf-logo-wrap { bottom: 50px; }
+.format-feed .artpf-logo   { height: 54px; }
+
+.format-story .artpf-headline { top: 110px; }
+.format-story .artpf-titulo { font-size: 94px; }
+.format-story .artpf-tire   { width: 640px; }
+.format-story .artpf-logo-wrap { bottom: 80px; }
+.format-story .artpf-logo   { height: 64px; }
+
+/* ── Ajuste Denali: Nasalization é mais larga que Anton — reduzir headlines
+   grandes destes 5 modelos pra não estourar a largura do canvas. ──────────── */
+.format-feed[data-marca="denali"]  .art3p-headline-lg { font-size: 68px; }
+.format-story[data-marca="denali"] .art3p-headline-lg { font-size: 86px; }
+.format-feed[data-marca="denali"]  .artp45-titulo { font-size: 58px; }
+.format-story[data-marca="denali"] .artp45-titulo { font-size: 72px; }
+.format-feed[data-marca="denali"]  .artcf-titulo { font-size: 46px; }
+.format-story[data-marca="denali"] .artcf-titulo { font-size: 58px; }
+.format-feed[data-marca="denali"]  .artcl-titulo { font-size: 62px; }
+.format-story[data-marca="denali"] .artcl-titulo { font-size: 74px; }
+.format-feed[data-marca="denali"]  .artpf-titulo { font-size: 62px; }
+.format-story[data-marca="denali"] .artpf-titulo { font-size: 76px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVO — UI mobile

@@ -233,4 +233,57 @@ function montarPromptMedida(formato, linha = 'institucional', customPrompt = '')
   };
 }
 
-module.exports = { montarPrompt, montarPromptMedida, CENAS_POR_LINHA };
+// =============================================================================
+// MODELOS "ARTE LIVRE" COM CARRO-HERÓI (Pneu + Carro de Frente / de Lado)
+//
+// Diferente do modelo "Arte de Medida", aqui a IA gera o fundo INTEIRO do
+// canvas (não uma faixa central) — o carro é o herói visível, sugerido em
+// texto livre pelo usuário. Uma foto real do pneu (45° ou perfil) é
+// sobreposta por cima na camada 2, então a zona onde ela cai deve continuar
+// visualmente simples na imagem gerada.
+// =============================================================================
+const COMPOSICAO_CARRO = {
+  feed: {
+    frente:
+      'COMPOSITIONAL BRIEF (1080×1080, square): the car is the absolute hero, seen head-on (front or front three-quarter view), filling most of the frame, sharp focus, dramatic lighting. Leave the BOTTOM-CENTER third of the frame (around the front wheel/tire, at ground level) relatively uncluttered — a real tire product photo will be composited directly over that area in post-production, so keep it simple (clean ground/road, no extra objects there). Headline text will be placed in the upper portion of the frame — keep that area atmospheric but not overly busy.',
+    lado:
+      'COMPOSITIONAL BRIEF (1080×1080, square): a vehicle is visible driving at a distance in the upper-left background, small and partially cropped — a supporting element, NOT filling the frame. The BOTTOM-RIGHT two-thirds of the frame must stay clean and simple (soft road/ground, atmospheric bokeh, diagonal light streaks) because a huge real tire product photo (side profile, extreme close-up) will be composited directly over that entire area in post-production. Headline text sits in the upper-left — keep that region atmospheric but readable.'
+  },
+  story: {
+    frente:
+      'COMPOSITIONAL BRIEF (1080×1920, vertical): the car is the absolute hero, seen head-on (front or front three-quarter view), centered in the upper two-thirds of the frame, sharp focus, dramatic lighting. Leave the BOTTOM third of the frame relatively uncluttered at ground level — a real tire product photo will be composited directly over the car\'s front wheel/tire area in post-production. Headline text sits near the top — keep that region atmospheric but readable.',
+    lado:
+      'COMPOSITIONAL BRIEF (1080×1920, vertical): a vehicle is visible driving at a distance in the upper background, small and partially cropped — a supporting element, NOT filling the frame. The LOWER two-thirds of the frame must stay clean and simple (soft road/ground, atmospheric bokeh, diagonal light streaks) because a huge real tire product photo (side profile, extreme close-up) will be composited directly over that area in post-production. Headline text sits near the top.'
+  }
+};
+
+const TEMPLATE_BASE_CARRO = (cena, composicao, sugestaoCarro) =>
+  `You are a world-class automotive advertising photographer creating a photorealistic background plate ` +
+  `that will have UI elements (headline text, brand logo) composited on top in post-production, plus a real ` +
+  `tire product photo composited directly over part of the scene. ` +
+  `\n\nVEHICLE: ${sugestaoCarro || 'a modern SUV or sedan, dark metallic paint'}. ` +
+  `\n\nSCENE & ATMOSPHERE: ${cena}. ` +
+  `\n\n${composicao}. ` +
+  `\n\nCOLOR: photorealistic, natural contrast, cinematic automotive-advertising color grade. ` +
+  `HARD RESTRICTIONS — violating these ruins the composite: NO text, NO logos, NO brand markings, NO watermarks, NO people, NO faces, NO hands. ` +
+  `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
+
+/**
+ * @param {'feed'|'story'} formato
+ * @param {'frente'|'lado'} vista
+ * @param {string} linha
+ * @param {string} sugestaoCarro texto livre do usuário descrevendo o carro
+ * @param {string} customPrompt
+ * @returns {{ prompt: string, aspectRatio: string }}
+ */
+function montarPromptCarro(formato, vista, linha = 'institucional', sugestaoCarro = '', customPrompt = '') {
+  const cenasLinha = CENAS_POR_LINHA[linha] ?? CENAS_POR_LINHA.institucional;
+  const cena       = customPrompt.trim() || cenasLinha.promocao;
+  const composicao = (COMPOSICAO_CARRO[formato] ?? COMPOSICAO_CARRO.feed)[vista] ?? COMPOSICAO_CARRO.feed.frente;
+  return {
+    prompt:      TEMPLATE_BASE_CARRO(cena, composicao, sugestaoCarro),
+    aspectRatio: ASPECT_RATIOS[formato] ?? ASPECT_RATIOS.feed
+  };
+}
+
+module.exports = { montarPrompt, montarPromptMedida, montarPromptCarro, CENAS_POR_LINHA };

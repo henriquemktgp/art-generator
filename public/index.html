@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <div class="app" id="app-root" data-marca="delinte" data-tipo-arte="livre">
+  <div class="app" id="app-root" data-marca="delinte" data-tipo-arte="livre" data-modelo="padrao" data-modelo-medida="unica">
 
     <!-- ═══ PAINEL DE CONTROLES ════════════════════════════════════════════ -->
     <aside class="sidebar" role="complementary" aria-label="Controles">
@@ -44,6 +44,27 @@
           </div>
         </fieldset>
 
+        <div class="control-group" id="grupo-modelo">
+          <label class="control-label" for="sel-modelo">Modelo</label>
+          <select id="sel-modelo" class="ctrl-select">
+            <option value="padrao">Arte Livre Padrão</option>
+            <option value="3pneus">Arte com 3 Pneus</option>
+            <option value="pneu45">Arte de Pneu 45°</option>
+            <option value="carrofrente">Pneu + Carro de Frente</option>
+            <option value="carrolado">Pneu + Carro de Lado</option>
+            <option value="pneufrente">Arte de Pneu de Frente</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="grupo-modelo-medida">
+          <label class="control-label" for="sel-modelo-medida">Modelo</label>
+          <select id="sel-modelo-medida" class="ctrl-select">
+            <option value="unica">Medida Única</option>
+            <option value="tabela">Tabela de Medidas</option>
+            <option value="tabeladupla">Tabela Dupla</option>
+          </select>
+        </div>
+
         <fieldset class="control-group">
           <legend class="control-label">Formato</legend>
           <div class="btn-group" role="group" aria-label="Escolha o formato">
@@ -62,11 +83,30 @@
           </div>
         </fieldset>
 
-        <div class="control-group">
+        <div class="control-group" id="grupo-produto-unico">
           <label class="control-label" for="sel-produto">Produto</label>
           <select id="sel-produto" class="ctrl-select">
             <!-- Populado via app.js -->
           </select>
+        </div>
+
+        <fieldset class="control-group" id="grupo-3pneus">
+          <legend class="control-label">Pneus (1, 2 e 3)</legend>
+          <select id="sel-pneu1" class="ctrl-select"></select>
+          <select id="sel-pneu2" class="ctrl-select"></select>
+          <select id="sel-pneu3" class="ctrl-select"></select>
+        </fieldset>
+
+        <div class="control-group" id="grupo-destaque">
+          <label class="control-label" for="inp-destaque">
+            Destaque (caixa inferior)
+            <span class="char-count" id="cnt-destaque" aria-live="polite">0 / 20</span>
+          </label>
+          <input
+            type="text" id="inp-destaque" class="ctrl-input"
+            placeholder="LOJISTAS"
+            maxlength="20"
+          >
         </div>
 
         <div class="control-group" id="grupo-medida">
@@ -78,6 +118,47 @@
             type="text" id="inp-medida" class="ctrl-input"
             placeholder="Ex: 235 45 ZRF19 95W"
             maxlength="30"
+          >
+        </div>
+
+        <div class="control-group" id="grupo-tabela-linhas">
+          <label class="control-label">
+            Medidas e Valores
+            <span class="char-count" id="cnt-linhas-tabela" aria-live="polite">0 / 15</span>
+          </label>
+          <div id="linhas-tabela-editor" class="linhas-tabela-editor"></div>
+          <button type="button" id="btn-add-linha" class="btn-prompt-reset btn-add-linha">+ Adicionar Medida</button>
+        </div>
+
+        <div class="control-group" id="grupo-validade-tabela">
+          <label class="control-label" for="inp-validade-tabela">
+            Válido até
+            <span class="char-count" id="cnt-validade-tabela" aria-live="polite">0 / 20</span>
+          </label>
+          <input
+            type="text" id="inp-validade-tabela" class="ctrl-input"
+            placeholder="Ex: 07/02/2025"
+            maxlength="20"
+          >
+        </div>
+
+        <fieldset class="control-group" id="grupo-desconto-unidade">
+          <legend class="control-label">Descontos por unidade?</legend>
+          <div class="btn-group" role="group" aria-label="Descontos por unidade">
+            <button type="button" class="btn-opt active" data-field="descontoPorUnidade" data-val="sim" aria-pressed="true">Sim</button>
+            <button type="button" class="btn-opt"        data-field="descontoPorUnidade" data-val="nao" aria-pressed="false">Não</button>
+          </div>
+        </fieldset>
+
+        <div class="control-group" id="grupo-cta-tabela">
+          <label class="control-label" for="inp-cta-tabela">
+            Texto Final
+            <span class="char-count" id="cnt-cta-tabela" aria-live="polite">0 / 80</span>
+          </label>
+          <input
+            type="text" id="inp-cta-tabela" class="ctrl-input"
+            placeholder="Entre em contato com o seu vendedor e aproveite!"
+            maxlength="80"
           >
         </div>
 
@@ -114,6 +195,18 @@
             type="text" id="inp-cta" class="ctrl-input"
             placeholder="SAIBA MAIS"
             maxlength="25"
+          >
+        </div>
+
+        <div class="control-group" id="grupo-sugestao-carro">
+          <label class="control-label" for="inp-carro">
+            Sugestão de Carro
+            <span class="char-count" id="cnt-carro" aria-live="polite">0 / 60</span>
+          </label>
+          <input
+            type="text" id="inp-carro" class="ctrl-input"
+            placeholder="Ex: SUV compacto branco, visto de frente"
+            maxlength="60"
           >
         </div>
 
@@ -288,6 +381,195 @@
 
           </div>
           <!-- ══ fim do canvas (Arte de Medida) ══ -->
+
+          <!-- ══ CANVAS — ARTE DE MEDIDA / MODELO "TABELA DE MEDIDAS" ══════ -->
+          <div id="art-canvas-tabela" class="artt format-feed" data-marca="delinte" hidden>
+            <div class="artt-bg"></div>
+
+            <!-- Espaço reservado — a equipe de Marketing cola aqui a arte
+                 promocional (logo do produto, "PROMO X"), fora do app. -->
+            <div class="artt-logo-reservado" aria-hidden="true"></div>
+
+            <div class="artt-tabela-wrap">
+              <div class="artt-tabela" id="artt-tabela">
+                <div class="artt-linha artt-linha-header">
+                  <span class="artt-col-medida">MEDIDAS</span>
+                  <span class="artt-col-valor">VALOR</span>
+                </div>
+                <div class="artt-tabela-body" id="artt-tabela-body"></div>
+              </div>
+            </div>
+
+            <div class="artt-notas">
+              <p class="artt-nota" id="artt-nota-desconto">*Descontos por unidade</p>
+              <p class="artt-nota" id="artt-nota-validade">*Válido até 07/02/2025</p>
+            </div>
+
+            <p class="artt-cta" id="artt-cta">Entre em contato com o seu vendedor e aproveite!</p>
+
+            <div class="artt-footer">
+              <img class="artt-logo-gp" id="artt-logo-gp" src="assets/gp/logo-gp-branca.png" alt="GP Corp BR">
+              <div class="artt-footer-sep"></div>
+              <img class="artt-logo-marca" id="artt-logo-marca" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Tabela de Medidas) ══ -->
+
+          <!-- ══ CANVAS — ARTE DE MEDIDA / MODELO "TABELA DUPLA" ═══════════ -->
+          <div id="art-canvas-tabeladupla" class="arttd format-feed" data-marca="delinte" hidden>
+            <div class="arttd-bg"></div>
+
+            <div class="artt-logo-reservado" aria-hidden="true"></div>
+
+            <div class="arttd-tabelas-wrap">
+              <div class="artt-tabela" id="arttd-tabela-1">
+                <div class="artt-linha artt-linha-header">
+                  <span class="artt-col-medida">MEDIDAS</span>
+                  <span class="artt-col-valor">VALOR</span>
+                </div>
+                <div class="artt-tabela-body" id="arttd-tabela-1-body"></div>
+              </div>
+              <div class="arttd-tabelas-sep"></div>
+              <div class="artt-tabela" id="arttd-tabela-2">
+                <div class="artt-linha artt-linha-header">
+                  <span class="artt-col-medida">MEDIDAS</span>
+                  <span class="artt-col-valor">VALOR</span>
+                </div>
+                <div class="artt-tabela-body" id="arttd-tabela-2-body"></div>
+              </div>
+            </div>
+
+            <div class="artt-notas">
+              <p class="artt-nota" id="arttd-nota-desconto">*Descontos por unidade</p>
+              <p class="artt-nota" id="arttd-nota-validade">*Válido até 07/02/2025</p>
+            </div>
+
+            <p class="artt-cta" id="arttd-cta">Entre em contato com o seu vendedor e aproveite!</p>
+
+            <div class="artt-footer">
+              <img class="artt-logo-gp" id="arttd-logo-gp" src="assets/gp/logo-gp-branca.png" alt="GP Corp BR">
+              <div class="artt-footer-sep"></div>
+              <img class="artt-logo-marca" id="arttd-logo-marca" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Tabela Dupla) ══ -->
+
+          <!-- ══ CANVAS — MODELO "ARTE COM 3 PNEUS" ═══════════════════════ -->
+          <div id="art-canvas-3pneus" class="art3p format-feed" data-marca="delinte" hidden>
+            <div class="art3p-bg"></div>
+            <img class="art3p-bg-img" id="art3p-bg-img" src="" alt="" aria-hidden="true">
+            <div class="art3p-overlay"></div>
+
+            <header class="art3p-header">
+              <img class="art3p-logo" id="art3p-logo" src="" alt="">
+            </header>
+
+            <div class="art3p-headline">
+              <span class="art3p-headline-sm">POR QUE</span>
+              <span class="art3p-headline-lg" id="art3p-headline-lg">DELINTE?</span>
+            </div>
+
+            <div class="art3p-tires" id="art3p-tires">
+              <div class="art3p-tire-col">
+                <span class="art3p-tire-name" id="art3p-nome-1"></span>
+                <img class="art3p-tire-img" id="art3p-foto-1" src="" alt="">
+              </div>
+              <div class="art3p-divider"></div>
+              <div class="art3p-tire-col">
+                <span class="art3p-tire-name" id="art3p-nome-2"></span>
+                <img class="art3p-tire-img" id="art3p-foto-2" src="" alt="">
+              </div>
+              <div class="art3p-divider"></div>
+              <div class="art3p-tire-col">
+                <span class="art3p-tire-name" id="art3p-nome-3"></span>
+                <img class="art3p-tire-img" id="art3p-foto-3" src="" alt="">
+              </div>
+            </div>
+
+            <div class="art3p-footer">
+              <div class="art3p-footer-destaque">
+                <span class="art3p-footer-label">Exclusivo para</span>
+                <span class="art3p-footer-bold" id="art3p-destaque">LOJISTAS</span>
+              </div>
+              <div class="art3p-footer-sep"></div>
+              <p class="art3p-footer-texto" id="art3p-footer-texto"></p>
+            </div>
+          </div>
+          <!-- ══ fim do canvas (3 Pneus) ══ -->
+
+          <!-- ══ CANVAS — MODELO "ARTE DE PNEU 45°" ═══════════════════════ -->
+          <div id="art-canvas-pneu45" class="artp45 format-feed" data-marca="delinte" hidden>
+            <div class="artp45-bg"></div>
+            <img class="artp45-bg-img" id="artp45-bg-img" src="" alt="" aria-hidden="true">
+            <div class="artp45-overlay"></div>
+
+            <div class="artp45-text">
+              <h2 class="artp45-titulo" id="artp45-titulo">TÍTULO</h2>
+              <p class="artp45-sub" id="artp45-sub">Subtítulo descritivo</p>
+              <div class="artp45-pills" id="artp45-pills"></div>
+            </div>
+
+            <img class="artp45-tire" id="artp45-tire" src="" alt="">
+
+            <div class="artp45-logo-wrap">
+              <img class="artp45-logo" id="artp45-logo" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Pneu 45°) ══ -->
+
+          <!-- ══ CANVAS — MODELO "PNEU + CARRO DE FRENTE" ═════════════════ -->
+          <div id="art-canvas-carrofrente" class="artcf format-feed" data-marca="delinte" hidden>
+            <div class="artcf-bg"></div>
+            <img class="artcf-bg-img" id="artcf-bg-img" src="" alt="" aria-hidden="true">
+            <div class="artcf-overlay"></div>
+
+            <div class="artcf-headline">
+              <span class="artcf-titulo" id="artcf-titulo">TÍTULO</span>
+            </div>
+
+            <img class="artcf-tire" id="artcf-tire" src="" alt="">
+
+            <div class="artcf-logo-wrap">
+              <img class="artcf-logo" id="artcf-logo" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Carro de Frente) ══ -->
+
+          <!-- ══ CANVAS — MODELO "PNEU + CARRO DE LADO" ═══════════════════ -->
+          <div id="art-canvas-carrolado" class="artcl format-feed" data-marca="delinte" hidden>
+            <div class="artcl-bg"></div>
+            <img class="artcl-bg-img" id="artcl-bg-img" src="" alt="" aria-hidden="true">
+            <div class="artcl-shape" aria-hidden="true"></div>
+            <div class="artcl-overlay"></div>
+
+            <div class="artcl-headline">
+              <span class="artcl-titulo" id="artcl-titulo">TÍTULO</span>
+            </div>
+
+            <img class="artcl-tire" id="artcl-tire" src="" alt="">
+
+            <div class="artcl-logo-wrap">
+              <img class="artcl-logo" id="artcl-logo" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Carro de Lado) ══ -->
+
+          <!-- ══ CANVAS — MODELO "ARTE DE PNEU DE FRENTE" ══════════════════ -->
+          <div id="art-canvas-pneufrente" class="artpf format-feed" data-marca="delinte" hidden>
+            <div class="artpf-bg"></div>
+            <div class="artpf-watermark" aria-hidden="true"></div>
+
+            <div class="artpf-headline">
+              <span class="artpf-titulo" id="artpf-titulo">TÍTULO</span>
+            </div>
+
+            <img class="artpf-tire" id="artpf-tire" src="" alt="">
+
+            <div class="artpf-logo-wrap">
+              <img class="artpf-logo" id="artpf-logo" src="" alt="">
+            </div>
+          </div>
+          <!-- ══ fim do canvas (Pneu de Frente) ══ -->
 
           <!-- Overlay de carregamento (fora do canvas, não exportado) -->
           <div class="loading-overlay" id="loading-overlay" hidden aria-live="assertive" aria-label="Gerando fundo">

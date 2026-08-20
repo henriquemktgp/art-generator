@@ -25,8 +25,10 @@
 //   paragrafo: texto descritivo específico do produto, exibido acima do logo.
 //   sufixoMedida: texto opcional mostrado só dentro da caixa MEDIDAS, depois
 //              do apelido (ex. "RUN FLAT"). Deixe "" quando não se aplica.
-// PENDENTE: foto45/fotoPerfil/paragrafo/sufixoMedida ainda são placeholder —
-// aguardando os caminhos/textos reais produto a produto.
+//   fotoFrente: foto do pneu de frente (centralizada), fundo transparente —
+//              usada no modelo "Arte de pneu frente" (Arte Livre).
+// PENDENTE: foto45/fotoPerfil/paragrafo/sufixoMedida/fotoFrente ainda são
+// placeholder — aguardando os caminhos/textos reais produto a produto.
 // =============================================================================
 
 const PRODUTOS_DELINTE = [
@@ -35,7 +37,7 @@ const PRODUTOS_DELINTE = [
     specs:  "",  foto:   "",
     titulo: "",  sub:    "",  cta: "",
     linha:  "institucional",
-    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: ""
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
   },
   // ── Linha Passeio ────────────────────────────────────────────────────────
   // titulo/sub/cta/specs abaixo são RASCUNHO (não vieram da lista oficial de
@@ -52,7 +54,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-Frente.png",
     paragrafo: "Tecnologia Ultra High Mileage para milhares de quilômetros extras de vida útil.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-Perfil.png"
   },
   {
     nome:   "DH2 Eco",
@@ -62,39 +64,39 @@ const PRODUTOS_DELINTE = [
     sub:    "Baixa resistência ao rolamento para mais economia de combustível no dia a dia.",
     cta:    "CONHEÇA O DH2",
     linha:  "passeio",
-    apelido: "DH2",
+    apelido: "DH2 Eco",
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-Frente.png",
     paragrafo: "Baixa resistência ao rolamento para mais economia de combustível no dia a dia.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-Perfil.png"
   },
   {
     nome:   "DH7 SUV",
     specs:  "Linha passeio · SUV · conforto e estabilidade",
     foto:   "https://delinte.com.br/wp-content/uploads/2024/07/DH7-SUV.webp",
     titulo: "CONFORTO PARA SEU SUV",
-    sub:    "Estrutura reforçada e rodagem silenciosa pensadas para o peso e o porte do seu SUV.",
+    sub:    "Estrutura reforçada e rodagem silenciosa para o peso e porte do seu SUV.",
     cta:    "CONHEÇA O DH7",
     linha:  "passeio",
     apelido: "DH7",
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-Frente.png",
     paragrafo: "Estrutura reforçada e rodagem silenciosa pensadas para o peso e o porte do seu SUV.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-Perfil.png"
   },
   {
     nome:   "DS2 Mute Cotton",
     specs:  "Linha passeio · tecnologia Mute Cotton · baixo ruído",
     foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/2024/01/DS2-Roda.png.webp",
     titulo: "SILÊNCIO EM MOVIMENTO",
-    sub:    "Tecnologia Mute Cotton reduz o ruído de rodagem para uma experiência mais silenciosa.",
+    sub:    "Tecnologia Mute Cotton reduz o ruído de rodagem para mais silêncio a bordo.",
     cta:    "CONHEÇA O DS2 MUTE",
     linha:  "passeio",
     apelido: "DS2 Mute",
     foto45:     "https://delinte.com.br/wp-content/uploads/2024/11/ds2-png.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Frente-2.png",
     paragrafo: "Tecnologia Mute Cotton reduz o ruído de rodagem para uma experiência mais silenciosa.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Perfil-2.png"
   },
   {
     nome:   "DS2 SUV",
@@ -108,7 +110,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-Frente.png",
     paragrafo: "Aderência e estabilidade sob medida para SUVs no uso urbano e em viagens.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-Lateral.png"
   },
   // ── Linha Esportiva ──────────────────────────────────────────────────────
   {
@@ -123,7 +125,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-45%C2%B0-3.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Frente-2.png",
     paragrafo: "Sulcos assimétricos de alta precisão para máxima aderência em pistas molhadas.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Perfil-2.png"
   },
   {
     nome:   "DS3 SUV",
@@ -137,7 +139,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2026/02/45.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2026/02/%7Fbanda.png",
     paragrafo: "Padrão direcional desenvolvido para quem exige o máximo da pista.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2026/02/frente.png"
   },
   {
     nome:   "DS7 Sport",
@@ -151,7 +153,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-Frente.png",
     paragrafo: "Composto avançado com classificação AA entrega controle em qualquer condição.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-Perfil.png"
   },
   {
     nome:   "DS8 Desert Storm",
@@ -161,11 +163,11 @@ const PRODUTOS_DELINTE = [
     sub:    "Perfil agressivo e altíssima performance para rodas de 18\" a 26\".",
     cta:    "CONHEÇA O DS8",
     linha:  "esportiva",
-    apelido: "DS",
+    apelido: "DS8",
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-Frente.png",
     paragrafo: "Perfil agressivo e altíssima performance para rodas de 18\" a 26\".",
-    sufixoMedida: "DESERT STORM"
+    sufixoMedida: "DESERT STORM", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-Perfil.png"
   },
   // ── Linha Off-Road ───────────────────────────────────────────────────────
   {
@@ -180,7 +182,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-Frente.png",
     paragrafo: "Tread mud terrain para trilhas extremas onde o asfalto não chega.",
-    sufixoMedida: "BANDIT M/T"
+    sufixoMedida: "BANDIT M/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-Perfil.png"
   },
   {
     nome:   "DX-10 Bandit A/T",
@@ -194,7 +196,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-45%C2%B0-e1695038873657.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-Frente.png",
     paragrafo: "All-terrain que transita entre asfalto e trilha com igual competência.",
-    sufixoMedida: "BANDIT A/T"
+    sufixoMedida: "BANDIT A/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-Perfil.png"
   },
   {
     nome:   "DX-12 Bandit R/T",
@@ -208,7 +210,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-Frente.png",
     paragrafo: "Tração reforçada para enfrentar trilhas pesadas sem abrir mão do asfalto.",
-    sufixoMedida: "BANDIT R/T"
+    sufixoMedida: "BANDIT R/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-Perfil.png"
   },
   // ── Linha Run Flat ───────────────────────────────────────────────────────
   {
@@ -223,7 +225,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-Frente.png",
     paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
-    sufixoMedida: "RUN FLAT"
+    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-Perfil.png"
   },
   {
     nome:   "DH6 Run Flat",
@@ -237,7 +239,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-Frente.png",
     paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
-    sufixoMedida: "RUN FLAT"
+    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-Perfil.png"
   },
   {
     nome:   "DS2 SUV Run Flat",
@@ -247,11 +249,12 @@ const PRODUTOS_DELINTE = [
     sub:    "A segurança Run Flat encontra o desempenho pensado para SUVs.",
     cta:    "CONHEÇA O DS2 SUV RFT",
     linha:  "runflat",
-    apelido: "DS2 SUV",
+
+    apelido: "DS2 SUV RF",
     foto45:     "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-Frente.png",
     paragrafo: "A segurança Run Flat encontra o desempenho pensado para SUVs.",
-    sufixoMedida: "RUN FLAT"
+    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-Lateral.png"
   },
   // ── Linha Semi Slick ─────────────────────────────────────────────────────
   {
@@ -266,7 +269,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-45%C2%B0-2.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-Frente-1.png",
     paragrafo: "Composto semi-slick para máxima aderência em track days e uso esportivo extremo.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-Perfil-1.png"
   },
   // ── Linha de Carga ───────────────────────────────────────────────────────
   {
@@ -281,7 +284,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-45%C2%B0.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-Frente.png",
     paragrafo: "Estrutura reforçada para vans e utilitários que não podem parar.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-Perfil.png"
   },
   {
     nome:   "DV2 Plus",
@@ -295,7 +298,7 @@ const PRODUTOS_DELINTE = [
     foto45:     "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-1-3.png",
     fotoPerfil: "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-2-2.png",
     paragrafo: "Evolução da linha de carga com reforço adicional para rotas pesadas.",
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-3-1.png"
   }
 ];
 
@@ -330,7 +333,7 @@ const PRODUTOS_DENALI = [
     specs:  "",  foto:   "",
     titulo: "",  sub:    "",  cta: "",
     linha:  "institucional",
-    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: ""
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
   },
   // ── Wolverine — linha off-road ───────────────────────────────────────────
   {
@@ -345,7 +348,7 @@ const PRODUTOS_DENALI = [
     foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-45-rn29dxt6rcse94i498spm8yme7k4vokg7hpit8g4ug.png",
     fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-Perfil-rn29dzov50uywcfdy9lyr8hjkzavb2rwvr0hrsdci0.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-Frente-rn29dyr0y6tokqgr3r7c6qq2zlfi3do6jmd0aieqo8.png"
   },
   {
     nome:   "Wolverine A/T 09",
@@ -359,7 +362,7 @@ const PRODUTOS_DENALI = [
     foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-45-rn29ozex29woo6gkrinweymlo74ebnewq5nwta2lqg.png",
     fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-Perfil-rn29p1alfxz9bedugjh5jy5iuyv4r1mdeeyvrtzte0.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-Frente-rn29p0cr93xyzsf7m12izge29kzrjcin2abeak17k8.png"
   },
   {
     nome:   "Wolverine A/T 11",
@@ -373,7 +376,7 @@ const PRODUTOS_DENALI = [
     foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-45-rn29rzicw80nrc3k8bdzvpclziblwuc1h0or03mbuw.png",
     fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-Perfil-rn29s1e19w38ek0txc790ovj6a2cc8ji59zpynjjig.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-Frente-rn29s0g7321y2y272tsmg742kw6z4jfrt5c8hdkxoo.png"
   },
   // ── Peregrine — linha esportiva ──────────────────────────────────────────
   {
@@ -388,7 +391,7 @@ const PRODUTOS_DENALI = [
     foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-45o-scaled-rn0vd2ssy7jmo8cs0t8iiouaibrxnv9ty1zykilpxk.png",
     fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-Perfil-1-scaled-rn0vf36dkgapi7fna6iscoks8zv74k95w08citmemg.png",
     paragrafo: PARAGRAFO_ESPORTIVA_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-Frente-scaled-rn0vdb9cnpv7kq0hnew5n4pfusm8l57ez7vbw096dk.png"
   },
   // ── Golden Eagle — linha passeio ─────────────────────────────────────────
   // PENDENTE: foto45/fotoPerfil de "Golden Eagle" e "Golden Eagle +" ainda
@@ -408,7 +411,7 @@ const PRODUTOS_DENALI = [
     foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-45-rmytv18pxxb7prvp21msfer5ntsb9onxhcv1oxx1u0.png",
     fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-Perfil-rmytv7tl9rk7z1m4zmh6ev3dtivvrke1u9fg1vnamg.png",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-Frente-rmytv34ebldsczsyr2g1kea2ulj1p2ve5m60nhu9hk.png"
   },
   {
     nome:   "Golden Eagle",
@@ -421,7 +424,7 @@ const PRODUTOS_DENALI = [
     apelido: "GE",
     foto45: "", fotoPerfil: "",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: ""
   },
   {
     nome:   "Golden Eagle +",
@@ -434,7 +437,7 @@ const PRODUTOS_DENALI = [
     apelido: "GE+",
     foto45: "", fotoPerfil: "",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: ""
+    sufixoMedida: "", fotoFrente: ""
   },
   // ── SteelWolf — linha RunFlat — EDITAR quando specs/foto oficiais chegarem
   {
@@ -445,7 +448,7 @@ const PRODUTOS_DENALI = [
     sub:    "Tecnologia run flat Denali — segurança que não para no imprevisto.",
     cta:    "CONHEÇA O STEELWOLF",
     linha:  "runflat",
-    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: ""
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
   },
   // ── Buffalo — linha de Carga — EDITAR quando specs/foto oficiais chegarem
   {
@@ -456,7 +459,7 @@ const PRODUTOS_DENALI = [
     sub:    "Pneu que rende tanto quanto você — resistência para o trabalho pesado.",
     cta:    "CONHEÇA O BUFFALO",
     linha:  "carga",
-    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: ""
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
   }
 ];
 
@@ -538,31 +541,75 @@ const OBJETIVOS = {
 };
 
 // ─── Limites de caracteres ───────────────────────────────────────────────────
-const LIMITES = { titulo: 40, sub: 80, cta: 25, medida: 30 };
+const LIMITES = {
+  titulo: 40, sub: 80, cta: 25, medida: 30, destaque: 20, sugestaoCarro: 60,
+  linhaMedida: 60, linhaValor: 20, validadeTabela: 20, ctaTabela: 80
+};
 
 // Marcas com suporte ao modo "Arte de Medida"
 const MARCAS_COM_ARTE_MEDIDA = new Set(['delinte', 'denali']);
+
+// ─── Modelos disponíveis dentro do modo "Arte Livre" ─────────────────────────
+// Cada modelo tem seu próprio <div> de canvas (ids abaixo) e seu próprio
+// <img> de fundo de IA (exceto "pneufrente", que não usa IA — fundo fixo da
+// marca, ver style.css). "padrao" é o template original, já existente antes
+// desta leva de modelos.
+const MODELOS = {
+  padrao:      { canvas: 'art-canvas',            bgImg: 'art-bg-img'   },
+  '3pneus':    { canvas: 'art-canvas-3pneus',     bgImg: 'art3p-bg-img' },
+  pneu45:      { canvas: 'art-canvas-pneu45',     bgImg: 'artp45-bg-img'},
+  carrofrente: { canvas: 'art-canvas-carrofrente',bgImg: 'artcf-bg-img' },
+  carrolado:   { canvas: 'art-canvas-carrolado',  bgImg: 'artcl-bg-img' },
+  pneufrente:  { canvas: 'art-canvas-pneufrente', bgImg: null           }
+};
+
+// ─── Modelos disponíveis dentro do modo "Arte de Medida" ─────────────────────
+// "unica" é o template original (1 produto, fotos do pneu, medida digitada).
+// "tabela"/"tabeladupla" não dependem de produto — são só uma lista livre de
+// medida+valor (ver estado.linhasTabela) e nunca geram fundo por IA.
+const MODELOS_MEDIDA = {
+  unica:       { canvas: 'art-canvas-medida',      maxLinhas: 0  },
+  tabela:      { canvas: 'art-canvas-tabela',       maxLinhas: 15 },
+  tabeladupla: { canvas: 'art-canvas-tabeladupla',  maxLinhas: 30 }
+};
 
 // ─── Estado da aplicação ─────────────────────────────────────────────────────
 const estado = {
   marca:          'delinte',
   tipoArte:       'livre', // 'livre' | 'medida'
+  modelo:         'padrao', // chave de MODELOS — só relevante quando tipoArte === 'livre'
+  modeloMedida:   'unica',  // chave de MODELOS_MEDIDA — só relevante quando tipoArte === 'medida'
   formato:        'feed',
   objetivo:       'promocao',
   produto:        0,
+  pneu1:          0, // modelo "3 pneus"
+  pneu2:          0,
+  pneu3:          0,
   titulo:         '',
   sub:            '',
   cta:            '',
-  medida:         '', // digitado livremente pelo usuário (modo "Arte de Medida")
+  destaque:       '', // modelo "3 pneus" — palavra em destaque na caixa inferior
+  sugestaoCarro:  '', // modelos "carro de frente"/"carro de lado"
+  medida:         '', // digitado livremente pelo usuário (modo "Arte de Medida" / Medida Única)
+  linhasTabela: [ // modelos "Tabela de Medidas" / "Tabela Dupla" — { medida, valor }
+    { medida: '', valor: '' },
+    { medida: '', valor: '' },
+    { medida: '', valor: '' }
+  ],
+  validadeTabela:      '', // "*Válido até ..."
+  descontoPorUnidade:  'sim', // 'sim' | 'nao' — controla a nota "*Descontos por unidade"
+  ctaTabela:           '', // frase final (ex.: "Entre em contato com o seu vendedor...")
   customPrompt:   '',    // texto digitado pelo usuário; '' = usar sugestão automática
   promptEditado:  false, // true se o usuário editou manualmente o textarea de prompt
   fundoGerado:    false,
   gerando:        false
 };
 
-// Id do canvas atualmente visível, conforme o tipo de arte ativo
+// Id do canvas atualmente visível, conforme o tipo de arte / modelo ativo
 function canvasAtivoId() {
-  return estado.tipoArte === 'medida' ? 'art-canvas-medida' : 'art-canvas';
+  return estado.tipoArte === 'medida'
+    ? MODELOS_MEDIDA[estado.modeloMedida].canvas
+    : MODELOS[estado.modelo].canvas;
 }
 
 // =============================================================================
@@ -570,31 +617,58 @@ function canvasAtivoId() {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  popularProdutos();
   vincularEventos();
   atualizarDisponibilidadeTipoArte();
-  renderArt();
-  renderArtMedida();
+  renderLinhasEditor();
+  // trocarMarca (não só popularProdutos+renderTudo) porque também é quem
+  // preenche os <img> de logo de cada canvas (art-logo, artm-logo, e os
+  // demais modelos de Arte Livre/Arte de Medida) — sem isso eles ficam com
+  // src="" até o usuário clicar num botão de marca.
+  trocarMarca(estado.marca);
   atualizarEscala();
   window.addEventListener('resize', atualizarEscala);
 });
+
+// Renderiza todos os canvases (só o ativo fica visível via CSS) — mais
+// simples que rastrear qual função chamar a cada mudança de estado, e o
+// custo de renderizar canvases escondidos é irrelevante (poucos nós de DOM).
+function renderTudo() {
+  renderArt();
+  renderArtMedida();
+  renderArt3Pneus();
+  renderArtPneu45();
+  renderArtCarroFrente();
+  renderArtCarroLado();
+  renderArtPneuFrente();
+  renderArtTabela();
+  renderArtTabelaDupla();
+}
 
 // Retorna o produto atualmente selecionado, dentro do catálogo da marca ativa
 function produtoAtual() {
   return MARCAS[estado.marca].produtos[estado.produto];
 }
 
-// Repopula o <select> de produtos com o catálogo da marca ativa
+// Repopula os <select> de produtos (único + os 3 do modelo "3 pneus") com o
+// catálogo da marca ativa
 function popularProdutos() {
-  const sel = document.getElementById('sel-produto');
-  sel.innerHTML = '';
-  MARCAS[estado.marca].produtos.forEach((p, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = p.nome;
-    sel.appendChild(opt);
+  const sels = [
+    { id: 'sel-produto', chave: 'produto' },
+    { id: 'sel-pneu1',   chave: 'pneu1'   },
+    { id: 'sel-pneu2',   chave: 'pneu2'   },
+    { id: 'sel-pneu3',   chave: 'pneu3'   }
+  ];
+  sels.forEach(({ id, chave }) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    MARCAS[estado.marca].produtos.forEach((p, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = p.nome;
+      sel.appendChild(opt);
+    });
+    sel.value = estado[chave];
   });
-  sel.value = estado.produto;
 }
 
 // Troca a marca ativa: atualiza tema (data-marca), logos, catálogo de
@@ -603,15 +677,20 @@ function popularProdutos() {
 function trocarMarca(marca) {
   estado.marca   = marca;
   estado.produto = 0;
+  estado.pneu1   = 0;
+  estado.pneu2   = 0;
+  estado.pneu3   = 0;
 
   document.getElementById('app-root').dataset.marca = marca;
-  document.getElementById('art-canvas').dataset.marca = marca;
-  document.getElementById('art-canvas-medida').dataset.marca = marca;
+  ['art-canvas', 'art-canvas-medida', 'art-canvas-3pneus', 'art-canvas-pneu45',
+   'art-canvas-carrofrente', 'art-canvas-carrolado', 'art-canvas-pneufrente',
+   'art-canvas-tabela', 'art-canvas-tabeladupla'
+  ].forEach(id => { document.getElementById(id).dataset.marca = marca; });
 
   const logoUrl = MARCAS[marca].logo;
-  document.getElementById('sidebar-logo').src = logoUrl;
-  document.getElementById('art-logo').src     = logoUrl;
-  document.getElementById('artm-logo').src    = logoUrl;
+  ['sidebar-logo', 'art-logo', 'artm-logo', 'art3p-logo', 'artp45-logo',
+   'artcf-logo', 'artcl-logo', 'artpf-logo'
+  ].forEach(id => { document.getElementById(id).src = logoUrl; });
 
   popularProdutos();
   preencherSugestoes(produtoAtual());
@@ -624,8 +703,7 @@ function trocarMarca(marca) {
   if (estado.tipoArte === 'medida' && !MARCAS_COM_ARTE_MEDIDA.has(marca)) {
     trocarTipoArte('livre');
   } else {
-    renderArt();
-    renderArtMedida();
+    renderTudo();
   }
 }
 
@@ -659,14 +737,51 @@ function trocarTipoArte(tipo) {
     atualizarMeta();
   }
 
-  renderArt();
-  renderArtMedida();
+  renderTudo();
   atualizarEscala();
 }
 
-// =============================================================================
-// EVENTOS
-// =============================================================================
+// Troca o modelo ativo dentro de "Arte Livre" (padrão, 3 pneus, pneu 45°,
+// carro de frente/lado, pneu de frente). Cada modelo tem seu próprio canvas
+// (ver MODELOS) — a visibilidade da sidebar é 100% controlada via CSS
+// ([data-modelo="..."] em style.css), aqui só trocamos o estado e o formato
+// se o atual (ex.: Banner) não existir no novo modelo.
+function trocarModelo(modelo) {
+  estado.modelo = modelo;
+  document.getElementById('app-root').dataset.modelo = modelo;
+
+  if (modelo !== 'padrao' && estado.formato === 'banner') {
+    estado.formato = 'feed';
+    document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
+      const ativo = b.dataset.val === 'feed';
+      b.classList.toggle('active', ativo);
+      b.setAttribute('aria-pressed', String(ativo));
+    });
+    atualizarMeta();
+  }
+
+  renderTudo();
+  atualizarEscala();
+}
+
+// Troca o modelo ativo dentro de "Arte de Medida" (medida única, tabela,
+// tabela dupla). Os modelos de tabela compartilham a mesma lista de linhas
+// (estado.linhasTabela) — ao trocar para um modelo com limite menor, corta
+// o excedente (ex.: 20 linhas cadastradas em "Tabela Dupla" ao voltar para
+// "Tabela de Medidas", que só aceita 15).
+function trocarModeloMedida(modelo) {
+  estado.modeloMedida = modelo;
+  document.getElementById('app-root').dataset.modeloMedida = modelo;
+
+  const max = MODELOS_MEDIDA[modelo].maxLinhas;
+  if (max > 0 && estado.linhasTabela.length > max) {
+    estado.linhasTabela.length = max;
+  }
+
+  renderLinhasEditor();
+  renderTudo();
+  atualizarEscala();
+}
 
 function vincularEventos() {
   // Botões de grupo (tipoArte / formato / objetivo)
@@ -704,10 +819,19 @@ function vincularEventos() {
       estado[campo] = valor;
       if (formatoMudou) atualizarMeta();
       if (!estado.promptEditado) atualizarSugestaoPrompt();
-      renderArt();
-      renderArtMedida();
+      renderTudo();
       atualizarEscala();
     });
+  });
+
+  // Seletor "Modelo" (dentro de Arte Livre)
+  document.getElementById('sel-modelo').addEventListener('change', e => {
+    trocarModelo(e.target.value);
+  });
+
+  // Seletor "Modelo" (dentro de Arte de Medida)
+  document.getElementById('sel-modelo-medida').addEventListener('change', e => {
+    trocarModeloMedida(e.target.value);
   });
 
   // Seleção de produto — preenche textos sugeridos (editáveis pelo usuário)
@@ -715,12 +839,62 @@ function vincularEventos() {
     estado.produto = parseInt(e.target.value, 10);
     preencherSugestoes(produtoAtual());
     atualizarSugestaoPrompt();
-    renderArt();
-    renderArtMedida();
+    renderTudo();
+  });
+
+  // Seleção dos 3 pneus (modelo "Arte com 3 Pneus")
+  ['pneu1', 'pneu2', 'pneu3'].forEach((chave, i) => {
+    document.getElementById(`sel-${chave}`).addEventListener('change', e => {
+      estado[chave] = parseInt(e.target.value, 10);
+      renderTudo();
+    });
   });
 
   // Campo "Medida" (digitado livremente — não vem de catálogo)
   criarCampoTexto('inp-medida', 'cnt-medida', 'medida', LIMITES.medida, renderArtMedida);
+
+  // Campo "Destaque" (modelo "3 pneus") e "Sugestão de Carro" (modelos com carro-herói)
+  criarCampoTexto('inp-destaque', 'cnt-destaque', 'destaque', LIMITES.destaque, renderArt3Pneus);
+  document.getElementById('inp-carro').addEventListener('input', e => {
+    if (e.target.value.length > LIMITES.sugestaoCarro) e.target.value = e.target.value.slice(0, LIMITES.sugestaoCarro);
+    estado.sugestaoCarro = e.target.value;
+    const cnt = document.getElementById('cnt-carro');
+    cnt.textContent = `${e.target.value.length} / ${LIMITES.sugestaoCarro}`;
+    cnt.classList.toggle('at-limit', e.target.value.length >= LIMITES.sugestaoCarro);
+  });
+
+  // Campos "Válido até" e "Texto Final" (modelos de tabela)
+  criarCampoTexto('inp-validade-tabela', 'cnt-validade-tabela', 'validadeTabela', LIMITES.validadeTabela);
+  criarCampoTexto('inp-cta-tabela',      'cnt-cta-tabela',      'ctaTabela',      LIMITES.ctaTabela);
+
+  // Editor de linhas (medida + valor) dos modelos de tabela — delegação de
+  // eventos porque as linhas são geradas dinamicamente (podem ser
+  // adicionadas/removidas em tempo real, até o limite do modelo ativo).
+  document.getElementById('btn-add-linha').addEventListener('click', () => {
+    const max = MODELOS_MEDIDA[estado.modeloMedida].maxLinhas;
+    if (estado.linhasTabela.length >= max) return;
+    estado.linhasTabela.push({ medida: '', valor: '' });
+    renderLinhasEditor();
+    renderTudo();
+  });
+
+  document.getElementById('linhas-tabela-editor').addEventListener('input', e => {
+    const idx = parseInt(e.target.dataset.idx, 10);
+    if (Number.isNaN(idx) || !estado.linhasTabela[idx]) return;
+    if (e.target.classList.contains('linha-medida')) estado.linhasTabela[idx].medida = e.target.value;
+    if (e.target.classList.contains('linha-valor'))  estado.linhasTabela[idx].valor  = e.target.value;
+    renderTudo();
+  });
+
+  document.getElementById('linhas-tabela-editor').addEventListener('click', e => {
+    const btn = e.target.closest('.btn-linha-remove');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx, 10);
+    if (Number.isNaN(idx)) return;
+    estado.linhasTabela.splice(idx, 1);
+    renderLinhasEditor();
+    renderTudo();
+  });
 
   // Painel "Personalizar Prompt"
   document.getElementById('btn-prompt-toggle').addEventListener('click', () => {
@@ -758,7 +932,7 @@ function vincularEventos() {
   document.getElementById('btn-pdf').addEventListener('click', exportarPDF);
 }
 
-function criarCampoTexto(inputId, contadorId, chave, max, aoAtualizar = renderArt) {
+function criarCampoTexto(inputId, contadorId, chave, max, aoAtualizar = renderTudo) {
   const el      = document.getElementById(inputId);
   const counter = document.getElementById(contadorId);
   el.addEventListener('input', () => {
@@ -817,15 +991,25 @@ async function gerarFundo() {
 
   try {
     const produto = produtoAtual();
+    // "carrofrente"/"carrolado" têm rota de prompt própria (carro-herói,
+    // ver prompts.js); os demais modelos de Arte Livre usam a mesma rota
+    // "livre" de sempre (o pneu real é sobreposto por cima na camada 2).
+    const modoRequisicao = estado.tipoArte === 'medida'
+      ? 'medida'
+      : (estado.modelo === 'carrofrente' || estado.modelo === 'carrolado')
+        ? estado.modelo
+        : 'livre';
+
     const res = await fetch('/api/gerar-fundo', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
-        modo:         estado.tipoArte,
-        formato:      estado.formato,
-        objetivo:     estado.objetivo,
-        linha:        produto?.linha ?? 'institucional',
-        customPrompt: estado.customPrompt
+        modo:          modoRequisicao,
+        formato:       estado.formato,
+        objetivo:      estado.objetivo,
+        linha:         produto?.linha ?? 'institucional',
+        customPrompt:  estado.customPrompt,
+        sugestaoCarro: estado.sugestaoCarro
       })
     });
 
@@ -848,14 +1032,20 @@ async function gerarFundo() {
   }
 }
 
-// Id do <img> de fundo do canvas atualmente ativo
+// Id do <img> de fundo do canvas atualmente ativo (null se o modelo não usa
+// fundo gerado por IA — ex.: "pneu de frente")
 function bgImgAtivoId() {
-  return estado.tipoArte === 'medida' ? 'artm-bg-img' : 'art-bg-img';
+  if (estado.tipoArte === 'medida') {
+    return estado.modeloMedida === 'unica' ? 'artm-bg-img' : null;
+  }
+  return MODELOS[estado.modelo].bgImg;
 }
 
 // Aplica a imagem base64 como fundo com fade-in via <img> onload
 function aplicarFundo(base64) {
-  const bgImg = document.getElementById(bgImgAtivoId());
+  const id = bgImgAtivoId();
+  if (!id) return;
+  const bgImg = document.getElementById(id);
   bgImg.classList.remove('loaded');
   bgImg.onload = () => {
     requestAnimationFrame(() => bgImg.classList.add('loaded'));
@@ -865,7 +1055,9 @@ function aplicarFundo(base64) {
 
 // Remove o fundo gerado (ex.: ao trocar formato)
 function resetarFundo() {
-  const bgImg = document.getElementById(bgImgAtivoId());
+  const id = bgImgAtivoId();
+  if (!id) return;
+  const bgImg = document.getElementById(id);
   bgImg.classList.remove('loaded');
   bgImg.src = '';
   estado.fundoGerado = false;
@@ -1023,6 +1215,302 @@ function renderArtMedida() {
     semProd ? '' : (produto.paragrafo || '');
 }
 
+// Renderiza o canvas do modelo "Arte com 3 Pneus" (sempre foto a 45°, uma
+// ao lado da outra, separadas por uma faixa na cor da marca)
+function renderArt3Pneus() {
+  const canvas = document.getElementById('art-canvas-3pneus');
+  canvas.className = ['art3p', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  const produtos = MARCAS[estado.marca].produtos;
+  document.getElementById('art3p-headline-lg').textContent = `${MARCAS[estado.marca].label.toUpperCase()}?`;
+
+  [estado.pneu1, estado.pneu2, estado.pneu3].forEach((idx, i) => {
+    const p = produtos[idx] ?? produtos[0];
+    const semP = idx === 0;
+    document.getElementById(`art3p-nome-${i + 1}`).textContent = semP ? '' : (p.apelido || p.nome);
+    document.getElementById(`art3p-foto-${i + 1}`).src = semP ? '' : (p.foto45 || '');
+  });
+
+  document.getElementById('art3p-destaque').textContent    = (estado.destaque || 'LOJISTAS').toUpperCase();
+  document.getElementById('art3p-footer-texto').textContent = estado.sub ||
+    'A marca só cresce com você. Nosso cliente é o centro de tudo.';
+}
+
+// Renderiza o canvas do modelo "Arte de Pneu 45°" (pneu único a 45°, título/
+// subtítulo do produto, specs viram "pills" — cada trecho separado por "·")
+function renderArtPneu45() {
+  const canvas  = document.getElementById('art-canvas-pneu45');
+  const produto = produtoAtual();
+  const semProd = estado.produto === 0;
+
+  canvas.className = ['artp45', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  document.getElementById('artp45-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
+  document.getElementById('artp45-sub').textContent    = estado.sub || '';
+  document.getElementById('artp45-tire').src           = semProd ? '' : (produto.foto45 || '');
+
+  const pillsWrap = document.getElementById('artp45-pills');
+  pillsWrap.innerHTML = '';
+  const specsTexto = semProd ? '' : (produto.specs || '');
+  specsTexto.split('·').map(s => s.trim()).filter(Boolean).forEach(txt => {
+    const pill = document.createElement('span');
+    pill.className = 'artp45-pill';
+    pill.textContent = txt;
+    pillsWrap.appendChild(pill);
+  });
+}
+
+// Renderiza o canvas do modelo "Pneu + Carro de Frente" (carro gerado por IA
+// visto de frente, pneu a 45° sobreposto na parte inferior)
+function renderArtCarroFrente() {
+  const canvas  = document.getElementById('art-canvas-carrofrente');
+  const produto = produtoAtual();
+  const semProd = estado.produto === 0;
+
+  canvas.className = ['artcf', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  document.getElementById('artcf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
+  document.getElementById('artcf-tire').src           = semProd ? '' : (produto.foto45 || '');
+}
+
+// Renderiza o canvas do modelo "Pneu + Carro de Lado" (carro gerado por IA
+// visto de lado ao fundo, pneu de perfil em destaque, bem grande)
+function renderArtCarroLado() {
+  const canvas  = document.getElementById('art-canvas-carrolado');
+  const produto = produtoAtual();
+  const semProd = estado.produto === 0;
+
+  canvas.className = ['artcl', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  document.getElementById('artcl-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
+  document.getElementById('artcl-tire').src           = semProd ? '' : (produto.fotoPerfil || '');
+}
+
+// Renderiza o canvas do modelo "Arte de Pneu de Frente" (pneu centralizado,
+// fundo fixo com cores/fonte/logo da marca — sem geração por IA)
+function renderArtPneuFrente() {
+  const canvas  = document.getElementById('art-canvas-pneufrente');
+  const produto = produtoAtual();
+  const semProd = estado.produto === 0;
+
+  canvas.className = ['artpf', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  document.getElementById('artpf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
+  document.getElementById('artpf-tire').src           = semProd ? '' : (produto.fotoFrente || '');
+}
+
+// ── Modelos "Tabela de Medidas" / "Tabela Dupla" ─────────────────────────────
+// Frase padrão do rodapé quando o usuário não digitou nada (mesmo texto do
+// modelo de referência em public/artmodel/artemedida/tabela.png)
+const CTA_TABELA_PADRAO = 'Entre em contato com o seu vendedor e aproveite!';
+
+// Reconstrói a lista de linhas (medida + valor) no editor da sidebar. Só
+// deve ser chamada ao adicionar/remover uma linha ou trocar de modelo — a
+// digitação em si (evento "input") atualiza só o estado + o canvas
+// (renderTudo), sem recriar os <input>, senão o cursor/foco se perderia a
+// cada tecla.
+function renderLinhasEditor() {
+  const wrap = document.getElementById('linhas-tabela-editor');
+  wrap.innerHTML = '';
+
+  estado.linhasTabela.forEach((linha, idx) => {
+    const row = document.createElement('div');
+    row.className = 'linha-tabela-row';
+
+    const inpMedida = document.createElement('input');
+    inpMedida.type = 'text';
+    inpMedida.className = 'ctrl-input linha-medida';
+    inpMedida.placeholder = 'Ex: 195 55 ZR15 86W XL AK01 APEX King';
+    inpMedida.maxLength = LIMITES.linhaMedida;
+    inpMedida.value = linha.medida;
+    inpMedida.dataset.idx = String(idx);
+
+    const inpValor = document.createElement('input');
+    inpValor.type = 'text';
+    inpValor.className = 'ctrl-input linha-valor';
+    inpValor.placeholder = 'R$ 529,90';
+    inpValor.maxLength = LIMITES.linhaValor;
+    inpValor.value = linha.valor;
+    inpValor.dataset.idx = String(idx);
+
+    const btnRemove = document.createElement('button');
+    btnRemove.type = 'button';
+    btnRemove.className = 'btn-linha-remove';
+    btnRemove.textContent = '×';
+    btnRemove.dataset.idx = String(idx);
+    btnRemove.setAttribute('aria-label', 'Remover linha');
+
+    row.append(inpMedida, inpValor, btnRemove);
+    wrap.appendChild(row);
+  });
+
+  const max = MODELOS_MEDIDA[estado.modeloMedida].maxLinhas || 15;
+  const cnt = document.getElementById('cnt-linhas-tabela');
+  cnt.textContent = `${estado.linhasTabela.length} / ${max}`;
+  cnt.classList.toggle('at-limit', estado.linhasTabela.length >= max);
+
+  document.getElementById('btn-add-linha').disabled = estado.linhasTabela.length >= max;
+}
+
+// Cria a linha (medida + valor) exibida na arte — via createElement/
+// textContent (não innerHTML) porque medida/valor vêm de texto livre do
+// usuário.
+function criarLinhaTabelaEl(linha) {
+  const el = document.createElement('div');
+  el.className = 'artt-linha';
+
+  const colMedida = document.createElement('span');
+  colMedida.className = 'artt-col-medida';
+  colMedida.textContent = linha.medida;
+
+  const colValor = document.createElement('span');
+  colValor.className = 'artt-col-valor';
+  colValor.textContent = linha.valor;
+
+  el.append(colMedida, colValor);
+  return el;
+}
+
+function preencherTabelaBody(bodyEl, linhas) {
+  bodyEl.innerHTML = '';
+  linhas.forEach(linha => bodyEl.appendChild(criarLinhaTabelaEl(linha)));
+}
+
+// A tabela "se ajusta ao tanto de medidas": cada linha de dados já reparte a
+// altura disponível entre si via flex (flex:1 1 0 em .artt-linha — CSS
+// puro, sem JS), então só falta escalar a FONTE proporcionalmente à altura
+// real que cada linha acabou ganhando (senão o texto fica desproporcional —
+// pequeno demais com poucas linhas, ou grande/cortado demais com muitas).
+function ajustarFonteTabela(tabelaEl) {
+  // Espera as fontes (Poppins/Anton) terminarem de carregar antes de medir —
+  // sem isso, o Canvas 2D mede com a fonte de fallback do sistema (mais
+  // estreita que o Poppins bold real), subestima a largura necessária, e o
+  // texto acaba maior do que cabe de verdade quando a fonte web carrega.
+  const aguardarFontes = (document.fonts && document.fonts.ready) || Promise.resolve();
+  aguardarFontes.then(() => requestAnimationFrame(() => {
+    const linhas = tabelaEl.querySelectorAll('.artt-tabela-body .artt-linha');
+    if (!linhas.length) { tabelaEl.style.fontSize = ''; return; }
+
+    // O preview na tela fica encolhido por um transform:scale() (Story, bem
+    // mais alto que largo, encolhe MUITO mais que Feed pra caber na mesma
+    // área) — getBoundingClientRect() sempre mede esse tamanho JÁ visual,
+    // não o tamanho lógico real do canvas (1080×1920/1080×1080). Convertemos
+    // TUDO pra unidade lógica logo na medição (não só no final) — aplicar
+    // teto/piso em unidade visual e só converter no fim distorce esses
+    // limites por um fator que depende do zoom do navegador do usuário, o
+    // que é frágil e foi a causa de tamanhos errados em telas diferentes.
+    const canvasEl = tabelaEl.closest('.artt, .arttd');
+    const larguraLogica = (FORMATOS[estado.formato] || {}).width || 0;
+    const larguraVisual = canvasEl ? canvasEl.getBoundingClientRect().width : 0;
+    const escalaPreview = (larguraLogica && larguraVisual) ? (larguraVisual / larguraLogica) : 1;
+
+    const altura = linhas[0].getBoundingClientRect().height / escalaPreview;
+    if (!altura) return;
+
+    // Ponto de partida: quanto menos linhas, mais alta cada uma fica, maior
+    // a fonte — poucas medidas devem ficar bem grandes e fáceis de ler. No
+    // Story o canvas é bem mais alto (1920px) para a mesma largura de
+    // sempre (1080px) — cada linha ganha mais altura disponível, então usa
+    // um multiplicador um pouco maior, mas com teto conservador: o fator
+    // real que limita a leitura é a LARGURA (1080px em ambos os formatos),
+    // não a altura, então um teto alto demais só é cortado depois pelo
+    // ajuste de largura abaixo — melhor already começar num teto realista.
+    const ehStory = Boolean(tabelaEl.closest('.format-story'));
+    const multiplicador = ehStory ? 0.34 : 0.30;
+    const tetoMaximo    = ehStory ? 46 : 40;
+    let fonte = Math.max(15, Math.min(tetoMaximo, altura * multiplicador));
+
+    // Mas nunca a ponto de o texto (medida ou valor) estourar a largura da
+    // própria coluna — text-overflow:ellipsis não é confiável no
+    // html2canvas (a exportação só corta o texto, sem mostrar "…"), então
+    // a defesa real é medir com Canvas 2D e reduzir a fonte proporcional-
+    // mente ANTES de exportar, não confiar no corte automático do CSS.
+    // Margem de segurança (0.85) porque a métrica do Canvas 2D nunca é
+    // 100% idêntica ao layout real do navegador, e o ajuste é feito numa
+    // única passada (proporcional, não iterativo).
+    const ctx = document.createElement('canvas').getContext('2d');
+    let fator = 1;
+    linhas.forEach(linha => {
+      linha.querySelectorAll('.artt-col-medida, .artt-col-valor').forEach(col => {
+        const texto = col.textContent;
+        const disponivel = col.getBoundingClientRect().width / escalaPreview;
+        if (!texto || !disponivel) return;
+        ctx.font = `700 ${fonte}px Poppins, sans-serif`;
+        const necessario = ctx.measureText(texto).width;
+        if (necessario > disponivel) {
+          fator = Math.min(fator, (disponivel / necessario) * 0.85);
+        }
+      });
+    });
+    fonte = Math.max(15, fonte * fator);
+
+    tabelaEl.style.fontSize = `${fonte}px`;
+  }));
+}
+
+// Logo da marca no rodapé — Denali usa a versão colorida (o fundo destes
+// dois modelos vira claro só para ela, ver style.css); Delinte mantém sua
+// logo padrão, que já funciona bem sobre fundo escuro.
+function logoMarcaTabela() {
+  return estado.marca === 'denali' ? 'assets/denali/logo-denali-colorida.png' : MARCAS[estado.marca].logo;
+}
+
+// Logo GP no rodapé — mesmo princípio: recortada em branco do modelo de
+// referência, troca para a versão escura quando o fundo vira claro (Denali).
+function logoGpTabela() {
+  return estado.marca === 'denali' ? 'assets/gp/logo-gp-preta.png' : 'assets/gp/logo-gp-branca.png';
+}
+
+function renderArtTabela() {
+  const canvas = document.getElementById('art-canvas-tabela');
+  canvas.className = ['artt', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  const tabelaEl = document.getElementById('artt-tabela');
+  preencherTabelaBody(
+    document.getElementById('artt-tabela-body'),
+    estado.linhasTabela.slice(0, MODELOS_MEDIDA.tabela.maxLinhas)
+  );
+  ajustarFonteTabela(tabelaEl);
+
+  document.getElementById('artt-nota-desconto').textContent =
+    estado.descontoPorUnidade === 'sim' ? '*Descontos por unidade' : '';
+  document.getElementById('artt-nota-validade').textContent =
+    estado.validadeTabela ? `*Válido até ${estado.validadeTabela}` : '';
+  document.getElementById('artt-cta').textContent = estado.ctaTabela || CTA_TABELA_PADRAO;
+  document.getElementById('artt-logo-marca').src  = logoMarcaTabela();
+  document.getElementById('artt-logo-gp').src     = logoGpTabela();
+}
+
+function renderArtTabelaDupla() {
+  const canvas = document.getElementById('art-canvas-tabeladupla');
+  canvas.className = ['arttd', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.dataset.marca = estado.marca;
+
+  const linhas = estado.linhasTabela.slice(0, MODELOS_MEDIDA.tabeladupla.maxLinhas);
+  const meio   = Math.ceil(linhas.length / 2);
+
+  const tabela1 = document.getElementById('arttd-tabela-1');
+  const tabela2 = document.getElementById('arttd-tabela-2');
+  preencherTabelaBody(document.getElementById('arttd-tabela-1-body'), linhas.slice(0, meio));
+  preencherTabelaBody(document.getElementById('arttd-tabela-2-body'), linhas.slice(meio));
+  ajustarFonteTabela(tabela1);
+  ajustarFonteTabela(tabela2);
+
+  document.getElementById('arttd-nota-desconto').textContent =
+    estado.descontoPorUnidade === 'sim' ? '*Descontos por unidade' : '';
+  document.getElementById('arttd-nota-validade').textContent =
+    estado.validadeTabela ? `*Válido até ${estado.validadeTabela}` : '';
+  document.getElementById('arttd-cta').textContent = estado.ctaTabela || CTA_TABELA_PADRAO;
+  document.getElementById('arttd-logo-marca').src  = logoMarcaTabela();
+  document.getElementById('arttd-logo-gp').src     = logoGpTabela();
+}
+
 // =============================================================================
 // ESCALA DO PREVIEW
 // =============================================================================
@@ -1051,13 +1539,21 @@ function atualizarEscala() {
 // EXPORTAÇÃO
 // =============================================================================
 
+// Sufixo do nome do arquivo exportado, conforme tipo de arte / modelo ativo
+function sufixoArquivo() {
+  if (estado.tipoArte === 'medida') {
+    return estado.modeloMedida !== 'unica' ? `-${estado.modeloMedida}` : '-medida';
+  }
+  return estado.modelo !== 'padrao' ? `-${estado.modelo}` : '';
+}
+
 async function exportarPNG() {
   const btn = document.getElementById('btn-png');
   definirEstadoBtn(btn, true, 'PNG...');
   try {
     const c = await capturarCanvas();
     const link = document.createElement('a');
-    link.download = `${estado.marca}-${estado.formato}${estado.tipoArte === 'medida' ? '-medida' : ''}-arte.png`;
+    link.download = `${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.png`;
     link.href = c.toDataURL('image/png');
     link.click();
   } catch (e) {
@@ -1083,7 +1579,7 @@ async function exportarPDF() {
       hotfixes: ['px_scaling']
     });
     pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-    pdf.save(`${estado.marca}-${estado.formato}${estado.tipoArte === 'medida' ? '-medida' : ''}-arte.pdf`);
+    pdf.save(`${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.pdf`);
   } catch (e) {
     console.error('[Delinte] Erro PDF:', e);
     mostrarErro('Não foi possível exportar o PDF. Verifique o console.');
@@ -1099,11 +1595,12 @@ async function capturarCanvas() {
 
   const clone = original.cloneNode(true);
   // O clone vai direto para o <body>, fora de #app-root — então não herda as
-  // regras de visibilidade que dependem de .app[data-tipo-arte]. "display" e
-  // "hidden" precisam ser forçados aqui (estilo inline sempre vence). O canvas
-  // de Arte de Medida (.artm) empilha suas faixas com flex-direction:column,
-  // então precisa de display:flex — display:block quebraria o layout.
-  const displayAtivo = estado.tipoArte === 'medida' ? 'flex' : 'block';
+  // regras de visibilidade que dependem de .app[data-tipo-arte]/[data-modelo].
+  // "display" e "hidden" precisam ser forçados aqui (estilo inline sempre
+  // vence). Todo canvas exceto o padrão (.art) empilha suas faixas com
+  // flex-direction:column, então precisa de display:flex — display:block
+  // quebraria o layout.
+  const displayAtivo = (estado.tipoArte === 'medida' || estado.modelo !== 'padrao') ? 'flex' : 'block';
   clone.hidden = false;
   clone.style.cssText = [
     `display: ${displayAtivo}`,

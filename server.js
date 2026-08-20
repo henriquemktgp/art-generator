@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path    = require('path');
-const { montarPrompt, montarPromptMedida } = require('./prompts');
+const { montarPrompt, montarPromptMedida, montarPromptCarro } = require('./prompts');
 const { gerarImagemMagnific } = require('./magnific');
 
 const app  = express();
@@ -19,7 +19,11 @@ const FORMATOS_VALIDOS        = new Set(['feed', 'story', 'banner']);
 const FORMATOS_VALIDOS_MEDIDA = new Set(['feed', 'story']); // banner ainda não existe no modo Arte de Medida
 const OBJETIVOS_VALIDOS       = new Set(['promocao', 'lancamento', 'aviso']);
 const LINHAS_VALIDAS          = new Set(['esportiva', 'offroad', 'runflat', 'carga', 'passeio', 'semislick', 'institucional']);
-const MODOS_VALIDOS           = new Set(['livre', 'medida']);
+const MODOS_VALIDOS           = new Set(['livre', 'medida', 'carrofrente', 'carrolado']);
+const MODOS_CARRO             = new Set(['carrofrente', 'carrolado']);
+// carrofrente/carrolado geram o fundo inteiro do canvas (como "livre"), mas
+// só existem em Feed/Story — mesma restrição do modo "medida".
+const FORMATOS_VALIDOS_SEM_BANNER = FORMATOS_VALIDOS_MEDIDA;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
 app.use(express.json());
@@ -30,17 +34,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Body: { formato: 'feed'|'story'|'banner', objetivo: 'promocao'|'lancamento'|'aviso', modo: 'livre'|'medida' }
 // Resposta: { imagem: '<base64 PNG>' }
 app.post('/api/gerar-fundo', async (req, res) => {
-  const { formato, objetivo, linha, customPrompt, modo } = req.body ?? {};
+  const { formato, objetivo, linha, customPrompt, modo, sugestaoCarro } = req.body ?? {};
 
   const modoValido = MODOS_VALIDOS.has(modo) ? modo : 'livre';
-  const formatosValidosDoModo = modoValido === 'medida' ? FORMATOS_VALIDOS_MEDIDA : FORMATOS_VALIDOS;
+  const formatosValidosDoModo = (modoValido === 'medida' || MODOS_CARRO.has(modoValido))
+    ? FORMATOS_VALIDOS_SEM_BANNER
+    : FORMATOS_VALIDOS;
 
   if (!formatosValidosDoModo.has(formato)) {
     return res.status(400).json({ erro: 'Parâmetros inválidos.' });
   }
-  // No modo "arte livre" o Objetivo é obrigatório (define cena + badge). No
-  // modo "arte de medida" o Objetivo não existe na UI — a cena usa sempre a
-  // variante "promocao" da linha do produto.
+  // No modo "arte livre" o Objetivo é obrigatório (define cena + badge). Nos
+  // modos "arte de medida" e "carro-herói" o Objetivo não existe na UI — a
+  // cena usa sempre a variante "promocao" da linha do produto.
   if (modoValido === 'livre' && !OBJETIVOS_VALIDOS.has(objetivo)) {
     return res.status(400).json({ erro: 'Parâmetros inválidos.' });
   }
@@ -51,10 +57,15 @@ app.post('/api/gerar-fundo', async (req, res) => {
   const promptUsuario = typeof customPrompt === 'string'
     ? customPrompt.slice(0, 500)
     : '';
+  const sugestaoCarroValida = typeof sugestaoCarro === 'string'
+    ? sugestaoCarro.slice(0, 200)
+    : '';
 
   const { prompt, aspectRatio } = modoValido === 'medida'
     ? montarPromptMedida(formato, linhaValida, promptUsuario)
-    : montarPrompt(formato, objetivo, linhaValida, promptUsuario);
+    : MODOS_CARRO.has(modoValido)
+      ? montarPromptCarro(formato, modoValido === 'carrofrente' ? 'frente' : 'lado', linhaValida, sugestaoCarroValida, promptUsuario)
+      : montarPrompt(formato, objetivo, linhaValida, promptUsuario);
 
   try {
     const imagemUrl = await gerarImagemMagnific(prompt, aspectRatio);
