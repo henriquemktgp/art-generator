@@ -1,22 +1,56 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   DELINTE — Gerador de Artes v2
-   Cores oficiais: #FFDB0F (amarelo) · #000000 (preto) · #FFFFFF (branco)
+   GERADOR DE ARTES — multi-marca
+   Delinte:  #FFDB0F (amarelo) · #000000 (preto) · #FFFFFF (branco)
+   Denali:   #FF2C14 → #FF5D1E (gradiente laranja) · #0B0B0B (preto) · #F1F1F1 (off-white)
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Fonte de destaque Denali (self-hosted — licenciada, Adobe Fonts) ────────── */
+@font-face {
+  font-family: 'Nasalization';
+  src: url('fonts/Nasalization-Rg.otf') format('opentype'),
+       url('fonts/Nasalization-Rg.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ── Reset & Base ─────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --brand-yellow: #FFDB0F;
-  --brand-black:  #000000;
-  --brand-white:  #FFFFFF;
+  /* Tokens de marca — default Delinte, sobrescritos por [data-marca="denali"] */
+  --brand-accent:   #FFDB0F;
+  --accent-rgb:     255,219,15;
+  --brand-accent-2: #FFDB0F;
+  --brand-black:    #000000;
+  --brand-white:    #FFFFFF;
+  --white-rgb:      255,255,255;
+  --font-display:   'Anton', sans-serif;
+
+  /* Chrome da interface — igual para as duas marcas */
   --ui-bg:        #0a0a0a;
   --ui-surface:   #111111;
   --ui-border:    rgba(255,255,255,0.08);
   --ui-text:      #FFFFFF;
   --ui-muted:     rgba(255,255,255,0.45);
   --sidebar-w:    360px;
-  --focus-ring:   0 0 0 3px rgba(255,219,15,0.5);
+  --focus-ring:   0 0 0 3px rgba(var(--accent-rgb),0.5);
+}
+
+/* Repetido em .art[data-marca] (não só .app[data-marca]) de propósito: a
+   exportação (capturarCanvas em app.js) clona #art-canvas para fora de
+   .app/#app-root antes de rasterizar, então o canvas precisa resolver suas
+   próprias variáveis de marca sem depender de um ancestral. */
+.app[data-marca="denali"],
+.art[data-marca="denali"],
+.artm[data-marca="denali"] {
+  --brand-accent:   #FF2C14;
+  --accent-rgb:     255,44,20;
+  --brand-accent-2: #FF5D1E;
+  --brand-black:    #0B0B0B;
+  --brand-white:    #F1F1F1;
+  --white-rgb:      241,241,241;
+  --font-display:   'Nasalization', 'Poppins', sans-serif;
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
@@ -69,7 +103,7 @@ body {
 .sidebar-logo-fallback {
   font-family: 'Anton', sans-serif;
   font-size: 28px;
-  color: var(--brand-yellow);
+  color: var(--brand-accent);
   letter-spacing: 0.05em;
   display: block;
 }
@@ -130,15 +164,34 @@ body {
   white-space: nowrap;
 }
 
-.btn-opt:hover { border-color: rgba(255,219,15,0.4); color: var(--ui-text); }
+.btn-opt:hover { border-color: rgba(var(--accent-rgb),0.4); color: var(--ui-text); }
 .btn-opt.active,
 .btn-opt[aria-pressed="true"] {
-  background: var(--brand-yellow);
-  border-color: var(--brand-yellow);
+  background: var(--brand-accent);
+  border-color: var(--brand-accent);
   color: var(--brand-black);
   font-weight: 700;
 }
 .btn-opt:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.btn-opt:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-opt:disabled:hover { border-color: var(--ui-border); color: var(--ui-muted); }
+
+/* ── Alternância Arte Livre / Arte de Medida ──────────────────────────────── */
+/* Sidebar: campos exclusivos de cada modo */
+.app[data-tipo-arte="medida"] #grupo-objetivo,
+.app[data-tipo-arte="medida"] #grupo-titulo,
+.app[data-tipo-arte="medida"] #grupo-sub,
+.app[data-tipo-arte="medida"] #grupo-cta,
+.app[data-tipo-arte="medida"] #btn-formato-banner { display: none; }
+
+.app:not([data-tipo-arte="medida"]) #grupo-medida { display: none; }
+
+/* Canvas: só um dos dois fica visível por vez. #art-canvas-medida é
+   display:flex (coluna) — não "block" — porque .artm empilha suas faixas
+   com flex-direction:column (ver seção "ARTE DE MEDIDA" mais abaixo). */
+#art-canvas-medida { display: none; }
+.app[data-tipo-arte="medida"] #art-canvas        { display: none; }
+.app[data-tipo-arte="medida"] #art-canvas-medida { display: flex; }
 
 /* Contador de caracteres */
 .char-count {
@@ -150,7 +203,7 @@ body {
   transition: color 0.15s;
   text-transform: none;
 }
-.char-count.at-limit { color: var(--brand-yellow); }
+.char-count.at-limit { color: var(--brand-accent); }
 
 /* Select */
 .ctrl-select {
@@ -170,8 +223,8 @@ body {
   padding-right: 36px;
   transition: border-color 0.15s;
 }
-.ctrl-select:hover { border-color: rgba(255,219,15,0.3); }
-.ctrl-select:focus { outline: none; border-color: var(--brand-yellow); box-shadow: var(--focus-ring); }
+.ctrl-select:hover { border-color: rgba(var(--accent-rgb),0.3); }
+.ctrl-select:focus { outline: none; border-color: var(--brand-accent); box-shadow: var(--focus-ring); }
 
 /* Input / Textarea */
 .ctrl-input {
@@ -187,9 +240,95 @@ body {
   resize: none;
 }
 .ctrl-input::placeholder { color: rgba(255,255,255,0.2); }
-.ctrl-input:hover { border-color: rgba(255,219,15,0.3); }
-.ctrl-input:focus { outline: none; border-color: var(--brand-yellow); box-shadow: var(--focus-ring); }
+.ctrl-input:hover { border-color: rgba(var(--accent-rgb),0.3); }
+.ctrl-input:focus { outline: none; border-color: var(--brand-accent); box-shadow: var(--focus-ring); }
 .ctrl-textarea { resize: vertical; min-height: 60px; }
+
+/* ── Painel Personalizar Prompt ───────────────────────────────────────────── */
+.prompt-section {
+  border-top: 1px solid var(--ui-border);
+  padding: 0 28px;
+}
+
+.btn-prompt-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  color: var(--ui-muted);
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s;
+  text-align: left;
+}
+.btn-prompt-toggle:hover { color: var(--brand-accent); }
+.btn-prompt-toggle:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+.prompt-chevron {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.btn-prompt-toggle[aria-expanded="true"] .prompt-chevron {
+  transform: rotate(180deg);
+}
+
+.prompt-painel {
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prompt-hint {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--ui-muted);
+  line-height: 1.5;
+}
+
+.prompt-textarea {
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 80px;
+}
+
+.prompt-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prompt-editado-aviso {
+  font-size: 11px;
+  color: var(--brand-accent);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.btn-prompt-reset {
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  color: var(--ui-muted);
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  margin-left: auto;
+}
+.btn-prompt-reset:hover { border-color: rgba(var(--accent-rgb),0.4); color: var(--ui-text); }
 
 /* ── Seção de ação ────────────────────────────────────────────────────────── */
 .action-section {
@@ -208,7 +347,7 @@ body {
   justify-content: center;
   gap: 9px;
   padding: 14px 20px;
-  background: var(--brand-yellow);
+  background: var(--brand-accent);
   color: var(--brand-black);
   border: none;
   font-family: 'Poppins', sans-serif;
@@ -271,7 +410,7 @@ body {
   transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
   white-space: nowrap;
 }
-.btn-export:hover { background: rgba(255,219,15,0.1); border-color: rgba(255,219,15,0.4); color: var(--brand-yellow); }
+.btn-export:hover { background: rgba(var(--accent-rgb),0.1); border-color: rgba(var(--accent-rgb),0.4); color: var(--brand-accent); }
 .btn-export:active { transform: scale(0.97); }
 .btn-export:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .btn-export:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
@@ -324,7 +463,7 @@ body {
   line-height: 1.5;
 }
 
-.preview-note strong { color: rgba(255,219,15,0.6); font-weight: 400; }
+.preview-note strong { color: rgba(var(--accent-rgb),0.6); font-weight: 400; }
 
 /* ── Loading overlay ─────────────────────────────────────────────────────── */
 .loading-overlay {
@@ -358,15 +497,15 @@ body {
 }
 
 .ring-outer {
-  border-top-color: var(--brand-yellow);
-  border-right-color: rgba(255,219,15,0.15);
+  border-top-color: var(--brand-accent);
+  border-right-color: rgba(var(--accent-rgb),0.15);
   animation: ring-cw 1.2s linear infinite;
 }
 
 .ring-inner {
   inset: 14px;
-  border-bottom-color: var(--brand-yellow);
-  border-left-color: rgba(255,219,15,0.15);
+  border-bottom-color: var(--brand-accent);
+  border-left-color: rgba(var(--accent-rgb),0.15);
   animation: ring-ccw 0.85s linear infinite;
 }
 
@@ -375,16 +514,16 @@ body {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   width: 7px; height: 7px;
-  background: var(--brand-yellow);
+  background: var(--brand-accent);
   border-radius: 50%;
   animation: dot-pulse 1.6s ease-in-out infinite;
 }
 
 .loading-label {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-display);
   font-size: 13px;
   letter-spacing: 0.4em;
-  color: var(--brand-yellow);
+  color: var(--brand-accent);
 }
 
 .loading-sub {
@@ -406,20 +545,21 @@ body {
   .ring-outer, .ring-inner, .loading-dot, .btn-icon-loading {
     animation: none;
   }
-  .ring-outer { border-color: rgba(255,219,15,0.5); border-top-color: var(--brand-yellow); }
+  .ring-outer { border-color: rgba(var(--accent-rgb),0.5); border-top-color: var(--brand-accent); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   CANVAS DA ARTE — identidade visual Delinte
-   Nenhuma cor fora de #FFDB0F, #000000, #FFFFFF pode aparecer aqui.
+   CANVAS DA ARTE — identidade visual por marca
+   Cores vêm exclusivamente das variáveis --brand-* definidas acima; nenhuma
+   marca deve aparecer com cor fora da sua paleta oficial.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Base do canvas ───────────────────────────────────────────────────────── */
 .art {
   position: relative;
   overflow: hidden;
-  background: #000000;
-  color: #FFFFFF;
+  background: var(--brand-black);
+  color: var(--brand-white);
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
@@ -428,7 +568,7 @@ body {
 .art-bg {
   position: absolute;
   inset: 0;
-  background: #000000;
+  background: var(--brand-black);
   z-index: 0;
 }
 
@@ -436,30 +576,35 @@ body {
 .art-bg-img {
   position: absolute;
   inset: 0;
-  background-color: transparent;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.7s ease;
+  display: block;
 }
 
 .art-bg-img.loaded { opacity: 1; }
 
-/* Elemento xadrez decorativo */
+/* Elemento xadrez decorativo — asset exclusivo Delinte, sem equivalente Denali ainda */
 .art-elem {
   position: absolute;
   z-index: 2;
   pointer-events: none;
   user-select: none;
 }
+.art[data-marca="denali"] .art-elem { display: none; }
 
 /* Tira de acento vertical esquerda */
 .art-stripe {
   position: absolute;
   top: 0; bottom: 0; left: 0;
-  background: #FFDB0F;
+  /* gradiente inline (não via var() intermediária) — variáveis aninhadas em
+     custom properties resolvem no elemento onde foram declaradas (:root),
+     não em cada descendente, então precisam ser referenciadas direto aqui */
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-2));
   z-index: 6;
 }
 
@@ -496,7 +641,7 @@ body {
 
 .art-product {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
 }
@@ -511,13 +656,13 @@ body {
   font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #FFDB0F;
+  color: var(--brand-accent);
 }
 
 .art-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-display);
   line-height: 0.95;
-  color: #FFFFFF;
+  color: var(--brand-white);
   text-transform: uppercase;
   word-break: break-word;
 }
@@ -526,13 +671,13 @@ body {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   line-height: 1.35;
-  color: #FFFFFF;
+  color: var(--brand-white);
 }
 
 .art-cta {
   display: inline-block;
-  background: #FFDB0F;
-  color: #000000;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-2));
+  color: var(--brand-black);
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -542,14 +687,14 @@ body {
 .art-specs {
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
-  color: rgba(255,255,255,0.5);
+  color: rgba(var(--white-rgb),0.5);
   letter-spacing: 0.05em;
 }
 
 /* ── Cores do badge por objetivo ─────────────────────────────────────────── */
-.obj-promocao   .art-badge { background: #FFDB0F; color: #000000; border: none; }
-.obj-lancamento .art-badge { background: transparent; color: #FFDB0F; border: 3px solid #FFDB0F; }
-.obj-aviso      .art-badge { background: #FFFFFF; color: #000000; border: none; }
+.obj-promocao   .art-badge { background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-2)); color: var(--brand-black); border: none; }
+.obj-lancamento .art-badge { background: transparent; color: var(--brand-accent); border: 3px solid var(--brand-accent); }
+.obj-aviso      .art-badge { background: var(--brand-white); color: var(--brand-black); border: none; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    FORMATO: FEED 1:1 (1080 × 1080 px)
@@ -578,8 +723,7 @@ body {
 }
 
 .format-feed .art-img-grad {
-  background: linear-gradient(to right,
-    #000000 0%, rgba(0,0,0,0.85) 25%, rgba(0,0,0,0.4) 55%, transparent 80%);
+  background: none;
 }
 
 .format-feed .art-text { left: 60px; right: 570px; bottom: 80px; }
@@ -615,12 +759,16 @@ body {
 
 .format-story .art-img-wrap {
   left: 0; right: 0;
-  top: 310px; height: 960px;
+  top: 0; bottom: 0;
+}
+
+.format-story .art-product {
+  object-position: center 18%;
 }
 
 .format-story .art-img-grad {
   background: linear-gradient(to bottom,
-    transparent 40%, rgba(0,0,0,0.75) 68%, #000000 95%);
+    transparent 50%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.85) 100%);
 }
 
 .format-story .art-text { left: 64px; right: 64px; bottom: 120px; }
@@ -661,8 +809,7 @@ body {
 }
 
 .format-banner .art-img-grad {
-  background: linear-gradient(to right,
-    #000000 0%, rgba(0,0,0,0.6) 30%, transparent 65%);
+  background: none;
 }
 
 .format-banner .art-text {
@@ -680,6 +827,416 @@ body {
 .format-banner .art-specs  { font-size: 19px; }
 
 .format-banner.no-product .art-text { left: 120px; right: 120px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CANVAS DA ARTE — MODO "ARTE DE MEDIDA"
+   Layout fixo baseado nos modelos de public/artmodel/<marca>/. Estrutura em
+   coluna flex: só a faixa central (fundo IA + fotos do pneu) é elástica —
+   as demais faixas têm altura fixa e simplesmente ficam maiores no formato
+   Story por serem elementos tipográficos, não fotográficos.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.artm {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-black);
+  color: var(--brand-white);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ── Faixa mosaico: "DELINTE" alternado com o apelido do pneu ────────────── */
+.artm-marquee {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(var(--white-rgb),0.08);
+}
+
+.artm-marquee-item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.artm-marquee-brand {
+  font-family: var(--font-display);
+  color: var(--brand-white);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.artm-marquee-nick {
+  font-family: var(--font-display);
+  color: rgba(var(--white-rgb),0.22);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.artm-marquee-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.artm-marquee-icon span {
+  display: block;
+  background: var(--brand-accent);
+  transform: skewX(-18deg);
+}
+.artm-marquee-icon span:first-child { opacity: 0.85; }
+
+/* ── Cabeçalho estático (logo centralizada) — só Denali ──────────────────── */
+.artm-header-denali {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+.artm-logo-header { height: auto; width: auto; object-fit: contain; display: block; }
+
+/* Tarja extra antes da faixa de fundo — só Denali */
+.artm-stripe-top { display: none; }
+
+/* ── Faixa central: fundo IA (carro) + fotos reais do pneu ───────────────── */
+.artm-photo-zone {
+  flex: 1 1 auto;
+  position: relative;
+  /* visible de propósito: os pneus (negativo em right/bottom) precisam
+     "vazar" por cima da tarja amarela para dar a impressão 3D. O fundo de
+     IA (.artm-bg-img) não corre risco de vazar — ele já é do tamanho exato
+     da faixa (inset:0 + object-fit:cover), então não depende deste corte.
+     O canvas (.artm) mantém seu próprio overflow:hidden como limite real. */
+  overflow: visible;
+  min-height: 0;
+  background: #050505;
+}
+
+.artm-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.artm-bg-img.loaded { opacity: 1; }
+
+/* Altura fixa (não % da zona) — a zona de fundo do Story é muito mais alta
+   que a do Feed, e um pneu a 92% da altura da zona ficaria enorme e cobriria
+   o outro por completo. Ancorados embaixo, com altura igual nos dois
+   formatos, o resultado fica visualmente consistente entre Feed e Story. */
+.artm-tires {
+  position: absolute;
+  /* negativo de propósito: os PNGs dos pneus têm margem transparente
+     interna, então right:0/bottom:0 puro deixa um respiro visível antes
+     do canto real da faixa — isso compensa e "encosta" a dupla no canto. */
+  right: -110px; bottom: -70px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.artm-tire {
+  height: 460px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+/* transform em vez de margin: desloca SÓ o pneu 45, sem mexer no layout do
+   perfil (transform não participa do flex, é puramente visual). Aumente o
+   valor de translateX para empurrar o 45 mais para a direita, por baixo do
+   perfil — z-index já garante que o perfil (2) sempre desenha por cima do
+   45° (1) na área de sobreposição, dando a impressão de estarem alinhados. */
+.artm-tire-45     { transform: translateX(330px); z-index: 1; filter: drop-shadow(-6px 10px 14px rgba(0,0,0,0.5)); }
+.artm-tire-perfil { z-index: 2; filter: drop-shadow(6px 10px 14px rgba(0,0,0,0.5)); }
+
+/* Sem foto do pneu cadastrada ainda — some com a faixa em vez de mostrar
+   ícones quebrados (fica só o fundo gerado por IA visível). */
+.artm-tires.sem-foto { display: none; }
+
+/* ── Tarja amarela ────────────────────────────────────────────────────────── */
+.artm-stripe {
+  flex: 0 0 auto;
+  background: linear-gradient(90deg, var(--brand-accent), var(--brand-accent-2));
+}
+
+/* ── Caixa MEDIDAS ────────────────────────────────────────────────────────── */
+.artm-specs {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Estrutura em duas linhas explícitas (.artm-specs-line): "MEDIDAS + valor"
+   e "apelido + sufixo" — o Feed sobrescreve para lado a lado (ver seção
+   FORMATO: FEED), o Story mantém empilhado (ver seção FORMATO: STORY). */
+.artm-specs-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 2px solid rgba(var(--white-rgb),0.9);
+  border-bottom: 2px solid rgba(var(--white-rgb),0.9);
+}
+
+.artm-specs-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.artm-specs-label {
+  font-family: var(--font-display);
+  color: var(--brand-white);
+  text-transform: uppercase;
+}
+
+.artm-specs-value {
+  font-family: var(--font-display);
+  color: var(--brand-accent);
+  text-transform: uppercase;
+}
+
+.artm-specs-nick {
+  font-family: var(--font-display);
+  color: var(--brand-white);
+  text-transform: uppercase;
+}
+
+.artm-specs-suffix {
+  font-family: var(--font-display);
+  color: var(--brand-white);
+  text-transform: uppercase;
+}
+.artm-specs-suffix:empty { display: none; }
+
+/* ── Parágrafo descritivo ─────────────────────────────────────────────────── */
+.artm-paragrafo {
+  flex: 0 0 auto;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(var(--white-rgb),0.85);
+}
+
+/* ── Logo no rodapé ───────────────────────────────────────────────────────── */
+.artm-logo-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.artm-logo {
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FORMATO: FEED 1:1 (1080 × 1080 px)
+   ───────────────────────────────────────────────────────────────────────── */
+.artm-feed .artm-marquee     { height: 140px; gap: 0; }
+.artm-feed .artm-marquee-item{ gap: 16px; padding: 0 26px; }
+.artm-feed .artm-marquee-brand,
+.artm-feed .artm-marquee-nick{ font-size: 46px; }
+.artm-feed .artm-marquee-icon span { width: 11px; height: 20px; }
+.artm-feed .artm-marquee-icon span + span { margin-left: 3px; }
+
+.artm-feed .artm-stripe { height: 32px; }
+
+.artm-feed .artm-specs      { padding: 22px 40px 0; }
+/* row só para Delinte: as duas linhas ficam lado a lado, reproduzindo a
+   leitura original em linha única ("MEDIDAS valor  apelido sufixo") — o \n
+   só existe no Story dela, onde o espaço horizontal é mais apertado. Denali
+   NÃO entra aqui — ela empilha MEDIDA/valor/apelido também no Feed (ver
+   seção "ARTE DE MEDIDA — LAYOUT DENALI"), então cai no padrão em coluna. */
+.artm-feed[data-marca="delinte"] .artm-specs-box { flex-direction: row; gap: 16px 22px; padding: 18px 30px; }
+.artm-feed .artm-specs-line { gap: 16px 22px; }
+.artm-feed .artm-specs-label{ font-size: 36px; }
+.artm-feed .artm-specs-value,
+.artm-feed .artm-specs-nick,
+.artm-feed .artm-specs-suffix{ font-size: 54px; }
+
+.artm-feed .artm-paragrafo { padding: 24px 110px 0; font-size: 30px; }
+
+.artm-feed .artm-logo-wrap { padding: 22px 0 40px; }
+.artm-feed .artm-logo      { height: 46px; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FORMATO: STORY 9:16 (1080 × 1920 px)
+   ───────────────────────────────────────────────────────────────────────── */
+/* A base (.artm-photo-zone) usa flex:1, que preenche todo o espaço sobrando
+   — no Story (canvas bem mais alto) isso deixa a faixa gigante e o pneu,
+   ancorado embaixo dela, longe do cabeçalho. Altura fixa aqui faz o bloco
+   inteiro (pneu + tarja + medidas + parágrafo + logo) subir e ficar
+   compacto perto do topo; o espaço que sobra fica em branco no rodapé. */
+.artm-story .artm-photo-zone  { flex: 0 0 620px; }
+
+.artm-story .artm-marquee     { height: 165px; }
+.artm-story .artm-marquee-item{ gap: 18px; padding: 0 30px; }
+.artm-story .artm-marquee-brand,
+.artm-story .artm-marquee-nick{ font-size: 52px; }
+.artm-story .artm-marquee-icon span { width: 13px; height: 23px; }
+.artm-story .artm-marquee-icon span + span { margin-left: 3px; }
+
+.artm-story .artm-stripe { height: 36px; }
+
+.artm-story .artm-specs      { padding: 30px 48px 0; }
+/* column (herdado da base): "MEDIDAS + valor" sempre na 1ª linha,
+   "apelido + sufixo" sempre na 2ª — quebra garantida por estrutura (dois
+   <div class="artm-specs-line"> no HTML), não por wrap de texto. */
+.artm-story .artm-specs-box  { gap: 18px; padding: 22px 34px; }
+.artm-story .artm-specs-line { gap: 24px; }
+.artm-story .artm-specs-label{ font-size: 44px; }
+.artm-story .artm-specs-value,
+.artm-story .artm-specs-nick,
+.artm-story .artm-specs-suffix{ font-size: 64px; }
+
+/* Parágrafo cola naturalmente embaixo das medidas — ajuste esse padding-top
+   pra aproximar/afastar o texto explicativo da caixa MEDIDAS. */
+.artm-story .artm-paragrafo { padding: 200px 120px 0; font-size: 40px; }
+
+/* margin-top:auto aqui (não mais no parágrafo) empurra só a logo para o
+   rodapé do canvas — é isso que absorve o espaço vazio que sobrou da faixa
+   de fundo compacta. O parágrafo fica onde o fluxo normal já o deixa. */
+.artm-story .artm-logo-wrap { padding: 30px 0 54px; margin-top: auto; }
+.artm-story .artm-logo      { height: 58px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AJUSTE DE TÍTULO — DENALI
+   Nasalization é sensivelmente mais larga que Anton no mesmo tamanho; sem
+   isso, títulos longos quebram no meio da palavra na coluna de texto.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.format-feed[data-marca="denali"]   .art-title { font-size: 68px; }
+.format-story[data-marca="denali"]  .art-title { font-size: 84px; }
+.format-banner[data-marca="denali"] .art-title { font-size: 62px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARTE DE MEDIDA — LAYOUT DENALI
+   Denali não é só uma troca de cor do template Delinte — a composição é
+   diferente: fundo claro com textura de losangos, cabeçalho com logo
+   estática (sem mosaico), DUAS tarjas (antes e depois da faixa de fundo),
+   rótulo "MEDIDA" (singular) em 3 níveis empilhados, sem logo no rodapé.
+   Ver public/artmodel/denali/emptymodel1x1.png e emptymodel9x16.png.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Fundo claro com textura sutil de losangos — aproximação via gradientes
+   repetidos; o modelo original usa uma textura raster, isto é só uma
+   aproximação leve, sem precisar de um asset de imagem extra. */
+.artm[data-marca="denali"] {
+  background-color: #f2f2f4;
+  background-image:
+    repeating-linear-gradient(45deg,  rgba(11,11,11,0.035) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(-45deg, rgba(11,11,11,0.035) 0 2px, transparent 2px 64px);
+  color: var(--brand-black);
+}
+
+/* Cabeçalho: mosaico (Delinte) vira logo estática centralizada (Denali) */
+.artm[data-marca="denali"] .artm-marquee       { display: none; }
+.artm[data-marca="denali"] .artm-header-denali { display: flex; }
+.artm[data-marca="denali"] .artm-stripe-top    { display: block; height: 14px; }
+.artm[data-marca="denali"] .artm-stripe        { height: 14px; }
+
+/* Sem logo no rodapé — a única logo da Denali é a do cabeçalho */
+.artm[data-marca="denali"] .artm-logo-wrap { display: none; }
+
+/* Antes de gerar o fundo por IA, a faixa fica cinza claro (não preta como
+   no tema escuro da Delinte) — combina com o resto do fundo claro. Some
+   assim que a foto chega (art-bg-img.loaded cobre 100% da faixa). */
+.artm[data-marca="denali"] .artm-photo-zone { background: #e6e6e9; }
+
+/* Textos escuros (fundo claro), não brancos — texto do pneu em preto puro
+   (não var(--brand-black), que é #0B0B0B e lia meio acinzentado). */
+.artm[data-marca="denali"] .artm-specs-label,
+.artm[data-marca="denali"] .artm-specs-suffix {
+  color: var(--brand-black);
+}
+.artm[data-marca="denali"] .artm-paragrafo {
+  color: #000;
+  font-weight: 400;
+}
+
+/* Apelido também em laranja (mesma cor do valor da medida) */
+.artm[data-marca="denali"] .artm-specs-nick {
+  color: var(--brand-accent);
+}
+
+/* Sem a caixa com borda branca da Delinte — Denali só empilha texto centralizado */
+.artm[data-marca="denali"] .artm-specs-box { border: none; }
+
+/* Valor, apelido e sufixo empilham cada um na sua própria linha, sempre
+   centralizados entre si (align-items:center) — sem isso, cada span herdava
+   align-items:baseline (que em flex-direction:column não centraliza nada,
+   só alinha à esquerda), e o apelido "pulava" de posição conforme o
+   tamanho do texto da medida ao lado dele mudava a largura da linha. */
+.artm[data-marca="denali"] .artm-specs-line {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Sublinhado decorativo sob "MEDIDA" e sob o valor, esmaecendo nas pontas —
+   mesmo efeito do modelo de referência */
+.artm[data-marca="denali"] .artm-specs-label,
+.artm[data-marca="denali"] .artm-specs-value {
+  position: relative;
+  padding-bottom: 12px;
+}
+.artm[data-marca="denali"] .artm-specs-label::after,
+.artm[data-marca="denali"] .artm-specs-value::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 0;
+  width: 70%;
+  height: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--brand-accent), transparent);
+}
+
+/* Reset do padding/tamanho de parágrafo — os valores grandes ajustados para
+   a Delinte (ver seção FORMATO: STORY) não se aplicam à composição Denali,
+   que não tem o mesmo vão vertical para preencher. O padding-bottom (3º
+   valor) dá uma pequena margem antes do fim do canvas — a Denali não tem
+   logo no rodapé, então sem isso o texto ficava colado na borda. Ajuste
+   font-size aqui para deixar o texto explicativo maior/menor. */
+.artm-story[data-marca="denali"] .artm-paragrafo { padding: 24px 90px 40px; font-size: 40px; }
+.artm-feed[data-marca="denali"]  .artm-paragrafo { padding: 18px 90px 40px; }
+
+/* Zona de fundo (carro + pneus) no Story — menor que o espaço disponível de
+   propósito: dá a impressão de que o pneu ocupa mais espaço, por contraste
+   com o respiro em branco acima dela (ver margin-top na tarja superior,
+   logo abaixo). Aumente o height pra dar mais destaque à foto. */
+.artm-story[data-marca="denali"] .artm-photo-zone { flex: 0 0 650px; }
+
+/* O respiro em branco fica na tarja superior (não na caixa cinza) — assim
+   a tarja desce junto e acompanha o início da caixa, em vez de ficar colada
+   no cabeçalho com um vão vazio entre ela e a arte. Aumente/diminua esse
+   valor para dar mais ou menos respiro entre a logo e a tarja+caixa. */
+.artm-story[data-marca="denali"] .artm-stripe-top { margin-top: 220px; }
+
+/* O pneu deve só encostar na tarja inferior (14px), não atravessá-la como
+   no efeito 3D da Delinte (calibrado pra tarja bem mais grossa dela). -8px
+   sobrepõe uma fatia pequena da tarja sem passar pro outro lado — medi e
+   confirmei que sem este ajuste ele avançava ~22px dentro da caixa MEDIDA,
+   nos dois formatos (não só no Feed). */
+.artm[data-marca="denali"] .artm-tires { bottom: -13px; }
+
+/* Cabeçalho estático — mesma altura da faixa de mosaico que ele substitui,
+   pra manter a faixa de fundo começando no mesmo lugar nos dois formatos */
+.artm-feed .artm-header-denali  { height: 140px; }
+.artm-story .artm-header-denali { height: 165px; }
+.artm-feed .artm-logo-header    { height: 60px; }
+.artm-story .artm-logo-header   { height: 72px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVO — UI mobile

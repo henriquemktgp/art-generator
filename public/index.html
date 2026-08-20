@@ -11,13 +11,14 @@
 </head>
 <body>
 
-  <div class="app">
+  <div class="app" id="app-root" data-marca="delinte" data-tipo-arte="livre">
 
     <!-- ═══ PAINEL DE CONTROLES ════════════════════════════════════════════ -->
     <aside class="sidebar" role="complementary" aria-label="Controles">
 
       <div class="sidebar-brand">
         <img
+          id="sidebar-logo"
           src="https://cdn.jsdelivr.net/gh/marketing-gp/delinte@main/Delinte%20-%20S%20Slogan.svg"
           alt="Delinte" class="sidebar-logo"
           onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'sidebar-logo-fallback',textContent:'DELINTE'}))"
@@ -28,15 +29,31 @@
       <form class="controls" id="controls-form" autocomplete="off" novalidate>
 
         <fieldset class="control-group">
-          <legend class="control-label">Formato</legend>
-          <div class="btn-group" role="group" aria-label="Escolha o formato">
-            <button type="button" class="btn-opt active" data-field="formato" data-val="feed"   aria-pressed="true" >Feed 1:1</button>
-            <button type="button" class="btn-opt"        data-field="formato" data-val="story"  aria-pressed="false">Story 9:16</button>
-            <button type="button" class="btn-opt"        data-field="formato" data-val="banner" aria-pressed="false">Banner</button>
+          <legend class="control-label">Marca</legend>
+          <div class="btn-group" role="group" aria-label="Escolha a marca">
+            <button type="button" class="btn-opt active" data-field="marca" data-val="delinte" aria-pressed="true" >Delinte</button>
+            <button type="button" class="btn-opt"        data-field="marca" data-val="denali"  aria-pressed="false">Denali</button>
           </div>
         </fieldset>
 
         <fieldset class="control-group">
+          <legend class="control-label">Tipo de Arte</legend>
+          <div class="btn-group" role="group" aria-label="Escolha o tipo de arte">
+            <button type="button" class="btn-opt active" data-field="tipoArte" data-val="livre"  aria-pressed="true" >Arte Livre</button>
+            <button type="button" class="btn-opt"        data-field="tipoArte" data-val="medida" aria-pressed="false">Arte de Medida</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend class="control-label">Formato</legend>
+          <div class="btn-group" role="group" aria-label="Escolha o formato">
+            <button type="button" class="btn-opt active" data-field="formato" data-val="feed"   aria-pressed="true" >Feed 1:1</button>
+            <button type="button" class="btn-opt"        data-field="formato" data-val="story"  aria-pressed="false">Story 9:16</button>
+            <button type="button" class="btn-opt" id="btn-formato-banner" data-field="formato" data-val="banner" aria-pressed="false">Banner</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group" id="grupo-objetivo">
           <legend class="control-label">Objetivo</legend>
           <div class="btn-group" role="group" aria-label="Escolha o objetivo">
             <button type="button" class="btn-opt active" data-field="objetivo" data-val="promocao"   aria-pressed="true" >Promoção</button>
@@ -52,7 +69,19 @@
           </select>
         </div>
 
-        <div class="control-group">
+        <div class="control-group" id="grupo-medida">
+          <label class="control-label" for="inp-medida">
+            Medida do Pneu
+            <span class="char-count" id="cnt-medida" aria-live="polite">0 / 30</span>
+          </label>
+          <input
+            type="text" id="inp-medida" class="ctrl-input"
+            placeholder="Ex: 235 45 ZRF19 95W"
+            maxlength="30"
+          >
+        </div>
+
+        <div class="control-group" id="grupo-titulo">
           <label class="control-label" for="inp-titulo">
             Título
             <span class="char-count" id="cnt-titulo" aria-live="polite">0 / 40</span>
@@ -64,7 +93,7 @@
           >
         </div>
 
-        <div class="control-group">
+        <div class="control-group" id="grupo-sub">
           <label class="control-label" for="inp-sub">
             Subtítulo
             <span class="char-count" id="cnt-sub" aria-live="polite">0 / 80</span>
@@ -76,7 +105,7 @@
           ></textarea>
         </div>
 
-        <div class="control-group">
+        <div class="control-group" id="grupo-cta">
           <label class="control-label" for="inp-cta">
             Chamada para Ação (CTA)
             <span class="char-count" id="cnt-cta" aria-live="polite">0 / 25</span>
@@ -89,6 +118,34 @@
         </div>
 
       </form>
+
+      <!-- ── Personalizar Prompt ──────────────────────────────────────── -->
+      <div class="prompt-section">
+        <button type="button" id="btn-prompt-toggle" class="btn-prompt-toggle" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Personalizar Prompt de Fundo</span>
+          <svg class="prompt-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <div id="prompt-painel" class="prompt-painel" hidden>
+          <p class="prompt-hint">Descreva o cenário do fundo. Edite a sugestão ou escreva do zero.</p>
+          <textarea
+            id="inp-prompt-custom"
+            class="ctrl-input ctrl-textarea prompt-textarea"
+            rows="4"
+            maxlength="500"
+            placeholder="Ex: Pista de corrida molhada à noite, luzes âmbar refletidas no asfalto..."
+          ></textarea>
+          <div class="prompt-actions">
+            <span class="prompt-editado-aviso" id="prompt-editado-aviso" hidden>
+              ✎ Prompt personalizado ativo
+            </span>
+            <button type="button" id="btn-prompt-reset" class="btn-prompt-reset">
+              Restaurar sugestão
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- ── Área de ação ─────────────────────────────────────────────── -->
       <div class="action-section">
@@ -139,7 +196,7 @@
             <div class="art-bg"></div>
 
             <!-- Camada 1: fundo gerado por IA (fade-in quando chegar) -->
-            <div class="art-bg-img" id="art-bg-img"></div>
+            <img class="art-bg-img" id="art-bg-img" src="" alt="" aria-hidden="true">
 
             <!-- Elemento xadrez decorativo -->
             <img class="art-elem" id="art-elem"
@@ -169,13 +226,68 @@
                 <div class="art-specs"  id="art-specs"></div>
               </div>
               <div class="art-img-wrap" id="art-img-wrap">
-                <img class="art-product" id="art-product" src="" crossorigin="anonymous" alt="">
+                <img class="art-product" id="art-product" src="" alt="">
                 <div class="art-img-grad"></div>
               </div>
             </div>
 
           </div>
-          <!-- ══ fim do canvas ══ -->
+          <!-- ══ fim do canvas (Arte Livre) ══ -->
+
+          <!-- ══ CANVAS DA ARTE — MODO "ARTE DE MEDIDA" ═══════════════════ -->
+          <div id="art-canvas-medida" class="artm artm-feed" data-marca="delinte" hidden>
+
+            <!-- Faixa mosaico: "DELINTE" alternado com o apelido do pneu —
+                 só Delinte; Denali usa o cabeçalho estático abaixo. -->
+            <div class="artm-marquee" id="artm-marquee" aria-hidden="true"></div>
+
+            <!-- Cabeçalho estático (logo colorida centralizada) — só Denali -->
+            <div class="artm-header-denali">
+              <img class="artm-logo-header" id="artm-logo-header" src="" alt="">
+            </div>
+
+            <!-- Tarja superior — só Denali (a Delinte não tem tarja antes da faixa de fundo) -->
+            <div class="artm-stripe artm-stripe-top"></div>
+
+            <!-- Faixa central: fundo gerado por IA (carro) + fotos reais do pneu -->
+            <div class="artm-photo-zone">
+              <img class="artm-bg-img" id="artm-bg-img" src="" alt="" aria-hidden="true">
+              <div class="artm-tires" id="artm-tires">
+                <img class="artm-tire artm-tire-45"      id="artm-tire-45"      src="" alt="">
+                <img class="artm-tire artm-tire-perfil"  id="artm-tire-perfil"  src="" alt="">
+              </div>
+            </div>
+
+            <!-- Tarja inferior — ambas as marcas -->
+            <div class="artm-stripe"></div>
+
+            <!-- Caixa MEDIDAS -->
+            <div class="artm-specs">
+              <div class="artm-specs-box">
+                <div class="artm-specs-line">
+                  <span class="artm-specs-label" id="artm-specs-label">MEDIDAS</span>
+                </div>
+                <div class="artm-specs-line">
+                  <span class="artm-specs-value" id="artm-specs-value"></span>
+                  <span class="artm-specs-nick"  id="artm-specs-nick"></span>
+                  <span class="artm-specs-suffix" id="artm-specs-suffix"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parágrafo descritivo do produto -->
+            <p class="artm-paragrafo" id="artm-paragrafo"></p>
+
+            <!-- Logo no rodapé — só Delinte; Denali não tem logo no final
+                 (a única logo dela é o cabeçalho estático no topo). -->
+            <div class="artm-logo-wrap">
+              <img class="artm-logo" id="artm-logo"
+                src="https://cdn.jsdelivr.net/gh/marketing-gp/delinte@main/Delinte%20-%20S%20Slogan.svg"
+                crossorigin="anonymous" alt="Delinte">
+            </div>
+
+          </div>
+          <!-- ══ fim do canvas (Arte de Medida) ══ -->
 
           <!-- Overlay de carregamento (fora do canvas, não exportado) -->
           <div class="loading-overlay" id="loading-overlay" hidden aria-live="assertive" aria-label="Gerando fundo">
