@@ -3,15 +3,15 @@
 Ferramenta interna GP Corp para criação de artes digitais padronizadas das marcas **Delinte** e **Denali**.
 
 **Arquitetura híbrida:**
-- **Camada 1 — IA:** a API OpenAI gera um fundo automotivo (apenas cenário, sem logo nem texto). O prompt é o mesmo para as duas marcas — proíbe explicitamente logos, marcas e texto no fundo.
-- **Camada 2 — Composição:** o app sobrepõe logo oficial, título, specs e CTA com precisão de template, usando a paleta de cores e a tipografia da marca selecionada. Estes elementos nunca são gerados por IA.
+- **Camada 1 — IA:** a API Magnific (modelo Mystic) gera o fundo automotivo (cenário, ou carro-herói, conforme o modelo escolhido) — sem logo nem texto de marca. O prompt varia conforme o modelo de arte, mas todos proíbem explicitamente logos, marcas e texto no fundo.
+- **Camada 2 — Composição:** o app sobrepõe logo oficial, título, specs, fotos reais do pneu e CTA com precisão de template, usando a paleta de cores e a tipografia da marca selecionada. Estes elementos nunca são gerados por IA.
 
 ---
 
 ## Pré-requisitos
 
 - **Node.js 18 ou superior** — [nodejs.org](https://nodejs.org)
-- Uma **chave de API da OpenAI** com acesso ao modelo `gpt-image-1` — [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- Uma **chave de API do Magnific** — [magnific.com](https://www.magnific.com) (Settings → API Keys)
 
 ---
 
@@ -19,14 +19,14 @@ Ferramenta interna GP Corp para criação de artes digitais padronizadas das mar
 
 ```bash
 # 1. Entre na pasta do projeto
-cd delinte-art-generator-v2
+cd art-generator
 
 # 2. Instale as dependências
 npm install
 
 # 3. Configure a chave da API
 cp .env.example .env
-# Abra o arquivo .env e insira sua chave: OPENAI_API_KEY=sk-...
+# Abra o arquivo .env e insira sua chave: MAGNIFIC_API_KEY=...
 
 # 4. Inicie o servidor
 npm start
@@ -42,15 +42,35 @@ npm run dev
 ## Como usar a ferramenta
 
 1. Escolha a **Marca** (Delinte ou Denali) — troca cores, logo, tipografia de título e catálogo de produtos.
-2. Escolha **Formato** (Feed 1:1, Story 9:16, Banner Horizontal) — mesmos tamanhos para as duas marcas.
-3. Escolha **Objetivo** (Promoção, Lançamento, Aviso).
-4. Selecione o **Produto** na lista (ou "Sem produto" para artes institucionais).
-5. Preencha **Título**, **Subtítulo** e **CTA**.
-6. Clique em **Gerar Fundo com IA** — aguarde alguns segundos.
-7. O fundo aparece por trás da composição. Se não gostar, clique em **Gerar Novamente**.
-8. Clique em **PNG** ou **PDF** para exportar (o arquivo sai nomeado `<marca>-<formato>-arte`).
+2. Escolha o **Tipo de Arte**: **Arte Livre** ou **Arte de Medida** (esta última disponível hoje para Delinte e Denali).
+3. Escolha o **Modelo** dentro do tipo de arte selecionado (ver seções abaixo).
+4. Escolha **Formato** (Feed 1:1, Story 9:16 — Banner Horizontal só existe no modelo "Arte Livre Padrão") e, quando aplicável, **Objetivo** (Promoção, Lançamento, Aviso).
+5. Selecione o(s) **Produto(s)** e preencha os campos de texto do modelo (título, subtítulo, CTA, medida, destaque, sugestão de carro etc. — os campos disponíveis mudam conforme o modelo).
+6. Nos modelos com IA, clique em **Gerar Fundo com IA** — aguarde alguns segundos (a geração é assíncrona e pode levar até ~2 minutos). Se não gostar do resultado, clique em **Gerar Novamente**.
+7. Clique em **PNG** ou **PDF** para exportar (o arquivo sai nomeado `<marca>-<formato>-<modelo>-arte`).
 
-> Trocar o Formato descarta o fundo atual e exige nova geração (o prompt de fundo muda conforme o formato). Trocar a Marca **não** descarta o fundo — o fundo gerado por IA nunca contém logo/marca, então serve para qualquer uma das duas.
+> Trocar o Formato ou o Modelo descarta o fundo gerado (o prompt muda conforme cada um) e exige nova geração. Trocar a Marca **não** descarta o fundo — o fundo gerado por IA nunca contém logo/marca, então serve para qualquer uma das duas.
+
+### Modelos de Arte Livre
+
+| Modelo | O que gera | Observações |
+|---|---|---|
+| **Arte Livre Padrão** | Cenário de fundo + logo, badge, título, subtítulo, CTA e a foto (roda) do produto | Único modelo com Banner; Objetivo define o cenário e o badge |
+| **Arte com 3 Pneus** | Cenário de fundo + até 3 produtos lado a lado (foto 45°) com apelido e um campo "Destaque" | Sem título/CTA — usa o Subtítulo como texto de rodapé |
+| **Arte de Pneu 45°** | Cenário de fundo + foto do pneu a 45° + título/subtítulo + specs em formato de "pills" | |
+| **Pneu + Carro de Frente** | Carro-herói (visto de frente) gerado por IA + foto real do pneu (45°) sobreposta | Só título; campo "Sugestão de Carro" descreve o veículo desejado à IA |
+| **Pneu + Carro de Lado** | Carro-herói (visto de lado, ao fundo) + foto real do pneu de perfil, em destaque | Mesma lógica do anterior, ângulo lateral |
+| **Arte de Pneu de Frente** | Fundo fixo (sem IA) por marca + foto frontal do produto | Sem botão "Gerar Fundo" nem painel de prompt — não usa a API |
+
+### Modelos de Arte de Medida
+
+Foco em especificação técnica do pneu (medida/dimensão), não em estilo de vida.
+
+| Modelo | O que gera | Observações |
+|---|---|---|
+| **Medida Única** | Cenário de fundo (IA) + fotos reais do pneu (45° e perfil) + medida em destaque, apelido e parágrafo descritivo | Delinte usa um mosaico repetido "marca + apelido"; Denali usa cabeçalho estático com logo colorida |
+| **Tabela de Medidas** | Layout fixo (sem IA) com uma lista editável de medida → valor (até 15 linhas), nota de desconto, validade e CTA de rodapé | Sem produto/pneu — usado para catálogos de promoção |
+| **Tabela Dupla** | Igual à Tabela de Medidas, mas com até 30 linhas divididas em duas colunas | |
 
 ---
 
@@ -67,6 +87,8 @@ As cores da Denali vêm do `Manual_Denali.pdf` (paleta oficial homologada pelo m
 
 **Fonte Nasalization:** é uma fonte paga (Adobe Fonts), não disponível via Google Fonts. Os arquivos (`Nasalization-Rg.otf`/`.ttf`) estão em `public/fonts/` e são carregados via `@font-face` em `style.css`. Se precisar trocar o arquivo da fonte, substitua os arquivos nessa pasta mantendo o mesmo nome.
 
+Os modelos de **Tabela de Medidas** e **Tabela Dupla** também exibem a logo GP (`public/assets/gp/`) ao lado da logo da marca, no rodapé.
+
 ---
 
 ## Como editar a lista de produtos
@@ -82,33 +104,51 @@ Cada produto segue o formato:
 
 ```js
 {
-  nome:   "DS2",
-  specs:  "Ultra-high performance · sulcos assimétricos",
-  foto:   "https://url-da-foto-oficial.png",
-  titulo: "TECNOLOGIA QIRIN SCALE",
-  sub:    "Sulcos assimétricos de alta precisão para máxima aderência em pistas molhadas.",
-  cta:    "CONHEÇA O DS2",
-  linha:  "esportiva"
+  nome:         "DS2",
+  apelido:      "DS2",                          // nome curto usado no mosaico e na Arte de Medida
+  specs:        "Ultra-high performance · sulcos assimétricos",
+  foto:         "https://url-da-foto-roda.png",  // foto com roda, usada no modelo Padrão
+  foto45:       "https://url-da-foto-45.png",     // foto a 45°, usada em vários modelos
+  fotoPerfil:   "https://url-da-foto-perfil.png", // foto de perfil, usada em Pneu + Carro de Lado / Medida
+  fotoFrente:   "https://url-da-foto-frente.png", // foto frontal, usada em Arte de Pneu de Frente
+  titulo:       "TECNOLOGIA QIRIN SCALE",
+  sub:          "Sulcos assimétricos de alta precisão para máxima aderência em pistas molhadas.",
+  cta:          "CONHEÇA O DS2",
+  paragrafo:    "Texto descritivo usado na Arte de Medida.",
+  sufixoMedida: "95W",                            // complemento da medida (ex.: índice de carga/velocidade)
+  linha:        "esportiva"
 },
 ```
 
 - **Adicionar:** copie um bloco `{ ... },` e cole antes do `]` que fecha a lista da marca.
-- **Atualizar foto:** troque a URL do campo `foto` pelo PNG oficial recortado (fundo transparente).
+- **Atualizar foto:** troque a URL do campo correspondente pelo PNG oficial recortado (fundo transparente). Um produto sem `foto45`/`fotoPerfil` some automaticamente as fotos de pneu na Arte de Medida.
 - **Remover:** apague o bloco inteiro (nunca apague o item "Sem produto", sempre o índice 0 de cada marca).
-- `linha` é compartilhada entre marcas (`esportiva`, `offroad`, `runflat`, `carga`, `passeio`, `institucional`) — define qual cenário de fundo (`prompts.js`) e qual sugestão de prompt (`SUGESTOES_CENA`) o produto usa.
+- `linha` é compartilhada entre marcas (`esportiva`, `offroad`, `runflat`, `carga`, `passeio`, `semislick`, `institucional`) — define qual cenário de fundo (`prompts.js`) e qual sugestão de prompt (`SUGESTOES_CENA`) o produto usa.
 
 Salve e recarregue a página — sem reiniciar o servidor.
 
-> **Pendente:** as linhas Denali **SteelWolf** (RunFlat) e **Buffalo** (Carga) ainda estão com specs/CTA de rascunho e sem foto oficial (usam o fallback `gerarPlaceholder()`). Atualize esses dois blocos em `PRODUTOS_DENALI` assim que o marketing Denali enviar os dados definitivos.
+> **Pendente:** vários produtos (principalmente Denali, e algumas linhas Delinte) ainda estão com fotos (`foto45`/`fotoPerfil`/`fotoFrente`), specs, CTA ou parágrafo marcados como rascunho/placeholder no próprio `app.js`. Procure os comentários `// PENDENTE` e `// RASCUNHO` no arquivo para a lista atualizada e atualize assim que o marketing enviar os dados definitivos.
 
 ---
 
 ## Como refinar os prompts de IA
 
-Abra `prompts.js` e edite os valores de `CENAS_POR_LINHA` (cenário por linha × objetivo) e `COMPOSICAO_LAYOUT` (mapa de zonas da UI por formato).
-**Não altere** a função `montarPrompt()` nem remova as proibições explícitas do `TEMPLATE_BASE` — são elas que garantem que o fundo gerado nunca traga logo, texto ou marca, para nenhuma das duas marcas.
+Abra `prompts.js`. Há três famílias de prompt, uma por família de modelo:
+
+- `montarPrompt()` — Arte Livre Padrão, 3 Pneus e Pneu 45° (fundo puramente ambiental, pneu é o herói).
+- `montarPromptMedida()` — Medida Única (carro é o herói, mas só na faixa central da arte).
+- `montarPromptCarro()` — Pneu + Carro de Frente/Lado (carro é o herói do fundo inteiro).
+
+Edite `CENAS_POR_LINHA` (cenário por linha × objetivo) e os mapas `COMPOSICAO_*` (zonas da UI por formato/modelo) conforme necessário.
+**Não altere** as funções `montarPrompt*` nem remova as proibições explícitas dos templates `TEMPLATE_BASE*` — são elas que garantem que o fundo gerado nunca traga logo, texto ou marca, para nenhuma das duas marcas.
 
 Reinicie o servidor (`npm start`) após salvar.
+
+---
+
+## Referências visuais (`public/artmodel/`)
+
+Essa pasta guarda os mockups/PNGs de design que serviram de referência para recriar cada layout em CSS pixel a pixel (Arte Livre, Arte de Medida, Tabela). Eles **não são carregados pela aplicação** — servem só como documentação visual para quem for ajustar um layout existente ou criar um novo.
 
 ---
 
@@ -123,9 +163,9 @@ Reinicie o servidor (`npm start`) após salvar.
 
 ## Segurança
 
-- A chave `OPENAI_API_KEY` fica exclusivamente no arquivo `.env` (no servidor).
+- A chave `MAGNIFIC_API_KEY` fica exclusivamente no arquivo `.env` (no servidor).
 - O `.env` está no `.gitignore` e nunca é commitado.
-- O frontend se comunica apenas com `/api/gerar-fundo` no próprio servidor — nunca direto com a OpenAI.
+- O frontend se comunica apenas com `/api/gerar-fundo` no próprio servidor — nunca direto com o Magnific.
 
 ---
 

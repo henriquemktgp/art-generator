@@ -8,7 +8,7 @@
 //   2. Salve — a mudança reflete automaticamente na interface
 //
 // Como atualizar a foto:
-//   Substitua gerarPlaceholder("XX") pela URL do PNG oficial recortado:
+//   Substitua o campo `foto` pela URL do PNG oficial recortado:
 //   foto: "https://url-da-foto-oficial.png"
 //
 // "Sem produto" deve permanecer como primeiro item (índice 0).
@@ -311,7 +311,7 @@ const PRODUTOS_DELINTE = [
 // em campanha real.
 //
 // SteelWolf (runflat) e Buffalo (carga) ainda não têm modelo/foto definidos —
-// entram como placeholder (usa gerarPlaceholder()) até a equipe enviar specs.
+// entram com campos de foto vazios ("") até a equipe enviar specs.
 // ─────────────────────────────────────────────────────────────────────────────
 // Denali no modo "Arte de Medida": `paragrafo` é compartilhado por toda a
 // LINHA (não por produto, como na Delinte) — todos os Wolverine usam o
@@ -1765,27 +1765,4 @@ function definirEstadoBtn(btn, carregando, texto) {
   btn.disabled = carregando;
   const span = btn.querySelector('.btn-text');
   if (span) span.textContent = texto;
-}
-
-// =============================================================================
-// GERAÇÃO DE PLACEHOLDER (usado em PRODUTOS enquanto não há foto oficial)
-// Substitua pela URL real: foto: "https://..."
-// =============================================================================
-
-function gerarPlaceholder(nome) {
-  const svg = [
-    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">',
-    '<rect width="800" height="800" fill="transparent"/>',
-    '<circle cx="400" cy="400" r="340" fill="none" stroke="#FFDB0F" stroke-width="3" opacity="0.2"/>',
-    '<circle cx="400" cy="400" r="270" fill="none" stroke="#FFDB0F" stroke-width="2.5" opacity="0.35"/>',
-    '<circle cx="400" cy="400" r="190" fill="none" stroke="#FFDB0F" stroke-width="2" opacity="0.5"/>',
-    `<text x="400" y="418" font-family="Arial Black,Arial,sans-serif" font-size="108"`,
-    ` fill="#FFDB0F" text-anchor="middle" dominant-baseline="middle" font-weight="900">${nome}</text>`,
-    '</svg>'
-  ].join('');
-  try {
-    return 'data:image/svg+xml;base64,' + btoa(svg);
-  } catch (_) {
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
 }
