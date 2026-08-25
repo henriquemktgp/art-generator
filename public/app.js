@@ -788,6 +788,18 @@ function trocarModeloMedida(modelo) {
     estado.linhasTabela.length = max;
   }
 
+  // Tabela Dupla não existe em Story — se o usuário estava em Story e trocou
+  // pra esse modelo, volta pro Feed (mesma lógica do Banner em trocarModelo).
+  if (modelo === 'tabeladupla' && estado.formato === 'story') {
+    estado.formato = 'feed';
+    document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
+      const ativo = b.dataset.val === 'feed';
+      b.classList.toggle('active', ativo);
+      b.setAttribute('aria-pressed', String(ativo));
+    });
+    atualizarMeta();
+  }
+
   renderLinhasEditor();
   renderTudo();
   atualizarEscala();
@@ -1286,7 +1298,7 @@ function renderArtPneu45() {
 }
 
 // Renderiza o canvas do modelo "Pneu + Carro de Frente" (carro gerado por IA
-// visto de frente, pneu a 45° sobreposto na parte inferior)
+// visto de frente, pneu de frente sobreposto na parte inferior)
 function renderArtCarroFrente() {
   const canvas  = document.getElementById('art-canvas-carrofrente');
   const produto = produtoAtual();
@@ -1296,7 +1308,7 @@ function renderArtCarroFrente() {
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artcf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
-  document.getElementById('artcf-tire').src           = semProd ? '' : (foto45ArteLivre(produto) || '');
+  document.getElementById('artcf-tire').src           = semProd ? '' : (produto.fotoFrente || '');
 }
 
 // Renderiza o canvas do modelo "Pneu + Carro de Lado" (carro gerado por IA

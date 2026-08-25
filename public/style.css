@@ -190,6 +190,11 @@ body {
 /* Banner ainda não existe para os 5 novos modelos de Arte Livre — só Feed/Story */
 .app:not([data-modelo="padrao"]) #btn-formato-banner { display: none; }
 
+/* Tabela Dupla não existe em Story (9:16) — a lista de até 30 linhas não
+   cabe de forma legível num formato tão estreito/alto. Banner já não existe
+   pra nenhum modelo de Arte de Medida (ver regra acima) — sobra só Feed. */
+.app[data-modelo-medida="tabeladupla"] .btn-opt[data-field="formato"][data-val="story"] { display: none; }
+
 .app:not([data-tipo-arte="medida"]) #grupo-medida { display: none; }
 
 /* "Modelo" (Arte Livre e Arte de Medida têm, cada um, seu próprio seletor —
@@ -1696,7 +1701,7 @@ body {
 .format-feed .artp45-sub    { font-size: 30px; margin-bottom: 34px; }
 .format-feed .artp45-pills > * + * { margin-top: 16px; }
 .format-feed .artp45-pill   { font-size: 24px; padding: 12px 26px; }
-.format-feed .artp45-tire   { right: -40px; bottom: 40px; height: 780px; }
+.format-feed .artp45-tire   { right: -40px; bottom: 100px; height: 780px; }
 .format-feed .artp45-logo-wrap { bottom: 40px; }
 .format-feed .artp45-logo   { height: 50px; }
 
@@ -1740,13 +1745,13 @@ body {
 
 .format-feed .artcf-headline { top: 70px; }
 .format-feed .artcf-titulo { font-size: 56px; }
-.format-feed .artcf-tire   { bottom: -160px; width: 980px; }
+.format-feed .artcf-tire   { bottom: -760px; width: 1300px; }
 .format-feed .artcf-logo-wrap { bottom: 44px; }
 .format-feed .artcf-logo   { height: 52px; }
 
 .format-story .artcf-headline { top: 110px; }
 .format-story .artcf-titulo { font-size: 70px; }
-.format-story .artcf-tire   { bottom: -120px; width: 1000px; }
+.format-story .artcf-tire   { bottom: -390px; width: 1350px; }
 .format-story .artcf-logo-wrap { bottom: 70px; }
 .format-story .artcf-logo   { height: 62px; }
 
@@ -1783,13 +1788,13 @@ body {
 
 .format-feed .artcl-headline { top: 70px; left: 64px; }
 .format-feed .artcl-titulo { font-size: 62px; }
-.format-feed .artcl-tire   { right: -160px; top: 0; height: 100%; }
+.format-feed .artcl-tire   { right: -160px; top: 0; height: 86%; }
 .format-feed .artcl-logo-wrap { bottom: 44px; }
 .format-feed .artcl-logo   { height: 52px; }
 
 .format-story .artcl-headline { top: 110px; left: 64px; }
 .format-story .artcl-titulo { font-size: 74px; }
-.format-story .artcl-tire   { right: -140px; top: 45%; height: 60%; }
+.format-story .artcl-tire   { right: -140px; top: 40%; height: 48%; }
 .format-story .artcl-logo-wrap { bottom: 70px; }
 .format-story .artcl-logo   { height: 62px; }
 
