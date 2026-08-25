@@ -649,6 +649,16 @@ function produtoAtual() {
   return MARCAS[estado.marca].produtos[estado.produto];
 }
 
+// Foto do pneu a 45° usada nos modelos de Arte Livre (3 Pneus, Pneu 45°,
+// Pneu + Carro de Frente) — NÃO usada na Arte de Medida, que sempre lê
+// produto.foto45 diretamente (caminho alternativo, mantido como está).
+// Na Delinte, esses modelos passam a usar o mesmo caminho da arte livre
+// padrão (produto.foto) em vez do foto45 alternativo; na Denali continua
+// usando foto45, sem mudança.
+function foto45ArteLivre(produto) {
+  return estado.marca === 'delinte' ? produto.foto : produto.foto45;
+}
+
 // Repopula os <select> de produtos (único + os 3 do modelo "3 pneus") com o
 // catálogo da marca ativa
 function popularProdutos() {
@@ -1229,12 +1239,25 @@ function renderArt3Pneus() {
     const p = produtos[idx] ?? produtos[0];
     const semP = idx === 0;
     document.getElementById(`art3p-nome-${i + 1}`).textContent = semP ? '' : (p.apelido || p.nome);
-    document.getElementById(`art3p-foto-${i + 1}`).src = semP ? '' : (p.foto45 || '');
+    document.getElementById(`art3p-foto-${i + 1}`).src = semP ? '' : (foto45ArteLivre(p) || '');
   });
 
   document.getElementById('art3p-destaque').textContent    = (estado.destaque || 'LOJISTAS').toUpperCase();
-  document.getElementById('art3p-footer-texto').textContent = estado.sub ||
-    'A marca só cresce com você. Nosso cliente é o centro de tudo.';
+
+  // Texto padrão quebra em duas frases (uma por linha) — usa .append() com
+  // nó <br> real em vez de innerHTML, então não precisa escapar o texto
+  // livre do usuário (estado.sub) nem arriscar HTML injetado por ele.
+  const footerTexto = document.getElementById('art3p-footer-texto');
+  footerTexto.textContent = '';
+  if (estado.sub) {
+    footerTexto.textContent = estado.sub;
+  } else {
+    footerTexto.append(
+      'A marca só cresce com você.',
+      document.createElement('br'),
+      'Nosso cliente é o centro de tudo.'
+    );
+  }
 }
 
 // Renderiza o canvas do modelo "Arte de Pneu 45°" (pneu único a 45°, título/
@@ -1249,7 +1272,7 @@ function renderArtPneu45() {
 
   document.getElementById('artp45-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
   document.getElementById('artp45-sub').textContent    = estado.sub || '';
-  document.getElementById('artp45-tire').src           = semProd ? '' : (produto.foto45 || '');
+  document.getElementById('artp45-tire').src           = semProd ? '' : (foto45ArteLivre(produto) || '');
 
   const pillsWrap = document.getElementById('artp45-pills');
   pillsWrap.innerHTML = '';
@@ -1273,7 +1296,7 @@ function renderArtCarroFrente() {
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artcf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
-  document.getElementById('artcf-tire').src           = semProd ? '' : (produto.foto45 || '');
+  document.getElementById('artcf-tire').src           = semProd ? '' : (foto45ArteLivre(produto) || '');
 }
 
 // Renderiza o canvas do modelo "Pneu + Carro de Lado" (carro gerado por IA
@@ -1651,6 +1674,7 @@ async function processarImgExport(img) {
   const objPos  = window.getComputedStyle(img).objectPosition || 'center center';
   let dataUrl   = src;
   let ehSvg     = src.includes('.svg');
+  let svgText   = null;
 
   // Normaliza para absoluta (ex.: logos locais em /assets/denali/...) — o
   // servidor só aceita URLs http(s) absolutas em /api/proxy-img.
@@ -1668,9 +1692,12 @@ async function processarImgExport(img) {
       const ct   = res.headers.get('content-type') || '';
       const blob = await res.blob();
       ehSvg = ehSvg || ct.includes('svg');
-      dataUrl = ehSvg
-        ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(await blob.text())
-        : await blobParaDataURL(blob);
+      if (ehSvg) {
+        svgText = await blob.text();
+        dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+      } else {
+        dataUrl = await blobParaDataURL(blob);
+      }
     } catch (e) {
       console.warn('[export] imagem ignorada:', src);
       return;
@@ -1687,7 +1714,7 @@ async function processarImgExport(img) {
   // corte/enquadramento certo antes do html2canvas varrer o clone.
   if (ehSvg || objFit === 'cover' || objFit === 'contain') {
     const fit = objFit === 'cover' ? 'cover' : 'contain';
-    dataUrl = await imagemParaPngComFit(dataUrl, containerW, containerH, objPos, fit);
+    dataUrl = await imagemParaPngComFit(dataUrl, containerW, containerH, objPos, fit, svgText);
   }
 
   // Aplica e aguarda o carregamento completo antes do html2canvas varrer o clone
@@ -1704,12 +1731,21 @@ async function processarImgExport(img) {
 // offscreen já recortada/enquadrada como object-fit:cover ou contain faria —
 // entrega um bitmap plano, sem nenhuma ambiguidade de enquadramento restando
 // para o html2canvas resolver (ou errar) na hora da exportação.
-function imagemParaPngComFit(imgSrc, containerW, containerH, objectPosition, fit) {
+function imagemParaPngComFit(imgSrc, containerW, containerH, objectPosition, fit, svgText) {
   return new Promise((resolve, reject) => {
     const tmp = new Image();
     tmp.onload = () => {
-      const natW = tmp.naturalWidth  || containerW;
-      const natH = tmp.naturalHeight || containerH;
+      // Para SVG, lê o tamanho intrínseco direto do markup (width/height ou
+      // viewBox) em vez de confiar em naturalWidth/naturalHeight: um <img>
+      // recém-criado apontando pra um SVG sem width/height (só viewBox) pode
+      // não reportar essas propriedades de forma confiável em todos os
+      // navegadores. Se isso falhasse silenciosamente, caía no fallback
+      // containerW/containerH abaixo — e como a caixa raramente tem a mesma
+      // proporção do SVG original, isso forçava scale=1 e esticava a imagem
+      // pra preencher a caixa inteira (ex.: letras da logo "achatadas").
+      const svgSize = svgText ? extrairTamanhoSvg(svgText) : null;
+      const natW = svgSize?.w || tmp.naturalWidth  || containerW;
+      const natH = svgSize?.h || tmp.naturalHeight || containerH;
 
       // cover: preenche a caixa inteira, cortando o excesso (Math.max).
       // contain: cabe inteira dentro da caixa, sem cortar (Math.min).
@@ -1742,6 +1778,25 @@ function imagemParaPngComFit(imgSrc, containerW, containerH, objectPosition, fit
     tmp.onerror = reject;
     tmp.src = imgSrc;
   });
+}
+
+// Lê o tamanho intrínseco de um SVG a partir do próprio markup — tenta
+// width/height do elemento raiz primeiro, depois viewBox. Retorna null se
+// não achar nenhum dos dois (aí quem chamou cai no fallback de naturalWidth/
+// naturalHeight ou containerW/H).
+function extrairTamanhoSvg(svgText) {
+  const svgTag = svgText.match(/<svg\b[^>]*>/);
+  if (!svgTag) return null;
+  const attrs = svgTag[0];
+
+  const w = attrs.match(/\bwidth="([\d.]+)"/);
+  const h = attrs.match(/\bheight="([\d.]+)"/);
+  if (w && h) return { w: parseFloat(w[1]), h: parseFloat(h[1]) };
+
+  const vb = attrs.match(/\bviewBox="[\d.\-]+\s+[\d.\-]+\s+([\d.]+)\s+([\d.]+)"/);
+  if (vb) return { w: parseFloat(vb[1]), h: parseFloat(vb[2]) };
+
+  return null;
 }
 
 // Blob → data URL

@@ -1354,12 +1354,12 @@ body {
    valor para dar mais ou menos respiro entre a logo e a tarja+caixa. */
 .artm-story[data-marca="denali"] .artm-stripe-top { margin-top: 220px; }
 
-/* O pneu deve só encostar na tarja inferior (14px), não atravessá-la como
-   no efeito 3D da Delinte (calibrado pra tarja bem mais grossa dela). -8px
-   sobrepõe uma fatia pequena da tarja sem passar pro outro lado — medi e
-   confirmei que sem este ajuste ele avançava ~22px dentro da caixa MEDIDA,
-   nos dois formatos (não só no Feed). */
-.artm[data-marca="denali"] .artm-tires { bottom: -13px; }
+/* Sobe o pneu perto do topo da tarja (14px de altura) em vez do -70px
+   herdado da Delinte (calibrado pra tarja bem mais grossa dela) — a borda
+   de baixo do pneu fica alinhada com a borda de baixo da tarja, cobrindo
+   ela inteira sem passar pro outro lado, pra caixa MEDIDA. Ajuste este
+   valor (mais negativo = desce/cruza mais; menos negativo = sobe). */
+.artm[data-marca="denali"] .artm-tires { bottom: -50px; }
 
 /* Cabeçalho estático — mesma altura da faixa de mosaico que ele substitui,
    pra manter a faixa de fundo começando no mesmo lugar nos dois formatos */
@@ -1587,7 +1587,17 @@ body {
 .art3p-tire-col { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
 .art3p-tire-name { font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase; text-align: center; }
 .art3p-tire-img  { width: auto; object-fit: contain; display: block; }
-.art3p-divider   { align-self: stretch; width: 3px; background: linear-gradient(180deg, transparent, var(--brand-accent), transparent); }
+/* flex-shrink:0 — no Story, as 3 fotos de pneu (380px cada, quadradas) somam
+   1140px, mais largo que os 1080px do canvas. Como as colunas de pneu não
+   têm como encolher (a largura delas vem do tamanho da própria imagem, que
+   é fixo), o navegador jogava 100% da redução necessária nas faixas — os
+   únicos itens sem conteúdo, portanto livres pra encolher — e como a conta
+   não fechava (faltava encolher bem mais que os 3px de cada faixa), elas
+   eram espremidas até 0px e desapareciam. Travando o encolhimento aqui, o
+   excesso (que ia sobrar de qualquer forma) é absorvido só nas bordas
+   externas dos pneus das pontas — cortadas de forma discreta pelo
+   overflow:hidden do canvas — em vez de sacrificar a faixa entre eles. */
+.art3p-divider   { align-self: stretch; flex-shrink: 0; width: 3px; background: linear-gradient(180deg, transparent, var(--brand-accent), transparent); }
 
 .art3p-footer {
   position: relative; z-index: 5; flex: 0 0 auto;
@@ -1595,11 +1605,13 @@ body {
   border: 3px solid var(--brand-accent); border-radius: 14px;
   background: rgba(0,0,0,0.35);
 }
-.art3p-footer-destaque { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
-.art3p-footer-label    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); }
-.art3p-footer-bold     { font-family: var(--font-display); color: var(--brand-accent); text-transform: uppercase; line-height: 1; }
-.art3p-footer-sep      { align-self: stretch; width: 2px; background: var(--brand-accent); opacity: 0.6; }
-.art3p-footer-texto    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); line-height: 1.4; }
+/* align-items:center (não flex-start) + text-align:center — "Exclusivo
+   para" e "LOJISTAS" sempre centralizados entre si, nos três formatos. */
+.art3p-footer-destaque { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.art3p-footer-label    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); text-transform: uppercase; text-align: center; }
+.art3p-footer-bold     { font-family: var(--font-display); color: var(--brand-accent); text-transform: uppercase; line-height: 1; text-align: center; }
+.art3p-footer-sep      { align-self: stretch; width: 2px; background: var(--brand-accent); opacity: 0.6; flex-shrink: 0; }
+.art3p-footer-texto    { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--brand-white); text-transform: uppercase; line-height: 1.4; text-align: center; }
 
 /* NOTA: html2canvas não captura a propriedade CSS "gap" em flexbox — todo
    espaçamento entre irmãos flex nestes modelos usa margin (via seletor
@@ -1617,9 +1629,9 @@ body {
 .format-feed .art3p-tire-img  { height: 320px; }
 .format-feed .art3p-footer { padding: 22px 30px; }
 .format-feed .art3p-footer > * + * { margin-left: 26px; }
-.format-feed .art3p-footer-label { font-size: 20px; }
+.format-feed .art3p-footer-label { font-size: 30px; }
 .format-feed .art3p-footer-bold  { font-size: 42px; }
-.format-feed .art3p-footer-texto { font-size: 20px; flex: 1; }
+.format-feed .art3p-footer-texto { font-size: 30px; flex: 1; }
 
 .format-story .art3p { padding: 90px 50px 70px; }
 .format-story .art3p-headline { margin-top: 36px; }
@@ -1631,14 +1643,21 @@ body {
 .format-story .art3p-divider   { margin: 0 9px; }
 .format-story .art3p-tire-name { font-size: 32px; margin-bottom: 16px; }
 .format-story .art3p-tire-img  { height: 380px; }
-.format-story .art3p-footer { flex-direction: column; align-items: stretch; padding: 30px 34px; }
-.format-story .art3p-footer > * + * { margin-top: 18px; margin-left: 0; }
-.format-story .art3p-footer-destaque { flex-direction: row; align-items: baseline; }
-.format-story .art3p-footer-destaque > * + * { margin-left: 12px; }
-.format-story .art3p-footer-label { font-size: 24px; }
-.format-story .art3p-footer-bold  { font-size: 56px; }
-.format-story .art3p-footer-sep   { display: none; }
-.format-story .art3p-footer-texto { font-size: 26px; }
+/* Lado a lado igual ao Feed/Banner (não mais empilhado) — "Exclusivo para"
+   / "LOJISTAS" à esquerda, divisória na cor da marca, texto à direita. */
+.format-story .art3p-footer { padding: 30px 26px; }
+.format-story .art3p-footer > * + * { margin-left: 22px; }
+.format-story .art3p-footer-label { font-size: 40px; }
+.format-story .art3p-footer-bold  { font-size: 60px; }
+.format-story .art3p-footer-texto { font-size: 35px; flex: 1; }
+
+/* Banner (1440×600) ainda não tem padding/headline/tire-img dedicados pra
+   este modelo — só o rodapé, que é o que foi pedido aqui. */
+.format-banner .art3p-footer { padding: 14px 22px; }
+.format-banner .art3p-footer > * + * { margin-left: 18px; }
+.format-banner .art3p-footer-label { font-size: 15px; }
+.format-banner .art3p-footer-bold  { font-size: 28px; }
+.format-banner .art3p-footer-texto { font-size: 18px; flex: 1; }
 
 /* ── MODELO: ARTE DE PNEU 45° ────────────────────────────────────────────── */
 .artp45 {
