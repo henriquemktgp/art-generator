@@ -936,6 +936,11 @@ body {
   justify-content: center;
 }
 
+/* Sem "linha" (specs) no Banner nos 3 tamanhos — o texto cinza da linha do
+   pneu (ex.: "Linha passeio · ultra alta quilometragem...") não cabe bem
+   num formato tão baixo/largo; título+subtítulo+CTA já carregam a mensagem. */
+.format-banner .art-specs { display: none; }
+
 /* ── Tamanho GRANDE — 1920 × 664 px (padrão do site) ──────────────────────── */
 .banner-grande .art-stripe { width: 16px; }
 
@@ -956,8 +961,12 @@ body {
 .banner-grande .art-pname  { font-size: 22px; margin-bottom: 6px; }
 .banner-grande .art-title  { font-size: 96px; margin-bottom: 16px; line-height: 0.92; }
 .banner-grande .art-sub    { font-size: 32px; margin-bottom: 26px; }
-.banner-grande .art-cta    { font-size: 26px; padding: 12px 30px; margin-bottom: 16px; }
-.banner-grande .art-specs  { font-size: 22px; }
+/* align-self:flex-start — sem isso o CTA estica pra largura toda do bloco
+   de texto (herda align-items:stretch do .art-text, que não define o
+   próprio align-items), virando uma faixa bem mais larga que o texto do
+   botão. Com flex-start ele encolhe pro próprio conteúdo, alinhado à
+   esquerda junto com título/subtítulo (ver correção igual no Médio). */
+.banner-grande .art-cta    { font-size: 26px; padding: 12px 30px; margin-bottom: 16px; align-self: flex-start; }
 
 .banner-grande.no-product .art-text { left: 140px; right: 140px; }
 
@@ -978,11 +987,10 @@ body {
 
 .banner-medio .art-text { left: 320px; right: 500px; }
 
-.banner-medio .art-pname  { font-size: 15px; margin-bottom: 4px; }
-.banner-medio .art-title  { font-size: 52px; margin-bottom: 10px; line-height: 0.92; }
-.banner-medio .art-sub    { font-size: 20px; margin-bottom: 14px; }
-.banner-medio .art-cta    { font-size: 16px; padding: 8px 18px; margin-bottom: 10px; }
-.banner-medio .art-specs  { font-size: 14px; }
+.banner-medio .art-pname  { font-size: 18px; margin-bottom: 5px; }
+.banner-medio .art-title  { font-size: 66px; margin-bottom: 14px; line-height: 0.92; }
+.banner-medio .art-sub    { font-size: 25px; margin-bottom: 18px; }
+.banner-medio .art-cta    { font-size: 19px; padding: 10px 22px; margin-bottom: 12px; align-self: flex-start; }
 
 .banner-medio.no-product .art-text { left: 100px; right: 100px; }
 
@@ -995,18 +1003,22 @@ body {
 .banner-pequeno .art-elem { display: none; }
 
 .banner-pequeno .art-header { left: 32px; top: 18px; gap: 6px; }
-.banner-pequeno .art-logo   { height: 22px; max-width: 100px; }
-.banner-pequeno .art-badge  { font-size: 10px; padding: 4px 10px; }
+.banner-pequeno .art-logo   { height: 40px; max-width: 160px; }
+.banner-pequeno .art-badge  { font-size: 14px; padding: 6px 14px; }
 
 .banner-pequeno .art-img-wrap { right: 0; top: 0; bottom: 0; width: 220px; }
 
-.banner-pequeno .art-text { left: 170px; right: 240px; }
+/* align-items:center (a base .art-text só tem flex-direction:column, sem
+   align-items — então os filhos esticam pra largura toda por padrão, que é
+   por isso o CTA virava uma faixa larga em vez de acompanhar o texto dele).
+   Com center, título e CTA encolhem pro próprio tamanho e ficam alinhados
+   no mesmo eixo — o CTA sempre centralizado embaixo do título. */
+.banner-pequeno .art-text { left: 170px; right: 240px; align-items: center; }
 
 .banner-pequeno .art-pname,
-.banner-pequeno .art-specs { display: none; }
-.banner-pequeno .art-title { font-size: 30px; margin-bottom: 5px; line-height: 0.92; }
-.banner-pequeno .art-sub   { font-size: 14px; margin-bottom: 8px; }
-.banner-pequeno .art-cta   { font-size: 12px; padding: 5px 13px; margin-bottom: 0; }
+.banner-pequeno .art-sub { display: none; }
+.banner-pequeno .art-title { font-size: 64px; margin-bottom: 12px; line-height: 0.92; text-align: center; }
+.banner-pequeno .art-cta   { font-size: 20px; padding: 9px 22px; margin-bottom: 0; }
 
 .banner-pequeno.no-product .art-text { left: 50px; right: 50px; }
 
