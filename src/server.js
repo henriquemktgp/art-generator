@@ -21,8 +21,9 @@ const OBJETIVOS_VALIDOS       = new Set(['promocao', 'lancamento', 'aviso']);
 const LINHAS_VALIDAS          = new Set(['esportiva', 'offroad', 'runflat', 'carga', 'passeio', 'semislick', 'institucional']);
 const MODOS_VALIDOS           = new Set(['livre', 'medida', 'carrofrente', 'carrolado']);
 const MODOS_CARRO             = new Set(['carrofrente', 'carrolado']);
-// carrofrente/carrolado geram o fundo inteiro do canvas (como "livre"), mas
-// só existem em Feed/Story — mesma restrição do modo "medida".
+// "carrofrente" (Pneu + Carro de Frente) não tem Banner — mesma restrição do
+// modo "medida". "carrolado" (Pneu + Carro de Lado) tem os 3 formatos.
+const MODOS_SEM_BANNER            = new Set(['medida', 'carrofrente']);
 const FORMATOS_VALIDOS_SEM_BANNER = FORMATOS_VALIDOS_MEDIDA;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ app.post('/api/gerar-fundo', async (req, res) => {
   const { formato, objetivo, linha, customPrompt, modo, sugestaoCarro } = req.body ?? {};
 
   const modoValido = MODOS_VALIDOS.has(modo) ? modo : 'livre';
-  const formatosValidosDoModo = (modoValido === 'medida' || MODOS_CARRO.has(modoValido))
+  const formatosValidosDoModo = MODOS_SEM_BANNER.has(modoValido)
     ? FORMATOS_VALIDOS_SEM_BANNER
     : FORMATOS_VALIDOS;
 

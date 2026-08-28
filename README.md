@@ -44,7 +44,7 @@ npm run dev
 1. Escolha a **Marca** (Delinte ou Denali) — troca cores, logo, tipografia de título e catálogo de produtos.
 2. Escolha o **Tipo de Arte**: **Arte Livre** ou **Arte de Medida** (esta última disponível hoje para Delinte e Denali).
 3. Escolha o **Modelo** dentro do tipo de arte selecionado (ver seções abaixo).
-4. Escolha **Formato** (Feed 1:1, Story 9:16 — Banner Horizontal só existe no modelo "Arte Livre Padrão") e, quando aplicável, **Objetivo** (Promoção, Lançamento, Aviso).
+4. Escolha **Formato** (Feed 1:1, Story 9:16, Banner Horizontal — com 3 tamanhos selecionáveis: Grande 1920×664, Médio 1920×393 e Pequeno 1920×195) e, quando aplicável, **Objetivo** (Promoção, Lançamento, Aviso, ou Nenhum para não exibir selo). Banner existe em quase todos os modelos de Arte Livre — só não existe em "Arte de Pneu de Frente", "Pneu + Carro de Frente" e em nenhum modelo de Arte de Medida.
 5. Selecione o(s) **Produto(s)** e preencha os campos de texto do modelo (título, subtítulo, CTA, medida, destaque, sugestão de carro etc. — os campos disponíveis mudam conforme o modelo).
 6. Nos modelos com IA, clique em **Gerar Fundo com IA** — aguarde alguns segundos (a geração é assíncrona e pode levar até ~2 minutos). Se não gostar do resultado, clique em **Gerar Novamente**.
 7. Clique em **PNG** ou **PDF** para exportar (o arquivo sai nomeado `<marca>-<formato>-<modelo>-arte`).
@@ -55,12 +55,12 @@ npm run dev
 
 | Modelo | O que gera | Observações |
 |---|---|---|
-| **Arte Livre Padrão** | Cenário de fundo + logo, badge, título, subtítulo, CTA e a foto (roda) do produto | Único modelo com Banner; Objetivo define o cenário e o badge |
+| **Arte Livre Padrão** | Cenário de fundo + logo, badge, título, subtítulo, CTA e a foto (roda) do produto | Objetivo define o cenário e o badge |
 | **Arte com 3 Pneus** | Cenário de fundo + até 3 produtos lado a lado (foto 45°) com apelido e um campo "Destaque" | Sem título/CTA — usa o Subtítulo como texto de rodapé |
 | **Arte de Pneu 45°** | Cenário de fundo + foto do pneu a 45° + título/subtítulo + specs em formato de "pills" | |
-| **Pneu + Carro de Frente** | Carro-herói (visto de frente) gerado por IA + foto real do pneu (45°) sobreposta | Só título; campo "Sugestão de Carro" descreve o veículo desejado à IA |
+| **Pneu + Carro de Frente** | Carro-herói (visto de frente) gerado por IA + foto real do pneu (45°) sobreposta | Só título; campo "Sugestão de Carro" descreve o veículo desejado à IA; sem Banner |
 | **Pneu + Carro de Lado** | Carro-herói (visto de lado, ao fundo) + foto real do pneu de perfil, em destaque | Mesma lógica do anterior, ângulo lateral |
-| **Arte de Pneu de Frente** | Fundo fixo (sem IA) por marca + foto frontal do produto | Sem botão "Gerar Fundo" nem painel de prompt — não usa a API |
+| **Arte de Pneu de Frente** | Fundo fixo (sem IA) por marca + foto frontal do produto | Sem botão "Gerar Fundo" nem painel de prompt — não usa a API; sem Banner |
 
 ### Modelos de Arte de Medida
 

@@ -254,6 +254,14 @@ const COMPOSICAO_CARRO = {
       'COMPOSITIONAL BRIEF (1080×1920, vertical): the car is the absolute hero, seen head-on (front or front three-quarter view), centered in the upper two-thirds of the frame, sharp focus, dramatic lighting. Leave the BOTTOM third of the frame relatively uncluttered at ground level — a real tire product photo will be composited directly over the car\'s front wheel/tire area in post-production. Headline text sits near the top — keep that region atmospheric but readable.',
     lado:
       'COMPOSITIONAL BRIEF (1080×1920, vertical): a vehicle is visible driving at a distance in the upper background, small and partially cropped — a supporting element, NOT filling the frame. The LOWER two-thirds of the frame must stay clean and simple (soft road/ground, atmospheric bokeh, diagonal light streaks) because a huge real tire product photo (side profile, extreme close-up) will be composited directly over that area in post-production. Headline text sits near the top.'
+  },
+  // Banner (1920×664/393/195 — a IA sempre gera na proporção 2:1, cropada
+  // igual para os 3 tamanhos): só existe pra "carrolado" ("carrofrente" não
+  // tem Banner). Texto fica à esquerda, pneu vaza pela borda direita — igual
+  // ao layout de "padrao"/"pneu45" no banner.
+  banner: {
+    lado:
+      'COMPOSITIONAL BRIEF (1920×664, wide panoramic banner): a vehicle is visible driving at a distance on the left side of the frame, small and partially cropped — a supporting element, NOT filling the frame. The RIGHT two-thirds of the frame must stay clean and simple (soft road/ground, atmospheric bokeh, diagonal light streaks) because a huge real tire product photo (side profile, extreme close-up) will be composited directly over that area in post-production. Headline text sits on the far left.'
   }
 };
 
@@ -269,7 +277,7 @@ const TEMPLATE_BASE_CARRO = (cena, composicao, sugestaoCarro) =>
   `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
 
 /**
- * @param {'feed'|'story'} formato
+ * @param {'feed'|'story'|'banner'} formato
  * @param {'frente'|'lado'} vista
  * @param {string} linha
  * @param {string} sugestaoCarro texto livre do usuário descrevendo o carro

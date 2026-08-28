@@ -48,7 +48,7 @@ O brandguide oficial da Denali (`Manual_Denali.pdf`) e os mockups de referência
 - Serve os arquivos estáticos de `public/`.
 - **`POST /api/gerar-fundo`** — recebe `{ formato, objetivo, linha, customPrompt, modo, sugestaoCarro }`.
   - `modo` ∈ `MODOS_VALIDOS = {'livre', 'medida', 'carrofrente', 'carrolado'}` (default `'livre'` se inválido). Este `modo` é derivado no frontend a partir de `tipoArte`/`modelo` — não é 1:1 com os 9 "modelos" de UI (ver Frontend).
-  - `formato` ∈ `{'feed','story','banner'}`, mas Banner só é aceito no modo `'livre'` — nos modos `'medida'`, `'carrofrente'`, `'carrolado'` só `{'feed','story'}` são válidos (`FORMATOS_VALIDOS_SEM_BANNER`).
+  - `formato` ∈ `{'feed','story','banner'}` — Banner é aceito em todos os modos exceto `'medida'` e `'carrofrente'` (`MODOS_SEM_BANNER`), que só têm `{'feed','story'}` (`FORMATOS_VALIDOS_SEM_BANNER`).
   - `objetivo` (`{'promocao','lancamento','aviso'}`) só é obrigatório/validado no modo `'livre'` — os demais modos ignoram o campo e sempre usam a variante "promocao" da cena.
   - `linha` ∈ `LINHAS_VALIDAS = {'esportiva','offroad','runflat','carga','passeio','semislick','institucional'}` (default `'institucional'`).
   - `customPrompt` limitado a 500 caracteres; `sugestaoCarro` (usado só em `carrofrente`/`carrolado`) limitado a 200 caracteres. Nenhum dos dois é executado como código.
@@ -84,7 +84,7 @@ A UI tem dois níveis de seleção de layout, não um único "formato de arte":
   **`MODELOS` (Arte Livre)** — select `#sel-modelo`:
   | value | Canvas / `bgImg` | Resumo |
   |---|---|---|
-  | `padrao` | `art-canvas` / `art-bg-img` | Layout original: badge de objetivo, título/subtítulo/CTA, foto (roda) do produto. Único com Banner. |
+  | `padrao` | `art-canvas` / `art-bg-img` | Layout original: badge de objetivo, título/subtítulo/CTA, foto (roda) do produto. |
   | `3pneus` | `art-canvas-3pneus` / `art3p-bg-img` | Até 3 produtos (`pneu1/2/3`) lado a lado, foto 45° + apelido de cada, campo "Destaque". Sem título/CTA — usa `estado.sub` como rodapé. |
   | `pneu45` | `art-canvas-pneu45` / `artp45-bg-img` | Pneu único a 45°, título+subtítulo, specs como "pills" (`produto.specs.split('·')`). |
   | `carrofrente` | `art-canvas-carrofrente` / `artcf-bg-img` | Carro-herói de frente (IA) + `produto.foto45` sobreposta. Só título; campo "Sugestão de Carro". |
@@ -137,7 +137,7 @@ A UI tem dois níveis de seleção de layout, não um único "formato de arte":
 - `produtoAtual()` — resolve `MARCAS[estado.marca].produtos[estado.produto]`.
 - `trocarMarca(marca)` — troca marca/logos/catálogo, reseta seleção de produto, força saída de "medida" se a marca não suportar.
 - `atualizarDisponibilidadeTipoArte()` — habilita/desabilita o botão "Arte de Medida" conforme `MARCAS_COM_ARTE_MEDIDA`.
-- `trocarTipoArte(tipo)` / `trocarModelo(modelo)` / `trocarModeloMedida(modelo)` — trocam nível 1/nível 2 da UI; corrigem Formato para `feed` se estava em Banner num contexto que não suporta; `trocarModeloMedida` corta `linhasTabela` se exceder o novo `maxLinhas`.
+- `trocarTipoArte(tipo)` / `trocarModelo(modelo)` / `trocarModeloMedida(modelo)` — trocam nível 1/nível 2 da UI; corrigem Formato de volta pra `feed` se estava em Banner num contexto que não suporta (`trocarTipoArte` ao entrar em "medida"; `trocarModelo` ao entrar em `pneufrente`/`carrofrente`, ver `MODELOS_SEM_BANNER`; `trocarModeloMedida` ao entrar em Tabela Dupla vindo de Story). `trocarModeloMedida` também corta `linhasTabela` se exceder o novo `maxLinhas`.
 - `gerarFundo()` — monta o body e chama `POST /api/gerar-fundo`; trata loading/erro amigável (`mostrarErro`).
 - `bgImgAtivoId()` / `aplicarFundo()` / `resetarFundo()` — resolvem qual `<img>` de fundo atualizar e aplicam o base64 recebido (fade-in via classe `.loaded`); retornam cedo (`null`) para os 3 modelos sem IA.
 - `renderArt()`, `renderArtMedida()`, `renderArt3Pneus()`, `renderArtPneu45()`, `renderArtCarroFrente()`, `renderArtCarroLado()`, `renderArtPneuFrente()`, `renderArtTabela()`, `renderArtTabelaDupla()` — um renderizador por canvas/modelo.

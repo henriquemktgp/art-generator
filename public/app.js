@@ -793,13 +793,15 @@ function trocarTipoArte(tipo) {
 // Troca o modelo ativo dentro de "Arte Livre" (padrão, 3 pneus, pneu 45°,
 // carro de frente/lado, pneu de frente). Cada modelo tem seu próprio canvas
 // (ver MODELOS) — a visibilidade da sidebar é 100% controlada via CSS
-// ([data-modelo="..."] em style.css), aqui só trocamos o estado e o formato
-// se o atual (ex.: Banner) não existir no novo modelo.
+// ([data-modelo="..."] em style.css). Banner existe na maioria dos modelos
+// de Arte Livre — só "Pneu de Frente" e "Pneu + Carro de Frente" não têm.
+const MODELOS_SEM_BANNER = new Set(['pneufrente', 'carrofrente']);
+
 function trocarModelo(modelo) {
   estado.modelo = modelo;
   document.getElementById('app-root').dataset.modelo = modelo;
 
-  if (modelo !== 'padrao' && estado.formato === 'banner') {
+  if (MODELOS_SEM_BANNER.has(modelo) && estado.formato === 'banner') {
     estado.formato = 'feed';
     document.getElementById('app-root').dataset.formato = 'feed';
     document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
@@ -1181,6 +1183,17 @@ function limparErro() {
 // RENDERIZAÇÃO DA ARTE (camada 2 — composição)
 // =============================================================================
 
+// Classes de formato compartilhadas por todos os canvases de Arte Livre —
+// `format-<formato>` sempre, mais `banner-<tamanho>` quando o formato ativo
+// for Banner (Grande/Médio/Pequeno), para o CSS conseguir ajustar posição/
+// fonte por tamanho igual já é feito na Arte Livre Padrão.
+function classesFormatoLivre() {
+  return [
+    `format-${estado.formato}`,
+    estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : ''
+  ];
+}
+
 function renderArt() {
   const canvas  = document.getElementById('art-canvas');
   const obj     = OBJETIVOS[estado.objetivo];
@@ -1190,8 +1203,7 @@ function renderArt() {
   // Classes dinâmicas
   canvas.className = [
     'art',
-    `format-${estado.formato}`,
-    estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : '',
+    ...classesFormatoLivre(),
     obj.cls,
     semProd ? 'no-product' : ''
   ].filter(Boolean).join(' ');
@@ -1297,7 +1309,7 @@ function renderArtMedida() {
 // ao lado da outra, separadas por uma faixa na cor da marca)
 function renderArt3Pneus() {
   const canvas = document.getElementById('art-canvas-3pneus');
-  canvas.className = ['art3p', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['art3p', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   const produtos = MARCAS[estado.marca].produtos;
@@ -1335,7 +1347,7 @@ function renderArtPneu45() {
   const produto = produtoAtual();
   const semProd = estado.produto === 0;
 
-  canvas.className = ['artp45', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['artp45', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artp45-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
@@ -1360,7 +1372,7 @@ function renderArtCarroFrente() {
   const produto = produtoAtual();
   const semProd = estado.produto === 0;
 
-  canvas.className = ['artcf', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['artcf', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artcf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
@@ -1374,7 +1386,7 @@ function renderArtCarroLado() {
   const produto = produtoAtual();
   const semProd = estado.produto === 0;
 
-  canvas.className = ['artcl', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['artcl', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artcl-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
@@ -1388,7 +1400,7 @@ function renderArtPneuFrente() {
   const produto = produtoAtual();
   const semProd = estado.produto === 0;
 
-  canvas.className = ['artpf', `format-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['artpf', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artpf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();

@@ -187,8 +187,10 @@ body {
 .app[data-tipo-arte="medida"] #grupo-cta,
 .app[data-tipo-arte="medida"] #btn-formato-banner { display: none; }
 
-/* Banner ainda não existe para os 5 novos modelos de Arte Livre — só Feed/Story */
-.app:not([data-modelo="padrao"]) #btn-formato-banner { display: none; }
+/* Banner não existe em "Arte de Pneu de Frente" nem em "Pneu + Carro de
+   Frente" — pedido explícito, essas duas artes ficam só com Feed/Story. */
+.app[data-modelo="pneufrente"] #btn-formato-banner,
+.app[data-modelo="carrofrente"] #btn-formato-banner { display: none; }
 
 /* Seletor "Tamanho do Banner" só faz sentido com Banner ativo */
 .app:not([data-formato="banner"]) #grupo-banner-tamanho { display: none; }
@@ -1725,13 +1727,48 @@ body {
 .format-story .art3p-footer-bold  { font-size: 60px; }
 .format-story .art3p-footer-texto { font-size: 35px; flex: 1; }
 
-/* Banner (1440×600) ainda não tem padding/headline/tire-img dedicados pra
-   este modelo — só o rodapé, que é o que foi pedido aqui. */
-.format-banner .art3p-footer { padding: 14px 22px; }
-.format-banner .art3p-footer > * + * { margin-left: 18px; }
-.format-banner .art3p-footer-label { font-size: 15px; }
-.format-banner .art3p-footer-bold  { font-size: 28px; }
-.format-banner .art3p-footer-texto { font-size: 18px; flex: 1; }
+/* Banner (bem mais baixo que Feed/Story) — a faixa "POR QUE / <MARCA>?" some
+   pra sobrar altura pros pneus, que continuam sendo o protagonista; o rodapé
+   com o destaque carrega a mensagem principal sozinho. */
+.format-banner .art3p-headline { display: none; }
+.art3p.format-banner { padding-top: 0; padding-bottom: 0; }
+
+.art3p.banner-grande { padding: 40px 60px 20px; }
+.banner-grande .art3p-logo { height: 40px; }
+.banner-grande .art3p-tires { padding-bottom: 6px; }
+.banner-grande .art3p-divider   { margin: 0 20px; }
+.banner-grande .art3p-tire-name { font-size: 20px; margin-bottom: 8px; }
+.banner-grande .art3p-tire-img  { height: 420px; }
+.banner-grande .art3p-footer { margin-top: 14px; padding: 14px 26px; }
+.banner-grande .art3p-footer > * + * { margin-left: 20px; }
+.banner-grande .art3p-footer-label { font-size: 15px; }
+.banner-grande .art3p-footer-bold  { font-size: 26px; }
+.banner-grande .art3p-footer-texto { font-size: 17px; flex: 1; }
+
+.art3p.banner-medio { padding: 26px 40px 12px; }
+.banner-medio .art3p-logo { height: 28px; }
+.banner-medio .art3p-tires { padding-bottom: 4px; }
+.banner-medio .art3p-divider   { margin: 0 14px; }
+.banner-medio .art3p-tire-name { font-size: 14px; margin-bottom: 5px; }
+.banner-medio .art3p-tire-img  { height: 230px; }
+.banner-medio .art3p-footer { margin-top: 8px; padding: 8px 18px; }
+.banner-medio .art3p-footer > * + * { margin-left: 14px; }
+.banner-medio .art3p-footer-label { font-size: 11px; }
+.banner-medio .art3p-footer-bold  { font-size: 18px; }
+.banner-medio .art3p-footer-texto { font-size: 12px; flex: 1; }
+
+.art3p.banner-pequeno { padding: 16px 24px 6px; }
+.banner-pequeno .art3p-logo { height: 20px; }
+.banner-pequeno .art3p-tires { padding-bottom: 2px; }
+.banner-pequeno .art3p-divider   { margin: 0 8px; }
+.banner-pequeno .art3p-tire-name { display: none; }
+.banner-pequeno .art3p-tire-img  { height: 90px; }
+.banner-pequeno .art3p-footer { margin-top: 4px; padding: 5px 12px; justify-content: center; }
+.banner-pequeno .art3p-footer > * + * { margin-left: 8px; }
+.banner-pequeno .art3p-footer-label { font-size: 8px; }
+.banner-pequeno .art3p-footer-bold  { font-size: 13px; }
+.banner-pequeno .art3p-footer-sep   { display: none; }
+.banner-pequeno .art3p-footer-texto { display: none; }
 
 /* ── MODELO: ARTE DE PNEU 45° ────────────────────────────────────────────── */
 .artp45 {
@@ -1782,6 +1819,41 @@ body {
 .format-story .artp45-tire   { left: 50%; top: 900px; transform: translateX(-50%); height: 820px; }
 .format-story .artp45-logo-wrap { bottom: 60px; }
 .format-story .artp45-logo   { height: 60px; }
+
+/* Banner — mesmo padrão da Arte Livre Padrão: logo pequena no canto superior
+   esquerdo, texto centralizado verticalmente à esquerda, pneu vazando a
+   borda direita. As pills (specs) viram uma linha horizontal — no formato
+   feed/story elas empilham porque sobra altura; no banner, bem mais baixo,
+   isso estouraria a altura disponível. */
+.format-banner .artp45-logo-wrap { left: auto; right: auto; bottom: auto; justify-content: flex-start; }
+.format-banner .artp45-text      { transform: translateY(-50%); }
+.format-banner .artp45-pills     { flex-direction: row; flex-wrap: wrap; }
+
+.banner-grande .artp45-logo-wrap { top: 28px; left: 64px; }
+.banner-grande .artp45-logo      { height: 40px; }
+.banner-grande .artp45-text      { top: 55%; left: 64px; right: 620px; }
+.banner-grande .artp45-titulo    { font-size: 50px; margin-bottom: 10px; }
+.banner-grande .artp45-sub       { font-size: 19px; margin-bottom: 14px; }
+.banner-grande .artp45-pills > * + * { margin-left: 10px; }
+.banner-grande .artp45-pill      { font-size: 15px; padding: 7px 16px; }
+.banner-grande .artp45-tire      { right: -30px; bottom: -30px; height: 560px; }
+
+.banner-medio .artp45-logo-wrap { top: 18px; left: 44px; }
+.banner-medio .artp45-logo      { height: 28px; }
+.banner-medio .artp45-text      { top: 55%; left: 44px; right: 400px; }
+.banner-medio .artp45-titulo    { font-size: 32px; margin-bottom: 6px; }
+.banner-medio .artp45-sub       { font-size: 13px; margin-bottom: 9px; }
+.banner-medio .artp45-pills > * + * { margin-left: 8px; }
+.banner-medio .artp45-pill      { font-size: 11px; padding: 5px 12px; }
+.banner-medio .artp45-tire      { right: -20px; bottom: -20px; height: 340px; }
+
+.banner-pequeno .artp45-logo-wrap { top: 10px; left: 28px; }
+.banner-pequeno .artp45-logo      { height: 20px; }
+.banner-pequeno .artp45-text      { top: 58%; left: 28px; right: 200px; }
+.banner-pequeno .artp45-titulo    { font-size: 22px; margin-bottom: 0; }
+.banner-pequeno .artp45-sub       { display: none; }
+.banner-pequeno .artp45-pills     { display: none; }
+.banner-pequeno .artp45-tire      { right: -10px; bottom: -10px; height: 170px; }
 
 /* ── MODELO: PNEU + CARRO DE FRENTE ──────────────────────────────────────── */
 .artcf {
@@ -1866,6 +1938,30 @@ body {
 .format-story .artcl-tire   { right: -140px; top: 40%; height: 48%; }
 .format-story .artcl-logo-wrap { bottom: 70px; }
 .format-story .artcl-logo   { height: 62px; }
+
+/* Banner — mesmo padrão dos demais modelos no banner: logo pequena no canto
+   superior esquerdo (em vez de centralizada embaixo), título centralizado
+   verticalmente à esquerda, pneu de perfil vazando a borda direita. */
+.format-banner .artcl-headline  { transform: translateY(-50%); }
+.format-banner .artcl-logo-wrap { left: auto; right: auto; bottom: auto; justify-content: flex-start; }
+
+.banner-grande .artcl-logo-wrap { top: 28px; left: 64px; }
+.banner-grande .artcl-logo      { height: 40px; }
+.banner-grande .artcl-headline  { top: 50%; left: 64px; }
+.banner-grande .artcl-titulo    { font-size: 46px; }
+.banner-grande .artcl-tire      { right: -40px; top: 50%; transform: translateY(-50%); height: 92%; }
+
+.banner-medio .artcl-logo-wrap { top: 18px; left: 44px; }
+.banner-medio .artcl-logo      { height: 28px; }
+.banner-medio .artcl-headline  { top: 50%; left: 44px; }
+.banner-medio .artcl-titulo    { font-size: 28px; }
+.banner-medio .artcl-tire      { right: -24px; top: 50%; transform: translateY(-50%); height: 92%; }
+
+.banner-pequeno .artcl-logo-wrap { top: 10px; left: 28px; }
+.banner-pequeno .artcl-logo      { height: 20px; }
+.banner-pequeno .artcl-headline  { top: 50%; left: 28px; }
+.banner-pequeno .artcl-titulo    { font-size: 18px; }
+.banner-pequeno .artcl-tire      { right: -12px; top: 50%; transform: translateY(-50%); height: 92%; }
 
 /* ── MODELO: ARTE DE PNEU DE FRENTE (sem IA — fundo fixo da marca) ───────── */
 .artpf {
