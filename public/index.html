@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <div class="app" id="app-root" data-marca="delinte" data-tipo-arte="livre" data-modelo="padrao" data-modelo-medida="unica">
+  <div class="app" id="app-root" data-marca="delinte" data-tipo-arte="livre" data-modelo="padrao" data-modelo-medida="unica" data-formato="feed">
 
     <!-- ═══ PAINEL DE CONTROLES ════════════════════════════════════════════ -->
     <aside class="sidebar" role="complementary" aria-label="Controles">
@@ -74,12 +74,22 @@
           </div>
         </fieldset>
 
+        <div class="control-group" id="grupo-banner-tamanho">
+          <label class="control-label" for="sel-banner-tamanho">Tamanho do Banner</label>
+          <select id="sel-banner-tamanho" class="ctrl-select">
+            <option value="grande">Grande — 1920 × 664 px (padrão)</option>
+            <option value="medio">Médio — 1920 × 393 px</option>
+            <option value="pequeno">Pequeno — 1920 × 195 px</option>
+          </select>
+        </div>
+
         <fieldset class="control-group" id="grupo-objetivo">
           <legend class="control-label">Objetivo</legend>
           <div class="btn-group" role="group" aria-label="Escolha o objetivo">
             <button type="button" class="btn-opt active" data-field="objetivo" data-val="promocao"   aria-pressed="true" >Promoção</button>
             <button type="button" class="btn-opt"        data-field="objetivo" data-val="lancamento" aria-pressed="false">Lançamento</button>
             <button type="button" class="btn-opt"        data-field="objetivo" data-val="aviso"      aria-pressed="false">Aviso</button>
+            <button type="button" class="btn-opt"        data-field="objetivo" data-val="nenhum"     aria-pressed="false">Nenhum</button>
           </div>
         </fieldset>
 

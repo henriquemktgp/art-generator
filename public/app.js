@@ -530,15 +530,52 @@ const MARCAS = {
 const FORMATOS = {
   feed:   { label: 'Feed 1:1',          width: 1080, height: 1080, desc: '1080 × 1080 px' },
   story:  { label: 'Story 9:16',        width: 1080, height: 1920, desc: '1080 × 1920 px' },
-  banner: { label: 'Banner Horizontal', width: 1440, height: 600,  desc: '1440 × 600 px'  }
+  // Banner não tem width/height fixo — varia por estado.bannerTamanho (ver
+  // BANNER_TAMANHOS abaixo e formatoAtivoInfo()). label aqui é só o texto do
+  // botão de formato; a descrição de tamanho exibida ao usuário já vem do
+  // tamanho de banner ativo, não daqui.
+  banner: { label: 'Banner Horizontal' }
 };
 
+// ─── Tamanhos disponíveis do Banner Horizontal ───────────────────────────────
+// "grande" é o padrão (tamanho oficial do site) — os outros dois são opções
+// adicionais para espaços menores (ex.: banners intermediários/rodapé).
+const BANNER_TAMANHOS = {
+  grande:  { label: 'Grande (padrão)', width: 1920, height: 664, desc: '1920 × 664 px' },
+  medio:   { label: 'Médio',           width: 1920, height: 393, desc: '1920 × 393 px' },
+  pequeno: { label: 'Pequeno',         width: 1920, height: 195, desc: '1920 × 195 px' }
+};
+
+// Retorna {label, desc, width, height} do formato/tamanho ativo — único ponto
+// que resolve a dimensão real do Banner (que não é fixa, ver BANNER_TAMANHOS)
+// para quem precisa do tamanho lógico do canvas (escala de preview, export,
+// medição de texto). Use esta função em vez de ler FORMATOS[...] direto
+// sempre que precisar de width/height reais.
+function formatoAtivoInfo() {
+  if (estado.formato === 'banner') {
+    const tamanho = BANNER_TAMANHOS[estado.bannerTamanho];
+    return { ...tamanho, label: `${FORMATOS.banner.label} (${tamanho.label})` };
+  }
+  return FORMATOS[estado.formato];
+}
+
 // ─── Objetivos disponíveis ───────────────────────────────────────────────────
+// "nenhum" some com o selo por completo (sem cls, sem texto) — só afeta a
+// camada 2 (composição); a IA continua recebendo um objetivo válido pra
+// escolher a cena de fundo (ver objetivoParaFundo() em GERAÇÃO DE FUNDO).
 const OBJETIVOS = {
   promocao:   { texto: 'PROMOÇÃO',   cls: 'obj-promocao'   },
   lancamento: { texto: 'LANÇAMENTO', cls: 'obj-lancamento' },
-  aviso:      { texto: 'AVISO',      cls: 'obj-aviso'      }
+  aviso:      { texto: 'AVISO',      cls: 'obj-aviso'      },
+  nenhum:     { texto: '',           cls: ''               }
 };
+
+// O backend (e o mapa SUGESTOES_CENA) só conhecem promoção/lançamento/aviso
+// — "nenhum" é puramente visual (esconde o selo), então sempre que for pedir
+// uma cena de fundo à IA ou montar a sugestão de prompt, cai pra "promocao".
+function objetivoParaFundo() {
+  return estado.objetivo === 'nenhum' ? 'promocao' : estado.objetivo;
+}
 
 // ─── Limites de caracteres ───────────────────────────────────────────────────
 const LIMITES = {
@@ -580,6 +617,7 @@ const estado = {
   modelo:         'padrao', // chave de MODELOS — só relevante quando tipoArte === 'livre'
   modeloMedida:   'unica',  // chave de MODELOS_MEDIDA — só relevante quando tipoArte === 'medida'
   formato:        'feed',
+  bannerTamanho:  'grande', // chave de BANNER_TAMANHOS — só relevante quando formato === 'banner'
   objetivo:       'promocao',
   produto:        0,
   pneu1:          0, // modelo "3 pneus"
@@ -739,6 +777,7 @@ function trocarTipoArte(tipo) {
 
   if (tipo === 'medida' && estado.formato === 'banner') {
     estado.formato = 'feed';
+    document.getElementById('app-root').dataset.formato = 'feed';
     document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
       const ativo = b.dataset.val === 'feed';
       b.classList.toggle('active', ativo);
@@ -762,6 +801,7 @@ function trocarModelo(modelo) {
 
   if (modelo !== 'padrao' && estado.formato === 'banner') {
     estado.formato = 'feed';
+    document.getElementById('app-root').dataset.formato = 'feed';
     document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
       const ativo = b.dataset.val === 'feed';
       b.classList.toggle('active', ativo);
@@ -792,6 +832,7 @@ function trocarModeloMedida(modelo) {
   // pra esse modelo, volta pro Feed (mesma lógica do Banner em trocarModelo).
   if (modelo === 'tabeladupla' && estado.formato === 'story') {
     estado.formato = 'feed';
+    document.getElementById('app-root').dataset.formato = 'feed';
     document.querySelectorAll('.btn-opt[data-field="formato"]').forEach(b => {
       const ativo = b.dataset.val === 'feed';
       b.classList.toggle('active', ativo);
@@ -839,7 +880,10 @@ function vincularEventos() {
 
       const formatoMudou = campo === 'formato' && valor !== estado.formato;
       estado[campo] = valor;
-      if (formatoMudou) atualizarMeta();
+      if (formatoMudou) {
+        document.getElementById('app-root').dataset.formato = valor;
+        atualizarMeta();
+      }
       if (!estado.promptEditado) atualizarSugestaoPrompt();
       renderTudo();
       atualizarEscala();
@@ -854,6 +898,14 @@ function vincularEventos() {
   // Seletor "Modelo" (dentro de Arte de Medida)
   document.getElementById('sel-modelo-medida').addEventListener('change', e => {
     trocarModeloMedida(e.target.value);
+  });
+
+  // Seletor "Tamanho do Banner" — só relevante quando formato === 'banner'
+  document.getElementById('sel-banner-tamanho').addEventListener('change', e => {
+    estado.bannerTamanho = e.target.value;
+    atualizarMeta();
+    renderTudo();
+    atualizarEscala();
   });
 
   // Seleção de produto — preenche textos sugeridos (editáveis pelo usuário)
@@ -988,7 +1040,7 @@ function preencherSugestoes(produto) {
 function atualizarSugestaoPrompt(forcar = false) {
   if (estado.promptEditado && !forcar) return;
   const linha   = produtoAtual()?.linha ?? 'institucional';
-  const obj     = estado.objetivo;
+  const obj     = objetivoParaFundo();
   const sugestao = (SUGESTOES_CENA[linha] ?? SUGESTOES_CENA.institucional)[obj] ?? '';
   const textarea = document.getElementById('inp-prompt-custom');
   if (textarea) textarea.value = sugestao;
@@ -996,7 +1048,7 @@ function atualizarSugestaoPrompt(forcar = false) {
 }
 
 function atualizarMeta() {
-  const f = FORMATOS[estado.formato];
+  const f = formatoAtivoInfo();
   document.getElementById('preview-meta').textContent = `${f.label} · ${f.desc}`;
 }
 
@@ -1028,7 +1080,7 @@ async function gerarFundo() {
       body:    JSON.stringify({
         modo:          modoRequisicao,
         formato:       estado.formato,
-        objetivo:      estado.objetivo,
+        objetivo:      objetivoParaFundo(),
         linha:         produto?.linha ?? 'institucional',
         customPrompt:  estado.customPrompt,
         sugestaoCarro: estado.sugestaoCarro
@@ -1139,13 +1191,17 @@ function renderArt() {
   canvas.className = [
     'art',
     `format-${estado.formato}`,
+    estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : '',
     obj.cls,
     semProd ? 'no-product' : ''
   ].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
-  // Badge
-  document.getElementById('art-badge').textContent = obj.texto;
+  // Badge — "nenhum" (obj.texto vazio) some com o selo por completo, em vez
+  // de deixar uma pílula vazia (sem cor de fundo, já que nenhum obj-cls bate).
+  const badge = document.getElementById('art-badge');
+  badge.textContent = obj.texto;
+  badge.hidden = !obj.texto;
 
   // Textos — título sempre em caixa alta
   const titulo = estado.titulo || 'TÍTULO DA ARTE';
@@ -1441,7 +1497,7 @@ function ajustarFonteTabela(tabelaEl) {
     // limites por um fator que depende do zoom do navegador do usuário, o
     // que é frágil e foi a causa de tamanhos errados em telas diferentes.
     const canvasEl = tabelaEl.closest('.artt, .arttd');
-    const larguraLogica = (FORMATOS[estado.formato] || {}).width || 0;
+    const larguraLogica = formatoAtivoInfo().width || 0;
     const larguraVisual = canvasEl ? canvasEl.getBoundingClientRect().width : 0;
     const escalaPreview = (larguraLogica && larguraVisual) ? (larguraVisual / larguraLogica) : 1;
 
@@ -1555,7 +1611,7 @@ function atualizarEscala() {
   const canvas  = document.getElementById(canvasAtivoId());
   const wrapper = document.getElementById('preview-wrapper');
   const stage   = wrapper.parentElement;
-  const { width, height } = FORMATOS[estado.formato];
+  const { width, height } = formatoAtivoInfo();
 
   canvas.style.width  = width  + 'px';
   canvas.style.height = height + 'px';
@@ -1604,7 +1660,7 @@ async function exportarPDF() {
   const btn = document.getElementById('btn-pdf');
   definirEstadoBtn(btn, true, 'PDF...');
   try {
-    const { width, height } = FORMATOS[estado.formato];
+    const { width, height } = formatoAtivoInfo();
     const c = await capturarCanvas();
     const imgData = c.toDataURL('image/png');
     const { jsPDF } = window.jspdf;
@@ -1627,7 +1683,7 @@ async function exportarPDF() {
 // ── Captura via clone off-screen ─────────────────────────────────────────────
 async function capturarCanvas() {
   const original = document.getElementById(canvasAtivoId());
-  const { width, height } = FORMATOS[estado.formato];
+  const { width, height } = formatoAtivoInfo();
 
   const clone = original.cloneNode(true);
   // O clone vai direto para o <body>, fora de #app-root — então não herda as

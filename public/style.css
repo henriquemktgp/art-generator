@@ -190,6 +190,9 @@ body {
 /* Banner ainda não existe para os 5 novos modelos de Arte Livre — só Feed/Story */
 .app:not([data-modelo="padrao"]) #btn-formato-banner { display: none; }
 
+/* Seletor "Tamanho do Banner" só faz sentido com Banner ativo */
+.app:not([data-formato="banner"]) #grupo-banner-tamanho { display: none; }
+
 /* Tabela Dupla não existe em Story (9:16) — a lista de até 30 linhas não
    cabe de forma legível num formato tão estreito/alto. Banner já não existe
    pra nenhum modelo de Arte de Medida (ver regra acima) — sobra só Feed. */
@@ -911,30 +914,15 @@ body {
 .format-story.no-product .art-text { top: 480px; bottom: auto; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   FORMATO: BANNER HORIZONTAL (1440 × 600 px)
+   FORMATO: BANNER HORIZONTAL — regras comuns aos 3 tamanhos (ver
+   BANNER_TAMANHOS em app.js). Cada tamanho tem sua própria classe
+   (.banner-grande/.banner-medio/.banner-pequeno, aplicada junto de
+   .format-banner) com os valores de posição/fonte que variam por altura.
    ═══════════════════════════════════════════════════════════════════════════ */
-.format-banner .art-stripe { width: 12px; }
-
-.format-banner .art-elem {
-  bottom: -30px; right: -30px;
-  width: 380px; height: auto;
-  opacity: 0.06;
-}
 
 .format-banner .art-header {
-  left: 60px; top: 60px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
-}
-
-.format-banner .art-logo { height: 58px; max-width: 240px; }
-
-.format-banner .art-badge { font-size: 20px; padding: 8px 18px; }
-
-.format-banner .art-img-wrap {
-  right: 0; top: 0; bottom: 0;
-  width: 500px;
 }
 
 .format-banner .art-img-grad {
@@ -942,20 +930,85 @@ body {
 }
 
 .format-banner .art-text {
-  left: 380px; right: 520px;
   top: 0; bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.format-banner .art-pname  { font-size: 19px; margin-bottom: 4px; }
-.format-banner .art-title  { font-size: 82px; margin-bottom: 12px; line-height: 0.92; }
-.format-banner .art-sub    { font-size: 27px; margin-bottom: 22px; }
-.format-banner .art-cta    { font-size: 22px; padding: 10px 26px; margin-bottom: 14px; }
-.format-banner .art-specs  { font-size: 19px; }
+/* ── Tamanho GRANDE — 1920 × 664 px (padrão do site) ──────────────────────── */
+.banner-grande .art-stripe { width: 16px; }
 
-.format-banner.no-product .art-text { left: 120px; right: 120px; }
+.banner-grande .art-elem {
+  bottom: -40px; right: -40px;
+  width: 520px; height: auto;
+  opacity: 0.06;
+}
+
+.banner-grande .art-header { left: 76px; top: 64px; gap: 20px; }
+.banner-grande .art-logo   { height: 68px; max-width: 280px; }
+.banner-grande .art-badge  { font-size: 24px; padding: 10px 22px; }
+
+.banner-grande .art-img-wrap { right: 0; top: 0; bottom: 0; width: 660px; }
+
+.banner-grande .art-text { left: 500px; right: 700px; }
+
+.banner-grande .art-pname  { font-size: 22px; margin-bottom: 6px; }
+.banner-grande .art-title  { font-size: 96px; margin-bottom: 16px; line-height: 0.92; }
+.banner-grande .art-sub    { font-size: 32px; margin-bottom: 26px; }
+.banner-grande .art-cta    { font-size: 26px; padding: 12px 30px; margin-bottom: 16px; }
+.banner-grande .art-specs  { font-size: 22px; }
+
+.banner-grande.no-product .art-text { left: 140px; right: 140px; }
+
+/* ── Tamanho MÉDIO — 1920 × 393 px ────────────────────────────────────────── */
+.banner-medio .art-stripe { width: 10px; }
+
+.banner-medio .art-elem {
+  bottom: -20px; right: -20px;
+  width: 320px; height: auto;
+  opacity: 0.06;
+}
+
+.banner-medio .art-header { left: 56px; top: 32px; gap: 10px; }
+.banner-medio .art-logo   { height: 42px; max-width: 190px; }
+.banner-medio .art-badge  { font-size: 16px; padding: 7px 16px; }
+
+.banner-medio .art-img-wrap { right: 0; top: 0; bottom: 0; width: 460px; }
+
+.banner-medio .art-text { left: 320px; right: 500px; }
+
+.banner-medio .art-pname  { font-size: 15px; margin-bottom: 4px; }
+.banner-medio .art-title  { font-size: 52px; margin-bottom: 10px; line-height: 0.92; }
+.banner-medio .art-sub    { font-size: 20px; margin-bottom: 14px; }
+.banner-medio .art-cta    { font-size: 16px; padding: 8px 18px; margin-bottom: 10px; }
+.banner-medio .art-specs  { font-size: 14px; }
+
+.banner-medio.no-product .art-text { left: 100px; right: 100px; }
+
+/* ── Tamanho PEQUENO — 1920 × 195 px ──────────────────────────────────────── */
+/* Altura mínima do trio de tamanhos — sem pname/specs (sacrificados por
+   espaço; título+subtítulo+CTA são o essencial de um banner tão baixo) e
+   cabeçalho bem mais compacto que os outros dois tamanhos. */
+.banner-pequeno .art-stripe { width: 6px; }
+
+.banner-pequeno .art-elem { display: none; }
+
+.banner-pequeno .art-header { left: 32px; top: 18px; gap: 6px; }
+.banner-pequeno .art-logo   { height: 22px; max-width: 100px; }
+.banner-pequeno .art-badge  { font-size: 10px; padding: 4px 10px; }
+
+.banner-pequeno .art-img-wrap { right: 0; top: 0; bottom: 0; width: 220px; }
+
+.banner-pequeno .art-text { left: 170px; right: 240px; }
+
+.banner-pequeno .art-pname,
+.banner-pequeno .art-specs { display: none; }
+.banner-pequeno .art-title { font-size: 30px; margin-bottom: 5px; line-height: 0.92; }
+.banner-pequeno .art-sub   { font-size: 14px; margin-bottom: 8px; }
+.banner-pequeno .art-cta   { font-size: 12px; padding: 5px 13px; margin-bottom: 0; }
+
+.banner-pequeno.no-product .art-text { left: 50px; right: 50px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CANVAS DA ARTE — MODO "ARTE DE MEDIDA"
