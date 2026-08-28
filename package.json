@@ -2,13 +2,13 @@
   "name": "delinte-art-generator",
   "version": "2.0.0",
   "description": "Gerador de artes padronizadas Delinte — arquitetura híbrida IA + composição (GP Corp)",
-  "main": "server.js",
+  "main": "src/server.js",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -83,7 +83,7 @@ Foco em especificação técnica do pneu (medida/dimensão), não em estilo de v
 | Fonte de título | Anton (Google Fonts) | Nasalization (self-hosted, ver abaixo) |
 | Logo | SVG via CDN (`marketing-gp/delinte`) | PNG local em `public/assets/denali/` |
 
-As cores da Denali vêm do `Manual_Denali.pdf` (paleta oficial homologada pelo marketing). As variáveis de marca ficam em `public/style.css`, escopadas por `[data-marca="delinte"]` / `[data-marca="denali"]` — para ajustar uma cor, edite lá.
+As cores da Denali vêm do brandguide oficial homologado pelo marketing. As variáveis de marca ficam em `public/style.css`, escopadas por `[data-marca="delinte"]` / `[data-marca="denali"]` — para ajustar uma cor, edite lá.
 
 **Fonte Nasalization:** é uma fonte paga (Adobe Fonts), não disponível via Google Fonts. Os arquivos (`Nasalization-Rg.otf`/`.ttf`) estão em `public/fonts/` e são carregados via `@font-face` em `style.css`. Se precisar trocar o arquivo da fonte, substitua os arquivos nessa pasta mantendo o mesmo nome.
 
@@ -123,7 +123,7 @@ Cada produto segue o formato:
 - **Adicionar:** copie um bloco `{ ... },` e cole antes do `]` que fecha a lista da marca.
 - **Atualizar foto:** troque a URL do campo correspondente pelo PNG oficial recortado (fundo transparente). Um produto sem `foto45`/`fotoPerfil` some automaticamente as fotos de pneu na Arte de Medida.
 - **Remover:** apague o bloco inteiro (nunca apague o item "Sem produto", sempre o índice 0 de cada marca).
-- `linha` é compartilhada entre marcas (`esportiva`, `offroad`, `runflat`, `carga`, `passeio`, `semislick`, `institucional`) — define qual cenário de fundo (`prompts.js`) e qual sugestão de prompt (`SUGESTOES_CENA`) o produto usa.
+- `linha` é compartilhada entre marcas (`esportiva`, `offroad`, `runflat`, `carga`, `passeio`, `semislick`, `institucional`) — define qual cenário de fundo (`src/prompts.js`) e qual sugestão de prompt (`SUGESTOES_CENA`) o produto usa.
 
 Salve e recarregue a página — sem reiniciar o servidor.
 
@@ -133,7 +133,7 @@ Salve e recarregue a página — sem reiniciar o servidor.
 
 ## Como refinar os prompts de IA
 
-Abra `prompts.js`. Há três famílias de prompt, uma por família de modelo:
+Abra `src/prompts.js`. Há três famílias de prompt, uma por família de modelo:
 
 - `montarPrompt()` — Arte Livre Padrão, 3 Pneus e Pneu 45° (fundo puramente ambiental, pneu é o herói).
 - `montarPromptMedida()` — Medida Única (carro é o herói, mas só na faixa central da arte).
@@ -146,9 +146,9 @@ Reinicie o servidor (`npm start`) após salvar.
 
 ---
 
-## Referências visuais (`public/artmodel/`)
+## Referências visuais
 
-Essa pasta guarda os mockups/PNGs de design que serviram de referência para recriar cada layout em CSS pixel a pixel (Arte Livre, Arte de Medida, Tabela). Eles **não são carregados pela aplicação** — servem só como documentação visual para quem for ajustar um layout existente ou criar um novo.
+Os layouts (Arte Livre, Arte de Medida, Tabela) foram recriados em CSS pixel a pixel a partir de mockups de design fornecidos pelo marketing. Os PNGs de referência viviam em `public/artmodel/` mas foram removidos do repositório para mantê-lo enxuto (nunca foram carregados pela aplicação — só serviam de documentação visual); ainda estão disponíveis no histórico do git, se precisar consultá-los de novo. Comentários em `style.css` apontam qual trecho de layout veio de qual mockup.
 
 ---
 

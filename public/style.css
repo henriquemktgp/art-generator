@@ -959,7 +959,8 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CANVAS DA ARTE — MODO "ARTE DE MEDIDA"
-   Layout fixo baseado nos modelos de public/artmodel/<marca>/. Estrutura em
+   Layout fixo baseado em mockups de referência do marketing (por marca),
+   removidos do repo em 2026-08-28 — ver histórico do git. Estrutura em
    coluna flex: só a faixa central (fundo IA + fotos do pneu) é elástica —
    as demais faixas têm altura fixa e simplesmente ficam maiores no formato
    Story por serem elementos tipográficos, não fotográficos.
@@ -1262,7 +1263,8 @@ body {
    diferente: fundo claro com textura de losangos, cabeçalho com logo
    estática (sem mosaico), DUAS tarjas (antes e depois da faixa de fundo),
    rótulo "MEDIDA" (singular) em 3 níveis empilhados, sem logo no rodapé.
-   Ver public/artmodel/denali/emptymodel1x1.png e emptymodel9x16.png.
+   Baseado nos mockups "emptymodel" do marketing (removidos do repo, ver
+   histórico do git).
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Fundo claro com textura sutil de losangos — aproximação via gradientes
@@ -1375,7 +1377,8 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ARTE DE MEDIDA — MODELOS "TABELA DE MEDIDAS" / "TABELA DUPLA"
-   Baseados em public/artmodel/artemedida/{tabela.png,tabeladupla.jpg}.
+   Baseados nos mockups "tabela"/"tabeladupla" do marketing (removidos do
+   repo em 2026-08-28, ver histórico do git).
    Delinte mantém o fundo escuro padrão do app; Denali inverte para fundo
    claro com tabelas laranja e texto escuro (ver bloco [data-marca="denali"]
    mais abaixo — mesmo princípio já usado em "Arte de Medida" single).
@@ -1449,8 +1452,8 @@ body {
 .artt-footer  { position: relative; z-index: 1; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
 .artt-footer-sep { flex: 0 0 auto; width: 2px; background: rgba(var(--white-rgb),0.3); }
 .artt-logo-marca { height: auto; width: auto; object-fit: contain; display: block; }
-/* Logo GP recortada diretamente do modelo de referência (ver
-   public/artmodel/artemedida/tabela.png) — assets/gp/logo-gp-branca.png,
+/* Logo GP recortada diretamente do mockup "tabela" de referência do
+   marketing (removido do repo, ver histórico do git) — assets/gp/logo-gp-branca.png,
    fundo transparente. Denali troca para a versão escura (logo-gp-preta.png)
    já que o fundo destes dois modelos vira claro só para essa marca. */
 .artt-logo-gp { height: auto; width: auto; object-fit: contain; display: block; }
@@ -1529,7 +1532,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   MODELOS DE ARTE LIVRE — baseados em public/artmodel/arteLivre/*.png
+   MODELOS DE ARTE LIVRE — baseados nos mockups do marketing (removidos do
+   repo em 2026-08-28, ver histórico do git)
    Cada modelo abaixo reutiliza os tokens de marca (--brand-* e --font-display)
    já definidos no topo do arquivo; nenhuma cor fica fora da paleta oficial.
    Os 5 mockups de referência são só da Denali — a versão Delinte usa a

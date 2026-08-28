@@ -27,7 +27,7 @@ const FORMATOS_VALIDOS_SEM_BANNER = FORMATOS_VALIDOS_MEDIDA;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // ── Rota de geração de fundo ──────────────────────────────────────────────────
 // POST /api/gerar-fundo

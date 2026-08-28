@@ -306,9 +306,9 @@ const PRODUTOS_DELINTE = [
 // CATÁLOGO DENALI
 //
 // Fotos oficiais fornecidas pela equipe (denalipneus.com.br). specs/título/
-// subtítulo/CTA abaixo são RASCUNHO, escritos a partir dos slogans oficiais
-// do Manual_Denali.pdf — revisar com o time de marketing Denali antes de usar
-// em campanha real.
+// subtítulo/CTA abaixo são RASCUNHO, escritos a partir dos slogans do
+// brandguide oficial da Denali — revisar com o time de marketing Denali
+// antes de usar em campanha real.
 //
 // SteelWolf (runflat) e Buffalo (carga) ainda não têm modelo/foto definidos —
 // entram com campos de foto vazios ("") até a equipe enviar specs.
@@ -1341,7 +1341,8 @@ function renderArtPneuFrente() {
 
 // ── Modelos "Tabela de Medidas" / "Tabela Dupla" ─────────────────────────────
 // Frase padrão do rodapé quando o usuário não digitou nada (mesmo texto do
-// modelo de referência em public/artmodel/artemedida/tabela.png)
+// mockup "tabela" de referência do marketing, removido do repo — ver
+// histórico do git)
 const CTA_TABELA_PADRAO = 'Entre em contato com o seu vendedor e aproveite!';
 
 // Reconstrói a lista de linhas (medida + valor) no editor da sidebar. Só

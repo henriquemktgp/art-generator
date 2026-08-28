@@ -18,32 +18,32 @@ Ferramenta interna da **GP Corp** para gerar artes digitais padronizadas das mar
 
 ```
 art-generator/
-├── server.js              # Servidor Express (backend)
-├── prompts.js              # Templates de prompt para a IA (3 famílias — livre, medida, carro)
-├── magnific.js              # Cliente da API Magnific/Mystic (assíncrono, com polling)
 ├── package.json              # deps: express, dotenv
 ├── .env.example                # Template de configuração (MAGNIFIC_API_KEY, PORT)
 ├── README.md                    # Documentação de uso
-├── Manual_Denali.pdf              # Brandguide oficial Denali (fonte da paleta/tipografia/linhas)
-├── Logo Denali/                     # Assets originais fornecidos pelo marketing (logo PNG × 3, fonte Nasalization)
-└── public/
+├── src/                          # Backend (Node.js/Express)
+│   ├── server.js                    # Servidor Express — entry point (package.json "main"/scripts aqui)
+│   ├── prompts.js                    # Templates de prompt para a IA (3 famílias — livre, medida, carro)
+│   └── magnific.js                    # Cliente da API Magnific/Mystic (assíncrono, com polling)
+├── docs/
+│   └── RESUMO_PROJETO.md              # Este arquivo — leitura completa do código-fonte
+└── public/                        # Frontend estático, servido pelo Express a partir da raiz do site
     ├── index.html            # Markup da UI (sidebar de controles + preview da arte, 9 canvases)
     ├── app.js                  # Toda a lógica de frontend (estado, render, export, MARCAS, MODELOS)
     ├── style.css                 # Estilos + tokens de marca + visibilidade condicional por modo/modelo
     ├── fonts/                       # Nasalization-Rg.otf/.ttf (self-hosted, licenciada, Denali)
-    ├── assets/
-    │   ├── denali/                    # logo-denali-{colorida,branca,preta}.png
-    │   └── gp/                          # logo-gp-{branca,preta}.png — só usada nos modelos de Tabela
-    └── artmodel/                        # Mockups de referência de design (NÃO carregados em runtime)
-        ├── arteLivre/                      # PNGs-modelo dos 5 novos layouts de Arte Livre
-        ├── artemedida/                       # tabela.png, tabeladupla.jpg — modelo das tabelas
-        ├── delinte/                            # model{1x1,9x16}.png + versões "empty" (Arte de Medida)
-        └── denali/                                # idem, para Denali
+    └── assets/
+        ├── denali/                    # logo-denali-{colorida,branca,preta}.png
+        └── gp/                          # logo-gp-{branca,preta}.png — só usada nos modelos de Tabela
 ```
+
+Reorganizado em 2026-08-28: `server.js`/`prompts.js`/`magnific.js` moveram de raiz para `src/`, e este resumo moveu para `docs/` — a raiz agora só tem o essencial (config + entrypoint de package). `server.js` ajustado (`path.join(__dirname, '..', 'public')`) pra continuar servindo `public/` de fora de `src/`; `dotenv` continua resolvendo `.env` normalmente porque olha o `cwd` do processo (raiz, via `npm start`/`npm run dev`), não o `__dirname` do arquivo.
+
+O brandguide oficial da Denali (`Manual_Denali.pdf`) e os mockups de referência de design (`public/artmodel/`, com os PNGs-modelo de cada layout) foram removidos do repositório em 2026-08-28 para mantê-lo enxuto — nenhum dos dois era carregado em runtime, ambos ficam disponíveis no histórico do git. Comentários em `style.css`/`app.js` que citavam esses arquivos foram ajustados para não apontar mais pra um caminho que não existe mais no repo.
 
 ## Backend
 
-### `server.js`
+### `src/server.js`
 - Carrega `.env` via `dotenv`; alerta no boot se `MAGNIFIC_API_KEY` não estiver configurada.
 - Serve os arquivos estáticos de `public/`.
 - **`POST /api/gerar-fundo`** — recebe `{ formato, objetivo, linha, customPrompt, modo, sugestaoCarro }`.
@@ -52,20 +52,20 @@ art-generator/
   - `objetivo` (`{'promocao','lancamento','aviso'}`) só é obrigatório/validado no modo `'livre'` — os demais modos ignoram o campo e sempre usam a variante "promocao" da cena.
   - `linha` ∈ `LINHAS_VALIDAS = {'esportiva','offroad','runflat','carga','passeio','semislick','institucional'}` (default `'institucional'`).
   - `customPrompt` limitado a 500 caracteres; `sugestaoCarro` (usado só em `carrofrente`/`carrolado`) limitado a 200 caracteres. Nenhum dos dois é executado como código.
-  - Monta o prompt chamando `montarPromptMedida()` (modo `medida`), `montarPromptCarro()` (modos `carrofrente`/`carrolado`) ou `montarPrompt()` (modo `livre`, default) — todas exportadas de `prompts.js`.
-  - Chama `gerarImagemMagnific(prompt, aspectRatio)` (`magnific.js`), baixa a imagem resultante e devolve `{ imagem: '<base64 PNG>' }` — mantém o mesmo contrato de resposta que o frontend já esperava da época da OpenAI.
+  - Monta o prompt chamando `montarPromptMedida()` (modo `medida`), `montarPromptCarro()` (modos `carrofrente`/`carrolado`) ou `montarPrompt()` (modo `livre`, default) — todas exportadas de `src/prompts.js`.
+  - Chama `gerarImagemMagnific(prompt, aspectRatio)` (`src/magnific.js`), baixa a imagem resultante e devolve `{ imagem: '<base64 PNG>' }` — mantém o mesmo contrato de resposta que o frontend já esperava da época da OpenAI.
   - Erros do Magnific viram `502` com mensagem genérica ao usuário; detalhe do erro só vai para o log do servidor.
   - **Não recebe `marca`** — a escolha de marca é puramente client-side (composição); o backend só lida com o fundo, que é agnóstico de marca.
 - **`GET /api/proxy-img?url=`** — proxy de imagens externas (com CORS liberado) usado na exportação, já que `html2canvas` não consegue capturar recursos cross-origin sem isso. Só aceita URLs `http(s)` absolutas.
 - A chave do Magnific nunca é exposta ao frontend — todo acesso à API passa pelo servidor.
 
-### `magnific.js`
+### `src/magnific.js`
 - Substitui o cliente OpenAI usado na v2 original. Diferença fundamental: a API do Magnific (modelo Mystic) é **assíncrona**.
 - `gerarImagemMagnific(prompt, aspectRatio)`: `POST https://api.magnific.com/v1/ai/mystic` (body `{ prompt, aspect_ratio, resolution: '2k', model: 'realism' }`, header `x-magnific-api-key`) cria a tarefa e devolve `task_id`. Em seguida faz polling em `GET /v1/ai/mystic/{task_id}` a cada 3s (`POLL_INTERVAL_MS`) até `status === 'COMPLETED'` (retorna `data.generated[0]`, uma URL) ou `'FAILED'`, com timeout total de 2 minutos (`POLL_TIMEOUT_MS`).
-- Diferente da OpenAI, não devolve base64 direto — é `server.js` quem baixa a URL e converte para base64 antes de responder ao frontend.
-- `aspectRatio` é um enum fixo do Magnific (`square_1_1`, `social_story_9_16`, `horizontal_2_1`, `standard_3_2`), não largura×altura em pixels — ver `ASPECT_RATIOS`/`ASPECT_RATIO_MEDIDA` em `prompts.js`.
+- Diferente da OpenAI, não devolve base64 direto — é `src/server.js` quem baixa a URL e converte para base64 antes de responder ao frontend.
+- `aspectRatio` é um enum fixo do Magnific (`square_1_1`, `social_story_9_16`, `horizontal_2_1`, `standard_3_2`), não largura×altura em pixels — ver `ASPECT_RATIOS`/`ASPECT_RATIO_MEDIDA` em `src/prompts.js`.
 
-### `prompts.js`
+### `src/prompts.js`
 Três famílias de prompt, cada uma com seu próprio template base e mapa de composição — todas compartilham `CENAS_POR_LINHA` (biblioteca de cenários por linha de produto × objetivo) e a regra de ouro "o produto é o herói, o fundo é o palco" (adaptada conforme o caso).
 
 1. **`montarPrompt(formato, objetivo, linha, customPrompt)`** — família original (Arte Livre Padrão, 3 Pneus, Pneu 45°). O pneu nunca é gerado pela IA; `COMPOSICAO_LAYOUT` descreve zonas em pixels (logo, badge, coluna de texto, "TIRE ZONE") por formato (`feed` 1080×1080, `story` 1080×1920, `banner` 1440×600), com regras rígidas proibindo veículos/objetos grandes na zona do pneu. `TEMPLATE_BASE` monta o prompt final combinando cena + composição + restrições (sem texto, logos, pessoas, rostos, mãos, veículos grandes na zona do pneu).
@@ -160,17 +160,17 @@ A UI tem dois níveis de seleção de layout, não um único "formato de arte":
 - Gradiente de marca escrito inline nos pontos de uso (não via variável intermediária) — `var()` aninhado dentro de outra custom property resolve no elemento onde foi *declarado*, não em cada descendente que sobrescreve as variáveis internas.
 - Visibilidade condicional de controles/canvases por `[data-tipo-arte]`/`[data-modelo]`/`[data-modelo-medida]` no `#app-root` — é o mecanismo central que faz o "roteamento" de UI entre os 9 modelos.
 - `@font-face` para Nasalization, usada só quando `--font-display` resolve para ela (Denali); ajuste de `font-size` do título só para Denali (Nasalization é mais larga que Anton).
-- Comentários (linhas ~957, 1254, 1367, 1442, 1521) documentam que os layouts de Arte de Medida (Denali), Tabela/Tabela Dupla e os 5 modelos novos de Arte Livre foram recriados **pixel a pixel** a partir dos mockups em `public/artmodel/` — ver seção abaixo.
+- Comentários (linhas ~957, 1254, 1367, 1442, 1521) documentam que os layouts de Arte de Medida (Denali), Tabela/Tabela Dupla e os 5 modelos novos de Arte Livre foram recriados **pixel a pixel** a partir de mockups de design fornecidos pelo marketing (os PNGs originais viviam em `public/artmodel/`, removido do repo — ver seção abaixo).
 - Suporte a `prefers-reduced-motion`.
 
-## `public/artmodel/` — referências de design (não executadas)
+## `public/artmodel/` — referências de design (removido em 2026-08-28)
 
-Confirmado por busca em todo o projeto: **nenhum arquivo dentro de `artmodel/` é carregado em runtime** (sem `<img src="artmodel/...">`, sem `fetch` a esses caminhos). São citados apenas em comentários (`app.js:1309`, `style.css:957/1254/1367/1442/1521`) como a origem visual/mockup que guiou a implementação em CSS de cada layout novo:
+Essa pasta guardava os mockups/PNGs de design que serviram de referência para recriar cada layout em CSS pixel a pixel (Arte Livre, Arte de Medida, Tabela). Confirmado por busca em todo o projeto antes da remoção: **nenhum arquivo dentro de `artmodel/` era carregado em runtime** (sem `<img src="artmodel/...">`, sem `fetch` a esses caminhos) — só citado em comentários (`app.js:1309`, `style.css:957/1254/1367/1442/1521`) como a origem visual/mockup de cada layout:
 - `arteLivre/*.png` — os 5 modelos novos de Arte Livre (3 Pneus, Pneu 45°, Carro de Frente/Lado, Pneu de Frente).
 - `artemedida/{tabela.png,tabeladupla.jpg}` — Tabela de Medidas e Tabela Dupla.
 - `delinte/` / `denali/` — modelo e versão "empty" (sem conteúdo) da Arte de Medida por marca.
 
-Servem como fonte de verdade visual para quem for ajustar ou criar um layout — mantenha a pasta ao fazer manutenção de design, mesmo que nada no código a referencie funcionalmente.
+A pasta foi removida do repositório pra mantê-lo enxuto (22MB de imagens não usadas em runtime); os arquivos continuam disponíveis no histórico do git caso alguém precise consultá-los ao ajustar um layout existente.
 
 ## Segurança (já documentada no README)
 - `MAGNIFIC_API_KEY` fica só no `.env` do servidor (nunca no frontend).
@@ -180,12 +180,12 @@ Servem como fonte de verdade visual para quem for ajustar ou criar um layout —
 
 ## Pontos de extensão já mapeados no próprio código
 - Adicionar produto: editar `PRODUTOS_DELINTE` ou `PRODUTOS_DENALI` em `app.js`, preenchendo os campos de foto relevantes para os modelos que ele deve suportar.
-- Ajustar cenários de IA: editar `CENAS_POR_LINHA` (compartilhado pelas 3 famílias de prompt) e os mapas `COMPOSICAO_*` em `prompts.js` — sem tocar nas funções `montarPrompt*` ou nas restrições dos templates `TEMPLATE_BASE*`.
+- Ajustar cenários de IA: editar `CENAS_POR_LINHA` (compartilhado pelas 3 famílias de prompt) e os mapas `COMPOSICAO_*` em `src/prompts.js` — sem tocar nas funções `montarPrompt*` ou nas restrições dos templates `TEMPLATE_BASE*`.
 - Adicionar uma 3ª marca: seguir o padrão de `MARCAS` em `app.js` (novo catálogo + entrada em `MARCAS`), replicar os blocos `[data-marca="..."]` em `style.css`, e decidir se ela entra em `MARCAS_COM_ARTE_MEDIDA`.
-- Adicionar um novo modelo de Arte Livre/Medida: seguir o padrão de `MODELOS`/`MODELOS_MEDIDA` (novo canvas em `index.html`, entrada no mapa, `renderArt*` dedicado, regras de visibilidade `[data-modelo="..."]` em `style.css`) — usar `public/artmodel/` como referência visual se houver mockup.
+- Adicionar um novo modelo de Arte Livre/Medida: seguir o padrão de `MODELOS`/`MODELOS_MEDIDA` (novo canvas em `index.html`, entrada no mapa, `renderArt*` dedicado, regras de visibilidade `[data-modelo="..."]` em `style.css`) — usar o mockup de design fornecido pelo marketing como referência visual, se houver.
 
 ## Pendências conhecidas
-- **Dados de catálogo em rascunho:** vários produtos (principalmente Denali, mas também algumas linhas Delinte) têm `foto45`/`fotoPerfil`/`fotoFrente`, specs, CTA ou parágrafo marcados no próprio `app.js` como `// PENDENTE` (placeholder aguardando dados reais) ou `// RASCUNHO` (texto não validado pelo marketing) — inclui, notavelmente, o bloco inteiro de produtos Denali (redigido a partir de slogans do `Manual_Denali.pdf`, não linha a linha pelo marketing) e os produtos Denali `SteelWolf`/`Buffalo`, ainda sem foto nem specs oficiais (campos de foto ficam `""` até a equipe enviar o material).
+- **Dados de catálogo em rascunho:** vários produtos (principalmente Denali, mas também algumas linhas Delinte) têm `foto45`/`fotoPerfil`/`fotoFrente`, specs, CTA ou parágrafo marcados no próprio `app.js` como `// PENDENTE` (placeholder aguardando dados reais) ou `// RASCUNHO` (texto não validado pelo marketing) — inclui, notavelmente, o bloco inteiro de produtos Denali (redigido a partir de slogans do brandguide oficial da Denali, não linha a linha pelo marketing) e os produtos Denali `SteelWolf`/`Buffalo`, ainda sem foto nem specs oficiais (campos de foto ficam `""` até a equipe enviar o material).
 - Não há versão do decorativo "elemento xadrez" (Arte Livre Padrão) para Denali — fica oculto para essa marca via CSS.
 - `MODELOS_MEDIDA.unica.maxLinhas = 0` é um valor arbitrário (esse modelo não tem tabela; funciona só porque nenhum código dispara a lógica de limite de linhas para ele) — vale documentar isso no código se o modelo ganhar alguma lista no futuro.
 
@@ -194,4 +194,4 @@ Servem como fonte de verdade visual para quem for ajustar ou criar um layout —
 - Dependências Node já instaladas (`node_modules` presente): `express`, `dotenv` (não há mais dependência de SDK da OpenAI — a chamada ao Magnific é feita via `fetch` nativo do Node 18+).
 - Não há dependências Python — qualquer `requirements.txt`/`venv` encontrado na pasta não faz parte do projeto (removidos em 2026-08-20).
 - Assets Denali (logo × 3 versões, fonte Nasalization) e logo GP (branca/preta) já estão em `public/assets/` e `public/fonts/`.
-- `public/artmodel/` contém os mockups de referência de design das 8 telas/layouts mais recentes — mantidos no repo propositalmente, mesmo não sendo carregados em runtime.
+- `Manual_Denali.pdf`, a pasta `Logo Denali/` (assets originais duplicados dos já organizados em `public/`) e `public/artmodel/` (mockups de referência) foram removidos do repositório em 2026-08-28 para mantê-lo enxuto — nenhum era carregado em runtime; todos continuam disponíveis no histórico do git.
