@@ -59,7 +59,7 @@ npm run dev
 | **Arte com 3 Pneus** | Cenário de fundo + até 3 produtos lado a lado (foto 45°) com apelido e um campo "Destaque" | Sem título/CTA — usa o Subtítulo como texto de rodapé |
 | **Arte de Pneu 45°** | Cenário de fundo + foto do pneu a 45° + título/subtítulo + specs em formato de "pills" | No Banner o layout muda: dois pneus lado a lado (cortados, foco na banda de rodagem) e CTA no lugar das pills |
 | **Pneu + Carro de Frente** | Carro-herói (visto de frente) gerado por IA + foto real do pneu (45°) sobreposta | Só título; campo "Sugestão de Carro" descreve o veículo desejado à IA; sem Banner |
-| **Pneu + Carro de Lado** | Carro-herói (visto de lado, ao fundo) + foto real do pneu de perfil, em destaque | Mesma lógica do anterior, ângulo lateral |
+| **Pneu + Carro de Lado** | Carro-herói (visto de lado, ao fundo) + foto real do pneu de perfil, em destaque | Mesma lógica do anterior, ângulo lateral; no Banner o pneu vaza a borda esquerda, logo fica centralizada embaixo, e ganha um CTA ao lado do título |
 | **Arte de Pneu de Frente** | Fundo fixo (sem IA) por marca + foto frontal do produto | Sem botão "Gerar Fundo" nem painel de prompt — não usa a API; sem Banner |
 
 ### Modelos de Arte de Medida

@@ -1413,6 +1413,7 @@ function renderArtCarroLado() {
 
   document.getElementById('artcl-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
   document.getElementById('artcl-tire').src           = semProd ? '' : (produto.fotoPerfil || '');
+  document.getElementById('artcl-cta').textContent    = (estado.cta || 'SAIBA MAIS').toUpperCase();
 }
 
 // Renderiza o canvas do modelo "Arte de Pneu de Frente" (pneu centralizado,
