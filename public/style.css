@@ -240,8 +240,10 @@ body {
 /* Pneus 1/2/3: só existem no modelo "3 pneus" */
 .app:not([data-modelo="3pneus"]) #grupo-3pneus { display: none; }
 
-/* Destaque da caixa inferior: só existe no modelo "3 pneus" */
-.app:not([data-modelo="3pneus"]) #grupo-destaque { display: none; }
+/* Destaque da caixa inferior: só existe no modelo "3 pneus", e só em Feed/
+   Story — no Banner essa caixa vira uma CTA editável (ver #grupo-cta). */
+.app:not([data-modelo="3pneus"]) #grupo-destaque,
+.app[data-modelo="3pneus"][data-formato="banner"] #grupo-destaque { display: none; }
 
 /* Sugestão de carro: só existe nos modelos com carro-herói gerado por IA */
 .app:not([data-modelo="carrofrente"]):not([data-modelo="carrolado"]) #grupo-sugestao-carro { display: none; }
@@ -256,12 +258,13 @@ body {
 .app[data-modelo="carrofrente"] #grupo-sub,
 .app[data-modelo="carrolado"]   #grupo-sub { display: none; }
 
-/* CTA: só faz sentido no modelo padrão */
-.app[data-modelo="3pneus"]      #grupo-cta,
+/* CTA: só faz sentido no modelo padrão — e, no "3 pneus", só quando o
+   formato é Banner (substitui o "Destaque" fixo da caixa do rodapé). */
 .app[data-modelo="pneu45"]      #grupo-cta,
 .app[data-modelo="carrofrente"] #grupo-cta,
 .app[data-modelo="carrolado"]   #grupo-cta,
 .app[data-modelo="pneufrente"]  #grupo-cta { display: none; }
+.app[data-modelo="3pneus"]:not([data-formato="banner"]) #grupo-cta { display: none; }
 
 /* Objetivo/fundo por IA: "pneu de frente" usa fundo fixo da marca (sem IA) */
 .app[data-modelo="pneufrente"] #grupo-objetivo,
@@ -1728,47 +1731,84 @@ body {
 .format-story .art3p-footer-texto { font-size: 35px; flex: 1; }
 
 /* Banner (bem mais baixo que Feed/Story) — a faixa "POR QUE / <MARCA>?" some
-   pra sobrar altura pros pneus, que continuam sendo o protagonista; o rodapé
-   com o destaque carrega a mensagem principal sozinho. */
-.format-banner .art3p-headline { display: none; }
+   pra sobrar altura pros pneus, que continuam sendo o protagonista. O
+   apelido de cada pneu fica ABAIXO da foto (não acima, como em Feed/Story —
+   column-reverse inverte a ordem visual sem mexer no HTML) e a caixa
+   esquerda do rodapé vira uma CTA editável (campo "Chamada para Ação" na
+   sidebar, ver JS) em vez do "Exclusivo para / <Destaque>" fixo — por isso
+   o rótulo "Exclusivo para" some nos 3 tamanhos. */
+.format-banner .art3p-headline     { display: none; }
+.format-banner .art3p-tire-col     { flex-direction: column-reverse; }
+.format-banner .art3p-footer-label { display: none; }
+/* Sem min-height:0, um <img> com altura fixa (height:Npx) tem um "piso"
+   mínimo de tamanho no flexbox que ignora flex-shrink — e esse piso muda
+   conforme a proporção largura×altura de CADA foto (produtos com fotos mais
+   "quadradas", como Apex King/DS2 SUV RF/DS3 SUV, batem nesse piso; fotos
+   mais estreitas como D1D1 não). Isso fazia a foto nem sempre encolher pra
+   caber, empurrando o apelido pra fora da coluna, por cima do rodapé — só
+   em produtos específicos. Zerando o piso, a foto sempre encolhe o
+   necessário pra caber, pro produto que for. */
+.format-banner .art3p-tire-img     { min-height: 0; }
 .art3p.format-banner { padding-top: 0; padding-bottom: 0; }
 
+/* ── Banner Grande — tamanhos de fonte (ajuste aqui) ── */
 .art3p.banner-grande { padding: 40px 60px 20px; }
-.banner-grande .art3p-logo { height: 40px; }
-.banner-grande .art3p-tires { padding-bottom: 6px; }
+.banner-grande .art3p-tires { padding-bottom: 6px; margin-top: 24px; }
 .banner-grande .art3p-divider   { margin: 0 20px; }
-.banner-grande .art3p-tire-name { font-size: 20px; margin-bottom: 8px; }
-.banner-grande .art3p-tire-img  { height: 420px; }
+.banner-grande .art3p-tire-img  { height: 450px; }
 .banner-grande .art3p-footer { margin-top: 14px; padding: 14px 26px; }
 .banner-grande .art3p-footer > * + * { margin-left: 20px; }
-.banner-grande .art3p-footer-label { font-size: 15px; }
-.banner-grande .art3p-footer-bold  { font-size: 26px; }
-.banner-grande .art3p-footer-texto { font-size: 17px; flex: 1; }
+.banner-grande .art3p-logo         { height: 35px; }                    /* logo da marca (cabeçalho) */
+.banner-grande .art3p-tire-name    { font-size: 30px; margin-top: 2px; } /* apelido de cada pneu (embaixo da foto) */
+.banner-grande .art3p-footer-bold  { font-size: 35px; }                  /* CTA (caixa esquerda do rodapé) */
+.banner-grande .art3p-footer-texto { font-size: 30px; flex: 1; }         /* texto descritivo (direita do rodapé) */
 
+/* ── Banner Médio — tamanhos de fonte (ajuste aqui) ── */
 .art3p.banner-medio { padding: 26px 40px 12px; }
-.banner-medio .art3p-logo { height: 28px; }
-.banner-medio .art3p-tires { padding-bottom: 4px; }
+.banner-medio .art3p-tires { padding-bottom: 4px; margin-top: 14px; }
 .banner-medio .art3p-divider   { margin: 0 14px; }
-.banner-medio .art3p-tire-name { font-size: 14px; margin-bottom: 5px; }
 .banner-medio .art3p-tire-img  { height: 230px; }
 .banner-medio .art3p-footer { margin-top: 8px; padding: 8px 18px; }
 .banner-medio .art3p-footer > * + * { margin-left: 14px; }
-.banner-medio .art3p-footer-label { font-size: 11px; }
-.banner-medio .art3p-footer-bold  { font-size: 18px; }
-.banner-medio .art3p-footer-texto { font-size: 12px; flex: 1; }
+.banner-medio .art3p-logo         { height: 28px; }                    /* logo da marca (cabeçalho) */
+.banner-medio .art3p-tire-name    { font-size: 20px; margin-top: 5px; } /* apelido de cada pneu (embaixo da foto) */
+.banner-medio .art3p-footer-bold  { font-size: 25px; }                  /* CTA (caixa esquerda do rodapé) */
+.banner-medio .art3p-footer-texto { font-size: 25px; flex: 1; }         /* texto descritivo (direita do rodapé) */
 
-.art3p.banner-pequeno { padding: 16px 24px 6px; }
-.banner-pequeno .art3p-logo { height: 20px; }
-.banner-pequeno .art3p-tires { padding-bottom: 2px; }
-.banner-pequeno .art3p-divider   { margin: 0 8px; }
-.banner-pequeno .art3p-tire-name { display: none; }
-.banner-pequeno .art3p-tire-img  { height: 90px; }
-.banner-pequeno .art3p-footer { margin-top: 4px; padding: 5px 12px; justify-content: center; }
-.banner-pequeno .art3p-footer > * + * { margin-left: 8px; }
-.banner-pequeno .art3p-footer-label { font-size: 8px; }
-.banner-pequeno .art3p-footer-bold  { font-size: 13px; }
-.banner-pequeno .art3p-footer-sep   { display: none; }
-.banner-pequeno .art3p-footer-texto { display: none; }
+/* ── Banner Pequeno — layout PRÓPRIO, diferente do Grande/Médio: uma única
+   fileira horizontal (não mais pilha vertical + barra de rodapé com borda)
+   — logo à esquerda, subtítulo centralizado no meio, CTA + os 3 pneus à
+   direita (baseado no mockup de referência 1920x195.webp). .art3p-footer
+   vira display:contents pra "dissolver" a caixa com borda (que não existe
+   mais aqui) e deixar seus filhos (CTA e subtítulo) virarem itens da
+   fileira igual header/tires, reordenados via `order`. */
+.art3p.banner-pequeno { flex-direction: row; padding: 14px 0 14px 32px; }
+.banner-pequeno .art3p-header  { order: 1; flex: 0 0 auto; align-items: center; margin-right: 28px; }
+.banner-pequeno .art3p-footer  { display: contents; }
+.banner-pequeno .art3p-footer-texto {
+  /* display:flex quebraria o <br> do texto padrão (um <br> vira item flex,
+     não força mais quebra de linha) — por isso aqui é só align-self (centraliza
+     verticalmente a caixa do <p> na fileira) + min-width:0 (sem isso, o item
+     flex tem um "piso" de largura que pode ignorar a quebra de linha e
+     empurrar os pneus pra fora quando o usuário digita um texto longo). */
+  order: 2; flex: 1 1 auto; min-width: 0; align-self: center;
+  position: relative; z-index: 5; /* .art3p-footer (position:relative;z-index:5) some com o display:contents — sem repor aqui, o texto ficava por baixo do overlay escuro, invisível */
+}
+.banner-pequeno .art3p-footer-destaque {
+  order: 3; justify-content: center; margin-right: 24px;
+  position: relative; z-index: 5; /* mesmo motivo do texto acima */
+}
+.banner-pequeno .art3p-footer-sep      { display: none; }
+.banner-pequeno .art3p-tires   { order: 4; flex: 0 0 auto; }
+.banner-pequeno .art3p-tire-col { justify-content: center; }
+
+/* ── Banner Pequeno — tamanhos de fonte (ajuste aqui) ── */
+.banner-pequeno .art3p-divider   { margin: 0 10px; }
+.banner-pequeno .art3p-tire-img  { height: 150px; } /* teto real depende do espaço livre — encolhe sozinho se não couber (min-height:0) */
+.banner-pequeno .art3p-tire-name { display: none; } /* apelido removido no Pequeno — sem ele, sobra espaço pro pneu crescer */
+.banner-pequeno .art3p-logo         { height: 56px; }    /* logo da marca (esquerda) */
+.banner-pequeno .art3p-footer-bold  { font-size: 35px; }  /* CTA (do lado dos pneus) */
+.banner-pequeno .art3p-footer-texto { font-size: 30px; line-height: 1.3; } /* subtítulo (meio) */
 
 /* ── MODELO: ARTE DE PNEU 45° ────────────────────────────────────────────── */
 .artp45 {

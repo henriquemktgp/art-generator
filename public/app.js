@@ -1322,7 +1322,13 @@ function renderArt3Pneus() {
     document.getElementById(`art3p-foto-${i + 1}`).src = semP ? '' : (foto45ArteLivre(p) || '');
   });
 
-  document.getElementById('art3p-destaque').textContent    = (estado.destaque || 'LOJISTAS').toUpperCase();
+  // No Banner, a caixa esquerda do rodapé vira uma CTA editável (reaproveita
+  // estado.cta, o mesmo campo usado no modelo Padrão) em vez do "Exclusivo
+  // para / <Destaque>" fixo de Feed/Story — ver troca de campos na sidebar
+  // em style.css (#grupo-cta / #grupo-destaque por formato).
+  document.getElementById('art3p-destaque').textContent = estado.formato === 'banner'
+    ? (estado.cta || 'SAIBA MAIS').toUpperCase()
+    : (estado.destaque || 'LOJISTAS').toUpperCase();
 
   // Texto padrão quebra em duas frases (uma por linha) — usa .append() com
   // nó <br> real em vez de innerHTML, então não precisa escapar o texto
