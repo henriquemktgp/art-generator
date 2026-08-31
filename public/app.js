@@ -1356,19 +1356,35 @@ function renderArtPneu45() {
   canvas.className = ['artp45', ...classesFormatoLivre()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
+  // Apelido só é exibido no Banner (ver style.css) — vem acima do título.
+  document.getElementById('artp45-apelido').textContent = semProd ? '' : (produto.apelido || produto.nome || '');
   document.getElementById('artp45-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
   document.getElementById('artp45-sub').textContent    = estado.sub || '';
-  document.getElementById('artp45-tire').src           = semProd ? '' : (foto45ArteLivre(produto) || '');
+  const fotoTire = semProd ? '' : (foto45ArteLivre(produto) || '');
+  document.getElementById('artp45-tire').src   = fotoTire;
+  // artp45-tire-2 só aparece no Banner (ver style.css) — mesma foto do pneu
+  // duplicada lado a lado, igual ao mockup de referência.
+  document.getElementById('artp45-tire-2').src = fotoTire;
 
+  // No Banner, as pills de specs (que empilham verticalmente) não cabem num
+  // formato tão baixo — no lugar delas mostra uma CTA editável (reaproveita
+  // estado.cta, o mesmo campo usado no modelo Padrão e no "3 Pneus" banner).
   const pillsWrap = document.getElementById('artp45-pills');
   pillsWrap.innerHTML = '';
-  const specsTexto = semProd ? '' : (produto.specs || '');
-  specsTexto.split('·').map(s => s.trim()).filter(Boolean).forEach(txt => {
-    const pill = document.createElement('span');
-    pill.className = 'artp45-pill';
-    pill.textContent = txt;
-    pillsWrap.appendChild(pill);
-  });
+  if (estado.formato === 'banner') {
+    const cta = document.createElement('span');
+    cta.className = 'artp45-cta';
+    cta.textContent = (estado.cta || 'SAIBA MAIS').toUpperCase();
+    pillsWrap.appendChild(cta);
+  } else {
+    const specsTexto = semProd ? '' : (produto.specs || '');
+    specsTexto.split('·').map(s => s.trim()).filter(Boolean).forEach(txt => {
+      const pill = document.createElement('span');
+      pill.className = 'artp45-pill';
+      pill.textContent = txt;
+      pillsWrap.appendChild(pill);
+    });
+  }
 }
 
 // Renderiza o canvas do modelo "Pneu + Carro de Frente" (carro gerado por IA
