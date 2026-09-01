@@ -1951,13 +1951,13 @@ body {
 
 .format-feed .artcf-headline { top: 70px; }
 .format-feed .artcf-titulo { font-size: 56px; }
-.format-feed .artcf-tire   { bottom: -760px; width: 1300px; }
+.format-feed .artcf-tire   { bottom: -760px; height: 1300px; }
 .format-feed .artcf-logo-wrap { bottom: 44px; }
 .format-feed .artcf-logo   { height: 52px; }
 
 .format-story .artcf-headline { top: 110px; }
 .format-story .artcf-titulo { font-size: 70px; }
-.format-story .artcf-tire   { bottom: -390px; width: 1350px; }
+.format-story .artcf-tire   { bottom: -390px; height: 1350px; }
 .format-story .artcf-logo-wrap { bottom: 70px; }
 .format-story .artcf-logo   { height: 62px; }
 

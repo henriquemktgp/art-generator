@@ -8,8 +8,12 @@
 //   2. Salve — a mudança reflete automaticamente na interface
 //
 // Como atualizar a foto:
-//   Substitua o campo `foto` pela URL do PNG oficial recortado:
-//   foto: "https://url-da-foto-oficial.png"
+//   Todas as fotos vêm de public/assets/<marca>/foto_pneus/<Produto>/ (catálogo
+//   local, não mais do site). Cada pasta de produto tem até 4 arquivos:
+//   pneu_45.png, pneu_45_roda.png (ou pneu_frente_roda.png), pneu_frente.png
+//   e pneu_perfil.png. Para trocar a foto de um produto, substitua o arquivo
+//   dentro da pasta dele (mantendo o mesmo nome) ou aponte o campo para outra
+//   pasta/arquivo.
 //
 // "Sem produto" deve permanecer como primeiro item (índice 0).
 //
@@ -20,15 +24,35 @@
 // ── Campos exclusivos do modo "Arte de Medida" (Delinte, por enquanto) ──────
 //   apelido:   nome curto exibido no mosaico do topo (ex. "DH6"). Nunca leva
 //              o sufixo da linha (isso fica só em `sufixoMedida`).
-//   foto45:    foto do pneu em 3/4 (45°), fundo transparente.
-//   fotoPerfil: foto do pneu de perfil (lateral), fundo transparente.
+//   foto45:    foto do pneu em 3/4 (45°), fundo transparente — pneu_45.png.
+//              Usada só na Arte de Medida (não é a mesma coisa que `foto`,
+//              usado no lugar dela na Arte Livre — ver abaixo).
+//   fotoPerfil: foto do pneu de perfil (lateral), fundo transparente —
+//              pneu_perfil.png.
 //   paragrafo: texto descritivo específico do produto, exibido acima do logo.
 //   sufixoMedida: texto opcional mostrado só dentro da caixa MEDIDAS, depois
 //              do apelido (ex. "RUN FLAT"). Deixe "" quando não se aplica.
-//   fotoFrente: foto do pneu de frente (centralizada), fundo transparente —
-//              usada no modelo "Arte de pneu frente" (Arte Livre).
-// PENDENTE: foto45/fotoPerfil/paragrafo/sufixoMedida/fotoFrente ainda são
-// placeholder — aguardando os caminhos/textos reais produto a produto.
+//   fotoFrente: foto do pneu de frente E COM RODA (pneu_frente_roda.png) —
+//              usada nos modelos "Pneu + Carro de Frente" e "Arte de Pneu de
+//              Frente". Quando o produto não tem essa variante com roda,
+//              cai pra pneu_frente.png (sem roda) — ver comentário no
+//              produto. ATENÇÃO: no catálogo antigo (URLs do site), esses
+//              dois campos (fotoPerfil/fotoFrente) vinham trocados para
+//              todos os produtos Delinte (fotoPerfil apontava pra foto de
+//              frente e vice-versa) — corrigido na migração pro catálogo
+//              local; a Denali já vinha correta.
+//
+// `foto` (campo principal, fora da lista acima): foto do pneu a 45° COM
+// RODA (pneu_45_roda.png) — é a foto de destaque da Arte Livre Padrão E
+// também a usada em "Arte com 3 Pneus"/"Arte de Pneu 45°" (ver
+// foto45ArteLivre()). Quando o produto não tem variante com roda, cai pra
+// pneu_45.png (sem roda).
+//
+// PENDENTE: SteelWolf e Buffalo (Denali) ainda não têm pasta de fotos —
+// campos de foto ficam vazios até a equipe enviar. D7 Thunder, D8+, DX-20
+// (Delinte) e Wolverine A/T 11 LB (Denali) são produtos novos cujo
+// specs/título/sub/CTA abaixo é RASCUNHO — revisar com marketing antes de
+// campanha real.
 // =============================================================================
 
 const PRODUTOS_DELINTE = [
@@ -45,260 +69,306 @@ const PRODUTOS_DELINTE = [
   {
     nome:   "D1D1 Ultra High Mileage",
     specs:  "Linha passeio · ultra alta quilometragem · durabilidade",
-    foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/2024/01/D1D1-Roda.png.webp",
+    foto:   "assets/delinte/foto_pneus/D1D1/pneu_45_roda.png",
     titulo: "RODAGEM QUE DURA MAIS",
     sub:    "Tecnologia Ultra High Mileage para milhares de quilômetros extras de vida útil.",
     cta:    "CONHEÇA O D1D1",
     linha:  "passeio",
     apelido: "D1D1",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/D1D1/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/D1D1/pneu_perfil.png",
     paragrafo: "Tecnologia Ultra High Mileage para milhares de quilômetros extras de vida útil.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/D1D1-195-55-15-Perfil.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/D1D1/pneu_frente.png"
   },
   {
     nome:   "DH2 Eco",
     specs:  "Linha passeio · baixa resistência ao rolamento · economia",
-    foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/2024/01/DH2-Roda.png.webp",
+    foto:   "assets/delinte/foto_pneus/DH2/pneu_45_roda.png",
     titulo: "ECONOMIA EM CADA QUILÔMETRO",
     sub:    "Baixa resistência ao rolamento para mais economia de combustível no dia a dia.",
     cta:    "CONHEÇA O DH2",
     linha:  "passeio",
     apelido: "DH2 Eco",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DH2/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DH2/pneu_perfil.png",
     paragrafo: "Baixa resistência ao rolamento para mais economia de combustível no dia a dia.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-2-Perfil.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DH2/pneu_frente.png"
   },
   {
     nome:   "DH7 SUV",
     specs:  "Linha passeio · SUV · conforto e estabilidade",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/07/DH7-SUV.webp",
+    foto:   "assets/delinte/foto_pneus/DH7/pneu_45_roda.png",
     titulo: "CONFORTO PARA SEU SUV",
     sub:    "Estrutura reforçada e rodagem silenciosa para o peso e porte do seu SUV.",
     cta:    "CONHEÇA O DH7",
     linha:  "passeio",
     apelido: "DH7",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DH7/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DH7/pneu_perfil.png",
     paragrafo: "Estrutura reforçada e rodagem silenciosa pensadas para o peso e o porte do seu SUV.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-7-Perfil.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DH7/pneu_frente.png"
+  },
+  {
+    nome:   "D7 Thunder",
+    specs:  "Linha passeio · conforto e durabilidade no dia a dia",
+    foto:   "assets/delinte/foto_pneus/D7 Thunder/pneu_45_roda.png",
+    titulo: "FORÇA E SILÊNCIO NO ASFALTO",
+    sub:    "Equilíbrio entre conforto e resistência para rodar tranquilo em qualquer trajeto urbano.",
+    cta:    "CONHEÇA O D7 THUNDER",
+    linha:  "passeio",
+    apelido: "D7 Thunder",
+    foto45:     "assets/delinte/foto_pneus/D7 Thunder/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/D7 Thunder/pneu_perfil.png",
+    paragrafo: "Equilíbrio entre conforto e resistência para rodar tranquilo em qualquer trajeto urbano.",
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/D7 Thunder/pneu_frente.png"
+  },
+  {
+    nome:   "D8+",
+    specs:  "Linha passeio · nova geração · conforto aprimorado",
+    foto:   "assets/delinte/foto_pneus/D8+/pneu_45_roda.png",
+    titulo: "PRÓXIMO NÍVEL DE CONFORTO",
+    sub:    "Evolução da linha passeio com mais conforto e estabilidade para o seu dia a dia.",
+    cta:    "CONHEÇA O D8+",
+    linha:  "passeio",
+    apelido: "D8+",
+    foto45:     "assets/delinte/foto_pneus/D8+/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/D8+/pneu_perfil.png",
+    paragrafo: "Evolução da linha passeio com mais conforto e estabilidade para o seu dia a dia.",
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/D8+/pneu_frente.png"
   },
   {
     nome:   "DS2 Mute Cotton",
     specs:  "Linha passeio · tecnologia Mute Cotton · baixo ruído",
-    foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/2024/01/DS2-Roda.png.webp",
+    foto:   "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_45_roda.png",
     titulo: "SILÊNCIO EM MOVIMENTO",
     sub:    "Tecnologia Mute Cotton reduz o ruído de rodagem para mais silêncio a bordo.",
     cta:    "CONHEÇA O DS2 MUTE",
     linha:  "passeio",
     apelido: "DS2 Mute",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2024/11/ds2-png.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Frente-2.png",
+    foto45:     "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_perfil.png",
     paragrafo: "Tecnologia Mute Cotton reduz o ruído de rodagem para uma experiência mais silenciosa.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Perfil-2.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_frente.png"
   },
   {
     nome:   "DS2 SUV",
     specs:  "Linha passeio · SUV · aderência e estabilidade",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-Roda-2048x2048.webp",
+    foto:   "assets/delinte/foto_pneus/DS2 SUV/pneu_45_roda.png",
     titulo: "PERFORMANCE PARA SUV",
     sub:    "Aderência e estabilidade sob medida para SUVs no uso urbano e em viagens.",
     cta:    "CONHEÇA O DS2 SUV",
     linha:  "passeio",
     apelido: "DS2 SUV",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DS2 SUV/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS2 SUV/pneu_perfil.png",
     paragrafo: "Aderência e estabilidade sob medida para SUVs no uso urbano e em viagens.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-Lateral.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DS2 SUV/pneu_frente.png"
   },
   // ── Linha Esportiva ──────────────────────────────────────────────────────
   {
     nome:   "DS2 Qirin Scale Technology",
     specs:  "Qirin Scale Technology · sulcos assimétricos · UHP",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DS2-Roda.png",
+    // Mesmas fotos do DS2 Mute Cotton — é o mesmo pneu físico, sem pasta própria.
+    foto:   "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_45_roda.png",
     titulo: "TECNOLOGIA QIRIN SCALE",
     sub:    "Sulcos assimétricos de alta precisão para máxima aderência em pistas molhadas.",
     cta:    "CONHEÇA O DS2",
     linha:  "esportiva",
     apelido: "DS2 Qirin",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-45%C2%B0-3.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Frente-2.png",
+    foto45:     "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_perfil.png",
     paragrafo: "Sulcos assimétricos de alta precisão para máxima aderência em pistas molhadas.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS2-205-55-17-Perfil-2.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DS2 Mute Cotton/pneu_frente.png"
   },
   {
     nome:   "DS3 SUV",
     specs:  "Ultra-high performance · padrão direcional",
-    foto:   "https://delinte.com.br/wp-content/uploads/2026/02/Prancheta-1.png",
+    // Pasta "DS3" não tem variante com roda — usa o 45° puro como foto principal.
+    foto:   "assets/delinte/foto_pneus/DS3/pneu_45.png",
     titulo: "DESEMPENHO SEM LIMITES",
     sub:    "Padrão direcional desenvolvido para quem exige o máximo da pista.",
     cta:    "CONHEÇA O DS3",
     linha:  "esportiva",
     apelido: "DS3",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2026/02/45.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2026/02/%7Fbanda.png",
+    foto45:     "assets/delinte/foto_pneus/DS3/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS3/pneu_perfil.png",
     paragrafo: "Padrão direcional desenvolvido para quem exige o máximo da pista.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2026/02/frente.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DS3/pneu_frente.png"
   },
   {
     nome:   "DS7 Sport",
     specs:  "Tração AA · composto avançado · alta performance",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DS7-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DS7 SPORT/pneu_45_roda.png",
     titulo: "TRAÇÃO MÁXIMA",
     sub:    "Composto avançado com classificação AA entrega controle em qualquer condição.",
     cta:    "CONHEÇA O DS7",
     linha:  "esportiva",
     apelido: "DS7",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DS7 SPORT/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS7 SPORT/pneu_perfil.png",
     paragrafo: "Composto avançado com classificação AA entrega controle em qualquer condição.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS7-225-45-18-Perfil.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DS7 SPORT/pneu_frente.png"
   },
   {
     nome:   "DS8 Desert Storm",
     specs:  "Ultra-high performance · padrão agressivo · 18\" a 26\"",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DS8-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DS8/pneu_45_roda.png",
     titulo: "DESERT STORM",
     sub:    "Perfil agressivo e altíssima performance para rodas de 18\" a 26\".",
     cta:    "CONHEÇA O DS8",
     linha:  "esportiva",
     apelido: "DS8",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DS8/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS8/pneu_perfil.png",
     paragrafo: "Perfil agressivo e altíssima performance para rodas de 18\" a 26\".",
-    sufixoMedida: "DESERT STORM", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DS8-245-45-19-Perfil.png"
+    sufixoMedida: "DESERT STORM", fotoFrente: "assets/delinte/foto_pneus/DS8/pneu_frente.png"
   },
   // ── Linha Off-Road ───────────────────────────────────────────────────────
   {
     nome:   "DX-9 Bandit M/T",
     specs:  "Mud terrain · off-road extremo · lama e terra",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DX-9-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DX-9/pneu_45_roda.png",
     titulo: "DOMINE A LAMA",
     sub:    "Tread mud terrain para trilhas extremas onde o asfalto não chega.",
     cta:    "CONHEÇA O DX-9",
     linha:  "offroad",
     apelido: "DX-9",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DX-9/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DX-9/pneu_perfil.png",
     paragrafo: "Tread mud terrain para trilhas extremas onde o asfalto não chega.",
-    sufixoMedida: "BANDIT M/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-9-Perfil.png"
+    sufixoMedida: "BANDIT M/T", fotoFrente: "assets/delinte/foto_pneus/DX-9/pneu_frente.png"
   },
   {
     nome:   "DX-10 Bandit A/T",
     specs:  "All-terrain · on e off-road · versatilidade total",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DX-10-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DX-10/pneu_45_roda.png",
     titulo: "ON E OFF SEM ESCOLHER",
     sub:    "All-terrain que transita entre asfalto e trilha com igual competência.",
     cta:    "CONHEÇA O DX-10",
     linha:  "offroad",
     apelido: "DX-10",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-45%C2%B0-e1695038873657.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DX-10/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DX-10/pneu_perfil.png",
     paragrafo: "All-terrain que transita entre asfalto e trilha com igual competência.",
-    sufixoMedida: "BANDIT A/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-10-Perfil.png"
+    sufixoMedida: "BANDIT A/T", fotoFrente: "assets/delinte/foto_pneus/DX-10/pneu_frente.png"
   },
   {
     nome:   "DX-12 Bandit R/T",
     specs:  "Rugged terrain · tração reforçada · trilhas e asfalto",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DX-12-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DX-12/pneu_45_roda.png",
     titulo: "FORÇA RUGGED TERRAIN",
     sub:    "Tração reforçada para enfrentar trilhas pesadas sem abrir mão do asfalto.",
     cta:    "CONHEÇA O DX-12",
     linha:  "offroad",
     apelido: "DX-12",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DX-12/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DX-12/pneu_perfil.png",
     paragrafo: "Tração reforçada para enfrentar trilhas pesadas sem abrir mão do asfalto.",
-    sufixoMedida: "BANDIT R/T", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DX-12-Perfil.png"
+    sufixoMedida: "BANDIT R/T", fotoFrente: "assets/delinte/foto_pneus/DX-12/pneu_frente.png"
+  },
+  {
+    nome:   "DX-20",
+    specs:  "Off-road · all-terrain · tração para trilha e asfalto",
+    foto:   "assets/delinte/foto_pneus/DX-20/pneu_45_roda.png",
+    titulo: "PRONTO PARA QUALQUER TRILHA",
+    sub:    "Tração e resistência all-terrain para enfrentar qualquer terreno sem abrir mão do asfalto.",
+    cta:    "CONHEÇA O DX-20",
+    linha:  "offroad",
+    apelido: "DX-20",
+    foto45:     "assets/delinte/foto_pneus/DX-20/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DX-20/pneu_perfil.png",
+    paragrafo: "Tração e resistência all-terrain para enfrentar qualquer terreno sem abrir mão do asfalto.",
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DX-20/pneu_frente.png"
   },
   // ── Linha Run Flat ───────────────────────────────────────────────────────
   {
     nome:   "DH3 Run Flat",
     specs:  "Run flat · até 80 km após perda de pressão · segurança",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DH-3-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DH3/pneu_45_roda.png",
     titulo: "SEGURANÇA SEM PARAR",
     sub:    "Continue rodando até 80 km mesmo com pneu furado. Sem sustos na estrada.",
     cta:    "CONHEÇA O DH3",
     linha:  "runflat",
     apelido: "DH3",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DH3/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DH3/pneu_perfil.png",
     paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
-    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-3-Perfil.png"
+    sufixoMedida: "RUN FLAT", fotoFrente: "assets/delinte/foto_pneus/DH3/pneu_frente.png"
   },
   {
     nome:   "DH6 Run Flat",
     specs:  "Run flat · alta performance · continuidade garantida",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DH-6-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DH6/pneu_45_roda.png",
     titulo: "ALTA PERFORMANCE RUN FLAT",
     sub:    "Tecnologia run flat de alto desempenho. Continuidade garantida quando importa.",
     cta:    "CONHEÇA O DH6",
     linha:  "runflat",
     apelido: "DH6",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DH6/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DH6/pneu_perfil.png",
     paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
-    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DH-6-Perfil.png"
+    sufixoMedida: "RUN FLAT", fotoFrente: "assets/delinte/foto_pneus/DH6/pneu_frente.png"
   },
   {
     nome:   "DS2 SUV Run Flat",
     specs:  "Run flat · SUV · continuidade garantida",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RF-Roda-2048x2048.webp",
+    // Mesmas fotos do DS2 SUV — é o mesmo pneu físico, sem pasta própria.
+    foto:   "assets/delinte/foto_pneus/DS2 SUV/pneu_45_roda.png",
     titulo: "SUV SEM PARAR",
     sub:    "A segurança Run Flat encontra o desempenho pensado para SUVs.",
     cta:    "CONHEÇA O DS2 SUV RFT",
     linha:  "runflat",
 
     apelido: "DS2 SUV RF",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DS2 SUV/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DS2 SUV/pneu_perfil.png",
     paragrafo: "A segurança Run Flat encontra o desempenho pensado para SUVs.",
-    sufixoMedida: "RUN FLAT", fotoFrente: "https://delinte.com.br/wp-content/uploads/2024/03/DS2-SUV-RFT-Lateral.png"
+    sufixoMedida: "RUN FLAT", fotoFrente: "assets/delinte/foto_pneus/DS2 SUV/pneu_frente.png"
   },
   // ── Linha Semi Slick ─────────────────────────────────────────────────────
   {
     nome:   "Apex King",
     specs:  "Semi slick · uso em pista · aderência extrema",
-    foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/2023/09/Apex-King-Marcacoes-1.png.webp",
+    foto:   "assets/delinte/foto_pneus/Apex King/pneu_45_roda.png",
     titulo: "NO LIMITE DA PISTA",
     sub:    "Composto semi-slick para máxima aderência em track days e uso esportivo extremo.",
     cta:    "CONHEÇA O APEX KING",
     linha:  "semislick",
     apelido: "Apex King",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-45%C2%B0-2.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-Frente-1.png",
+    foto45:     "assets/delinte/foto_pneus/Apex King/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/Apex King/pneu_perfil.png",
     paragrafo: "Composto semi-slick para máxima aderência em track days e uso esportivo extremo.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/Apex-King-Perfil-1.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/Apex King/pneu_frente.png"
   },
   // ── Linha de Carga ───────────────────────────────────────────────────────
   {
     nome:   "DV2 Cargo Tire",
     specs:  "Linha de carga · vans e utilitários · estrutura reforçada",
-    foto:   "https://delinte.com.br/wp-content/uploads/2024/01/DV2-Roda.png",
+    foto:   "assets/delinte/foto_pneus/DV2/pneu_45_roda.png",
     titulo: "FEITO PARA TRABALHAR",
     sub:    "Estrutura reforçada para vans e utilitários que não podem parar.",
     cta:    "CONHEÇA O DV2",
     linha:  "carga",
     apelido: "DV2",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-45%C2%B0.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-Frente.png",
+    foto45:     "assets/delinte/foto_pneus/DV2/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DV2/pneu_perfil.png",
     paragrafo: "Estrutura reforçada para vans e utilitários que não podem parar.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2023/08/DV2-185-14-Perfil.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DV2/pneu_frente.png"
   },
   {
     nome:   "DV2 Plus",
     specs:  "Linha de carga · reforçada · vans e utilitários",
-    foto:   "https://delinte.com.br/wp-content/webp-express/webp-images/uploads/elementor/thumbs/Prancheta-1-r7fu9tf6oxz1cue1mlpsag5spn8ivbgbl5vcyzspqc.png.webp",
+    // Pasta "DV2+" não tem variante com roda — usa o 45° puro como foto principal.
+    foto:   "assets/delinte/foto_pneus/DV2+/pneu_45.png",
     titulo: "MAIS RESISTÊNCIA, MAIS CARGA",
     sub:    "Evolução da linha de carga com reforço adicional para rotas pesadas.",
     cta:    "CONHEÇA O DV2 +",
     linha:  "carga",
     apelido: "DV2 Plus",
-    foto45:     "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-1-3.png",
-    fotoPerfil: "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-2-2.png",
+    foto45:     "assets/delinte/foto_pneus/DV2+/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DV2+/pneu_perfil.png",
     paragrafo: "Evolução da linha de carga com reforço adicional para rotas pesadas.",
-    sufixoMedida: "", fotoFrente: "https://delinte.com.br/wp-content/uploads/2025/05/Prancheta-3-1.png"
+    sufixoMedida: "", fotoFrente: "assets/delinte/foto_pneus/DV2+/pneu_frente.png"
   }
 ];
 
@@ -339,105 +409,119 @@ const PRODUTOS_DENALI = [
   {
     nome:   "Wolverine A/T 06",
     specs:  "All-terrain · tração robusta em qualquer piso",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Wolverine-AT-06-45.png",
+    foto:   "assets/denali/foto_pneus/Wolverine AT 06/pneu_45_roda.png",
     titulo: "DOMINE QUALQUER TERRENO",
     sub:    "Onde a estrada acaba, a Denali começa — tração e controle em qualquer trilha.",
     cta:    "CONHEÇA O A/T 06",
     linha:  "offroad",
     apelido: "WV-06 A/T",
-    foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-45-rn29dxt6rcse94i498spm8yme7k4vokg7hpit8g4ug.png",
-    fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-Perfil-rn29dzov50uywcfdy9lyr8hjkzavb2rwvr0hrsdci0.png",
+    foto45:     "assets/denali/foto_pneus/Wolverine AT 06/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Wolverine AT 06/pneu_perfil.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-06-Frente-rn29dyr0y6tokqgr3r7c6qq2zlfi3do6jmd0aieqo8.png"
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Wolverine AT 06/pneu_frente_roda.png"
   },
   {
     nome:   "Wolverine A/T 09",
     specs:  "All-terrain · banda de rodagem reforçada",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Wolverine-AT-09-45.png",
+    foto:   "assets/denali/foto_pneus/Wolverine AT 09/pneu_45_roda.png",
     titulo: "DOMINE QUALQUER TERRENO",
     sub:    "Onde a estrada acaba, a Denali começa — resistência para asfalto e trilha.",
     cta:    "CONHEÇA O A/T 09",
     linha:  "offroad",
     apelido: "WV-09 A/T",
-    foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-45-rn29ozex29woo6gkrinweymlo74ebnewq5nwta2lqg.png",
-    fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-Perfil-rn29p1alfxz9bedugjh5jy5iuyv4r1mdeeyvrtzte0.png",
+    foto45:     "assets/denali/foto_pneus/Wolverine AT 09/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Wolverine AT 09/pneu_perfil.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-09-Frente-rn29p0cr93xyzsf7m12izge29kzrjcin2abeak17k8.png"
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Wolverine AT 09/pneu_frente_roda.png"
   },
   {
     nome:   "Wolverine A/T 11",
     specs:  "All-terrain · alta resistência a impacto",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Wolverine-AT-11-45.png",
+    foto:   "assets/denali/foto_pneus/Wolverine AT 11/pneu_45_roda.png",
     titulo: "DOMINE QUALQUER TERRENO",
     sub:    "Onde a estrada acaba, a Denali começa — firmeza em qualquer condição.",
     cta:    "CONHEÇA O A/T 11",
     linha:  "offroad",
     apelido: "WV-11 A/T",
-    foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-45-rn29rzicw80nrc3k8bdzvpclziblwuc1h0or03mbuw.png",
-    fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-Perfil-rn29s1e19w38ek0txc790ovj6a2cc8ji59zpynjjig.png",
+    foto45:     "assets/denali/foto_pneus/Wolverine AT 11/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Wolverine AT 11/pneu_perfil.png",
     paragrafo: PARAGRAFO_OFFROAD_DENALI,
-    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Wolverine-AT-11-Frente-rn29s0g7321y2y272tsmg742kw6z4jfrt5c8hdkxoo.png"
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Wolverine AT 11/pneu_frente_roda.png"
+  },
+  {
+    nome:   "Wolverine A/T 11 Letra Branca",
+    specs:  "All-terrain · lateral com letras brancas · visual diferenciado",
+    foto:   "assets/denali/foto_pneus/Wolverine AT 11 Letra branca/pneu_45_roda.png",
+    titulo: "DOMINE QUALQUER TERRENO",
+    sub:    "Onde a estrada acaba, a Denali começa — agora com o visual exclusivo de letras brancas.",
+    cta:    "CONHEÇA O A/T 11 LETRA BRANCA",
+    linha:  "offroad",
+    apelido: "WV-11 A/T LB",
+    foto45:     "assets/denali/foto_pneus/Wolverine AT 11 Letra branca/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Wolverine AT 11 Letra branca/pneu_perfil.png",
+    paragrafo: PARAGRAFO_OFFROAD_DENALI,
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Wolverine AT 11 Letra branca/pneu_frente_roda.png"
   },
   // ── Peregrine — linha esportiva ──────────────────────────────────────────
   {
     nome:   "Peregrine",
     specs:  "Alta performance · precisão e controle na pista",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Peregrine-1000x1000-1.png",
+    // Pasta "Peregrine" não tem pneu_45_roda — usa a variante com roda de frente.
+    foto:   "assets/denali/foto_pneus/Peregrine/pneu_frente_roda.png",
     titulo: "DOMINE A PISTA",
     sub:    "Controle no limite: performance e precisão para quem exige o máximo.",
     cta:    "CONHEÇA O PEREGRINE",
     linha:  "esportiva",
     apelido: "Peregrine",
-    foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-45o-scaled-rn0vd2ssy7jmo8cs0t8iiouaibrxnv9ty1zykilpxk.png",
-    fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-Perfil-1-scaled-rn0vf36dkgapi7fna6iscoks8zv74k95w08citmemg.png",
+    foto45:     "assets/denali/foto_pneus/Peregrine/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Peregrine/pneu_perfil.png",
     paragrafo: PARAGRAFO_ESPORTIVA_DENALI,
-    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Peregrine-Frente-scaled-rn0vdb9cnpv7kq0hnew5n4pfusm8l57ez7vbw096dk.png"
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Peregrine/pneu_frente_roda.png"
   },
   // ── Golden Eagle — linha passeio ─────────────────────────────────────────
-  // PENDENTE: foto45/fotoPerfil de "Golden Eagle" e "Golden Eagle +" ainda
-  // não foram enviadas — arte de medida some as fotos do pneu até chegarem
-  // (mesmo comportamento já usado para SteelWolf/Buffalo).
   {
     nome:   "Golden Eagle S",
     specs:  "Linha passeio · conforto e dirigibilidade urbana",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Golden-Eagle-45.png",
+    foto:   "assets/denali/foto_pneus/Golden Eagle S/pneu_45_roda.png",
     titulo: "MAIS CONFORTO, MAIS ESTRADA",
     sub:    "Sinta a suavidade do controle no dia a dia da cidade.",
     cta:    "CONHEÇA O GOLDEN EAGLE S",
     linha:  "passeio",
     apelido: "GE S",
-    // link de perfil recebido terminava em ".pngv" — "v" removido (típico
-    // resíduo de copia/cola); ajustar aqui se a URL oficial for diferente.
-    foto45:     "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-45-rmytv18pxxb7prvp21msfer5ntsb9onxhcv1oxx1u0.png",
-    fotoPerfil: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-Perfil-rmytv7tl9rk7z1m4zmh6ev3dtivvrke1u9fg1vnamg.png",
+    foto45:     "assets/denali/foto_pneus/Golden Eagle S/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Golden Eagle S/pneu_perfil.png",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: "", fotoFrente: "https://denalipneus.com.br/wp-content/uploads/elementor/thumbs/Golden-Eagle-Frente-rmytv34ebldsczsyr2g1kea2ulj1p2ve5m60nhu9hk.png"
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Golden Eagle S/pneu_frente_roda.png"
   },
   {
     nome:   "Golden Eagle",
     specs:  "Linha passeio · rodagem suave e silenciosa",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/Golden-Eagle-45o-1000x1000-ok.png",
+    foto:   "assets/denali/foto_pneus/Golden Eagle/pneu_45_roda.png",
     titulo: "MAIS CONFORTO, MAIS ESTRADA",
     sub:    "Sinta a suavidade do controle em qualquer trajeto.",
     cta:    "CONHEÇA O GOLDEN EAGLE",
     linha:  "passeio",
     apelido: "GE",
-    foto45: "", fotoPerfil: "",
+    foto45:     "assets/denali/foto_pneus/Golden Eagle/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Golden Eagle/pneu_perfil.png",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: "", fotoFrente: ""
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Golden Eagle/pneu_frente_roda.png"
   },
   {
     nome:   "Golden Eagle +",
     specs:  "Linha passeio · desempenho aprimorado",
-    foto:   "https://denalipneus.com.br/wp-content/uploads/2026/05/GOLDEN-SITE.png",
+    // Pasta "Golden Eagle +" não tem variante com roda — usa o 45° puro.
+    foto:   "assets/denali/foto_pneus/Golden Eagle +/pneu_45.png",
     titulo: "MAIS CONFORTO, MAIS ESTRADA",
     sub:    "Sinta a suavidade do controle com ainda mais desempenho.",
     cta:    "CONHEÇA O GOLDEN EAGLE +",
     linha:  "passeio",
     apelido: "GE+",
-    foto45: "", fotoPerfil: "",
+    foto45:     "assets/denali/foto_pneus/Golden Eagle +/pneu_45.png",
+    fotoPerfil: "assets/denali/foto_pneus/Golden Eagle +/pneu_perfil.png",
     paragrafo: PARAGRAFO_PASSEIO_DENALI,
-    sufixoMedida: "", fotoFrente: ""
+    // Também não tem pneu_frente_roda — usa o frente puro (sem roda) até chegar.
+    sufixoMedida: "", fotoFrente: "assets/denali/foto_pneus/Golden Eagle +/pneu_frente.png"
   },
   // ── SteelWolf — linha RunFlat — EDITAR quando specs/foto oficiais chegarem
   {
@@ -521,7 +605,7 @@ const MARCAS = {
   },
   denali: {
     label: 'Denali',
-    logo:  'assets/denali/logo-denali-branca.png',
+    logo:  'assets/denali/logo/logo-denali-branca.png',
     produtos: PRODUTOS_DENALI
   }
 };
@@ -687,14 +771,11 @@ function produtoAtual() {
   return MARCAS[estado.marca].produtos[estado.produto];
 }
 
-// Foto do pneu a 45° usada nos modelos de Arte Livre (3 Pneus, Pneu 45°,
-// Pneu + Carro de Frente) — NÃO usada na Arte de Medida, que sempre lê
-// produto.foto45 diretamente (caminho alternativo, mantido como está).
-// Na Delinte, esses modelos passam a usar o mesmo caminho da arte livre
-// padrão (produto.foto) em vez do foto45 alternativo; na Denali continua
-// usando foto45, sem mudança.
+// Foto do pneu a 45° COM roda usada nos modelos de Arte Livre "3 Pneus" e
+// "Pneu 45°" (produto.foto — pneu_45_roda.png) — NÃO usada na Arte de
+// Medida, que sempre lê produto.foto45 diretamente (pneu_45.png, sem roda).
 function foto45ArteLivre(produto) {
-  return estado.marca === 'delinte' ? produto.foto : produto.foto45;
+  return produto.foto;
 }
 
 // Repopula os <select> de produtos (único + os 3 do modelo "3 pneus") com o
@@ -1280,7 +1361,7 @@ function renderArtMedida() {
   // fundo dessa arte é claro — a versão branca, usada no resto do app,
   // ficaria invisível aqui).
   document.getElementById('artm-logo-header').src =
-    estado.marca === 'denali' ? 'assets/denali/logo-denali-colorida.png' : '';
+    estado.marca === 'denali' ? 'assets/denali/logo/logo-denali-colorida.png' : '';
 
   // "MEDIDA" (Denali) vs "MEDIDAS" (Delinte)
   document.getElementById('artm-specs-label').textContent =
@@ -1584,7 +1665,7 @@ function ajustarFonteTabela(tabelaEl) {
 // dois modelos vira claro só para ela, ver style.css); Delinte mantém sua
 // logo padrão, que já funciona bem sobre fundo escuro.
 function logoMarcaTabela() {
-  return estado.marca === 'denali' ? 'assets/denali/logo-denali-colorida.png' : MARCAS[estado.marca].logo;
+  return estado.marca === 'denali' ? 'assets/denali/logo/logo-denali-colorida.png' : MARCAS[estado.marca].logo;
 }
 
 // Logo GP no rodapé — mesmo princípio: recortada em branco do modelo de
