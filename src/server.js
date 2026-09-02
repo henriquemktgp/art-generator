@@ -113,6 +113,6 @@ app.get('/api/proxy-img', async (req, res) => {
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n  Delinte Art Generator v2`);
+  console.log(`\n Art Generator`);
   console.log(`  Acesse: http://localhost:${PORT}\n`);
 });
