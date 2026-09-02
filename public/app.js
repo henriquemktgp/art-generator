@@ -359,7 +359,7 @@ const PRODUTOS_DELINTE = [
     nome:   "DV2 Plus",
     specs:  "Linha de carga · reforçada · vans e utilitários",
     // Pasta "DV2+" não tem variante com roda — usa o 45° puro como foto principal.
-    foto:   "assets/delinte/foto_pneus/DV2+/pneu_45.png",
+    foto:   "assets/delinte/foto_pneus/DV2+/pneu_45_roda.png",
     titulo: "MAIS RESISTÊNCIA, MAIS CARGA",
     sub:    "Evolução da linha de carga com reforço adicional para rotas pesadas.",
     cta:    "CONHEÇA O DV2 +",
@@ -466,8 +466,7 @@ const PRODUTOS_DENALI = [
   {
     nome:   "Peregrine",
     specs:  "Alta performance · precisão e controle na pista",
-    // Pasta "Peregrine" não tem pneu_45_roda — usa a variante com roda de frente.
-    foto:   "assets/denali/foto_pneus/Peregrine/pneu_frente_roda.png",
+    foto:   "assets/denali/foto_pneus/Peregrine/pneu_45_roda.png",
     titulo: "DOMINE A PISTA",
     sub:    "Controle no limite: performance e precisão para quem exige o máximo.",
     cta:    "CONHEÇA O PEREGRINE",
