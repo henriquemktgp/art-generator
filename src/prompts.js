@@ -294,4 +294,4 @@ function montarPromptCarro(formato, vista, linha = 'institucional', sugestaoCarr
   };
 }
 
-module.exports = { montarPrompt, montarPromptMedida, montarPromptCarro, CENAS_POR_LINHA };
+module.exports = { montarPrompt, montarPromptMedida, montarPromptCarro};
