@@ -1898,6 +1898,71 @@ body {
 .banner-pequeno .art3p-footer-bold  { font-size: 35px; }  /* CTA (do lado dos pneus) */
 .banner-pequeno .art3p-footer-texto { font-size: 30px; line-height: 1.3; } /* subtítulo (meio) */
 
+/* ══ Banner MOBILE — ver comentário equivalente em ".art" (linha ~1032) ══ */
+
+/* ── Grande mobile — 562×750 (retrato) — mantém a coluna vertical (header/
+   tires/footer), só compacta o footer (vira coluna, sem separador) porque
+   562px é estreito demais pra CTA+texto lado a lado como no desktop. Os
+   pneus ganham altura maior que uma escala linear daria (Story já aceita
+   estourar a largura e cortar as pontas — ver comentário original em
+   ".art3p-tire-img" — aqui repito a mesma lógica pra aproveitar melhor a
+   altura extra do retrato). */
+.art3p.banner-mobile.banner-grande { padding: 24px 24px 20px; }
+/* flex:0 0 auto — sem isso ".art3p-tires" herda flex:1 1 auto (regra base)
+   e cresce pra preencher toda a sobra de altura do retrato; como os pneus
+   ficam alinhados ao TOPO dessa área crescida (column-reverse inverte o
+   sentido do justify-content:flex-end da regra base — vira efetivamente
+   flex-start), isso empurrava os pneus pra logo abaixo do cabeçalho e
+   deixava um vão enorme e vazio antes do rodapé. Com flex:0 0 auto, a
+   faixa de pneus fica coladinha no cabeçalho e a sobra de espaço vai pro
+   fundo gerado por IA (visível atrás, não é realmente "vazio"). */
+.banner-mobile.banner-grande .art3p-tires { flex: 0 0 auto; padding-bottom: 4px; margin-top: 170px; }
+.banner-mobile.banner-grande .art3p-tire-col { height: auto; }
+.banner-mobile.banner-grande .art3p-divider   { margin: 0 8px; }
+.banner-mobile.banner-grande .art3p-tire-img  { height: 190px; }
+.banner-mobile.banner-grande .art3p-logo         { height: 30px; }
+.banner-mobile.banner-grande .art3p-tire-name    { font-size: 20px; margin-top: 2px; }
+.banner-mobile.banner-grande .art3p-footer {
+  flex-direction: column;
+  margin: 14px 0 0;
+  padding: 12px 16px;
+}
+.banner-mobile.banner-grande .art3p-footer > * + * { margin-left: 0; margin-top: 8px; }
+.banner-mobile.banner-grande .art3p-footer-sep     { display: none; }
+.banner-mobile.banner-grande .art3p-footer-bold    { font-size: 30px; }
+.banner-mobile.banner-grande .art3p-footer-texto   { font-size: 20px; flex: none; }
+
+/* ── Médio mobile — 752×225 — altura bem apertada (só 393→225px, mais baixo
+   que o Médio desktop), então some com o apelido do pneu embaixo da foto —
+   mesmo corte de conteúdo que o Pequeno DESKTOP faz por falta de espaço. */
+.art3p.banner-mobile.banner-medio { padding: 10px 16px 8px; }
+.banner-mobile.banner-medio .art3p-tires { padding-bottom: 2px; margin-top: 30px; }
+.banner-mobile.banner-medio .art3p-divider   { margin: 0 6px; }
+.banner-mobile.banner-medio .art3p-tire-img  { height: 100px; }
+.banner-mobile.banner-medio .art3p-tire-name { display: none; }
+.banner-mobile.banner-medio .art3p-footer { margin: 4px 20px 0; padding: 4px 10px; }
+.banner-mobile.banner-medio .art3p-footer > * + * { margin-left: 8px; }
+.banner-mobile.banner-medio .art3p-logo         { height: 16px; }
+.banner-mobile.banner-medio .art3p-footer-bold  { font-size: 13px; }
+.banner-mobile.banner-medio .art3p-footer-texto { font-size: 11px; line-height: 1.2; }
+
+/* ── Pequeno mobile — 1760×358 ── Ao contrário de ".art"/".artp45"/".artcl",
+   o Pequeno DESTE modelo já tem uma estrutura própria e diferente do Médio
+   (linha horizontal única — flex-direction:row + .art3p-footer com
+   display:contents, ver bloco "Banner Pequeno — layout PRÓPRIO" acima) que
+   se aplica de qualquer forma (a classe banner-pequeno é compartilhada
+   entre desktop e mobile). Por isso aqui a base de escala é o PEQUENO
+   desktop (não o Médio) — só a largura (1760 vs 1920, × 0,916) é comparável;
+   a altura (358) é quase o dobro da do Pequeno desktop (195), então sobra
+   espaço vertical (os itens continuam centralizados verticalmente pelas
+   mesmas regras do desktop — não é um problema, só uma folga a mais). */
+.banner-mobile.banner-pequeno .art3p-header  { margin-left: 117px; margin-right: 26px; }
+.banner-mobile.banner-pequeno .art3p-divider { margin: 0 9px; }
+.banner-mobile.banner-pequeno .art3p-tire-img  { height: 137px; }
+.banner-mobile.banner-pequeno .art3p-logo        { height: 51px; }
+.banner-mobile.banner-pequeno .art3p-footer-bold  { font-size: 32px; }
+.banner-mobile.banner-pequeno .art3p-footer-texto { font-size: 27px; line-height: 1.3; }
+
 /* ── MODELO: ARTE DE PNEU 45° ────────────────────────────────────────────── */
 .artp45 {
   position: relative;
@@ -1979,7 +2044,7 @@ body {
 .banner-grande .artp45-logo-wrap { bottom: 32px; left: 160px; }
 .banner-grande .artp45-logo      { height: 40px; }
 .banner-grande .artp45-text      { top: 90px; left: 160px; right: 900px; }
-.banner-grande .artp45-apelido   { font-size: 22px; margin-bottom: 4px; }
+.banner-grande .artp45-apelido   { font-size: 28px; margin-bottom: 4px; }
 .banner-grande .artp45-titulo    { font-size: 48px; margin-bottom: 10px; }
 .banner-grande .artp45-sub       { font-size: 22px; margin-bottom: 16px; }
 .banner-grande .artp45-cta       { font-size: 18px; padding: 9px 20px; }
@@ -1989,7 +2054,7 @@ body {
 .banner-medio .artp45-logo-wrap { bottom: 18px; left: 160px; }
 .banner-medio .artp45-logo      { height: 35px; }
 .banner-medio .artp45-text      { top: 46px; left: 160px; right: 560px; }
-.banner-medio .artp45-apelido   { font-size: 16px; margin-bottom: 2px; }
+.banner-medio .artp45-apelido   { font-size: 30px; margin-bottom: 2px; }
 .banner-medio .artp45-titulo    { font-size: 40px; margin-bottom: 6px; }
 .banner-medio .artp45-sub       { font-size: 25px; margin-bottom: 9px; }
 .banner-medio .artp45-cta       { font-size: 25px; padding: 6px 14px; }
@@ -1999,12 +2064,57 @@ body {
 .banner-pequeno .artp45-logo-wrap { bottom: 8px; left: 160px; }
 .banner-pequeno .artp45-logo      { height: 30px; }
 .banner-pequeno .artp45-text      { top: 16px; left: 160px; right: 280px; }
-.banner-pequeno .artp45-apelido   { font-size: 40px; margin-bottom: 0; }
+.banner-pequeno .artp45-apelido   { font-size: 25px; margin-bottom: 0; }
 .banner-pequeno .artp45-titulo    { font-size: 30px; margin-bottom: 0; }
 .banner-pequeno .artp45-sub       { display: none; }
 .banner-pequeno .artp45-cta       { font-size: 15px; padding: 4px 10px; margin-top: 10px; }
 .banner-pequeno .artp45-tire      { left: 660px; bottom: -125px; height: 300px; }
 .banner-pequeno .artp45-tire-2    { left: 730px; bottom: -145px; height: 300px; }
+
+/* ══ Banner MOBILE — ver comentário equivalente em ".art" (linha ~1032) ══ */
+
+/* ── Grande mobile — 562×750 (retrato) — o truque de "2 pneus vazando a
+   direita" do desktop não cabe numa coluna estreita. Volta a um pneu só
+   (mesma foto, tire-2 escondida de novo) e usa o mesmo esquema de
+   ".art"/".artcl" pro retrato: pneu grande centralizado (bleed nas duas
+   bordas), header no topo, texto embaixo — inspirado no que o Story já
+   faz aqui (pneu único, grande, mais pra baixo no canvas). */
+.banner-mobile.banner-grande .artp45-tire-2    { display: none; }
+.banner-mobile.banner-grande .artp45-logo-wrap { top: 24px; bottom: auto; left: 24px; right: 24px; justify-content: flex-start; }
+.banner-mobile.banner-grande .artp45-logo      { height: 28px; }
+.banner-mobile.banner-grande .artp45-text      { top: 76px; left: 24px; right: 24px; }
+.banner-mobile.banner-grande .artp45-apelido   { font-size: 25px; margin-bottom: 13px; }
+.banner-mobile.banner-grande .artp45-titulo    { font-size: 35px; margin-bottom: 18px; }
+.banner-mobile.banner-grande .artp45-sub       { font-size: 20px; margin-bottom: 22px; }
+.banner-mobile.banner-grande .artp45-cta       { font-size: 17px; padding: 8px 18px; }
+.banner-mobile.banner-grande .artp45-tire      { left: 50%; bottom: 0px; transform: translateX(-50%); height: 430px; }
+
+/* ── Médio mobile — 752×225 — sem espaço pro "vazamento duplo" do desktop
+   (que depende de muita largura sobrando à direita do texto); os 2 pneus
+   passam a ficar ancorados pela direita (right, não left) numa faixa
+   própria que não disputa espaço com o texto — mesmo cuidado do Médio
+   mobile em ".art"/".art3p": sacrifica o subtítulo por falta de altura. */
+.banner-mobile.banner-medio .artp45-logo-wrap { bottom: 8px; left: 20px; }
+.banner-mobile.banner-medio .artp45-logo      { height: 20px; }
+.banner-mobile.banner-medio .artp45-text      { top: 14px; left: 20px; right: 260px; }
+.banner-mobile.banner-medio .artp45-apelido   { font-size: 15px; margin-bottom: 5px; }
+.banner-mobile.banner-medio .artp45-titulo    { font-size: 25px; margin-bottom: 10px; }
+.banner-mobile.banner-medio .artp45-sub       { display: none; }
+.banner-mobile.banner-medio .artp45-cta       { font-size: 10px; padding: 4px 9px; }
+.banner-mobile.banner-medio .artp45-tire      { left: auto; right: 90px; bottom: -55px; height: 165px; }
+.banner-mobile.banner-medio .artp45-tire-2    { left: auto; right: 50px; bottom: -60px; height: 165px; }
+
+/* ── Pequeno mobile — 1760×358 — proporção quase idêntica ao Médio desktop
+   (ver mesmo raciocínio em ".art"), valores = Médio desktop × 0,916. */
+.banner-mobile.banner-pequeno .artp45-logo-wrap { bottom: 16px; left: 147px; }
+.banner-mobile.banner-pequeno .artp45-logo      { height: 32px; }
+.banner-mobile.banner-pequeno .artp45-text      { top: 42px; left: 147px; right: 513px; }
+.banner-mobile.banner-pequeno .artp45-apelido   { font-size: 28px; margin-bottom: 5px; }
+.banner-mobile.banner-pequeno .artp45-titulo    { font-size: 37px; margin-bottom: 5px; }
+.banner-mobile.banner-pequeno .artp45-sub       { font-size: 23px; margin-bottom: 8px; }
+.banner-mobile.banner-pequeno .artp45-cta       { font-size: 23px; padding: 5px 13px; }
+.banner-mobile.banner-pequeno .artp45-tire      { left: 476px; bottom: -229px; height: 421px; }
+.banner-mobile.banner-pequeno .artp45-tire-2    { left: 580px; bottom: -256px; height: 421px; }
 
 /* ── MODELO: PNEU + CARRO DE FRENTE ──────────────────────────────────────── */
 .artcf {
@@ -2131,6 +2241,55 @@ body {
 .banner-pequeno .artcl-titulo    { font-size: 35px; margin-bottom: 4px; }
 .banner-pequeno .artcl-cta       { font-size: 25px; padding: 4px 10px; }
 .banner-pequeno .artcl-tire      { left: -100px; top: 165%; transform: translateY(-50%); height: 350%; }
+
+/* ══ Banner MOBILE — ver comentário equivalente em ".art" (linha ~1032) ══ */
+
+/* ── Grande mobile — 562×750 (retrato) — o esquema desktop (pneu vazando a
+   esquerda + texto à direita) não cabe lado a lado numa coluna estreita.
+   Vira empilhado: logo no topo (era embaixo no desktop), pneu grande no
+   meio (ainda vazando a esquerda, mesmo estilo), título+CTA embaixo sobre
+   um gradiente extra (não existe ".art-img-grad" aqui — escurece direto o
+   ".artcl-overlay" só nesse recorte) — mesma fórmula usada em ".art"/
+   ".artp45" grande mobile. */
+.banner-mobile.banner-grande .artcl-overlay {
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,0.15) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.75) 85%, rgba(0,0,0,0.92) 100%);
+}
+.banner-mobile.banner-grande .artcl-logo-wrap { top: 24px; bottom: auto; }
+.banner-mobile.banner-grande .artcl-logo      { height: 28px; }
+.banner-mobile.banner-grande .artcl-headline  {
+  top: auto; bottom: 24px; left: 24px; right: 24px; transform: none; max-width: none;
+}
+.banner-mobile.banner-grande .artcl-titulo    { font-size: 38px; margin-bottom: 10px; }
+.banner-mobile.banner-grande .artcl-cta       { font-size: 16px; padding: 8px 18px; }
+.banner-mobile.banner-grande .artcl-tire      { left: 130px; top: 11%; transform: none; height: 68%; }
+
+/* ── Médio mobile — 752×225 — mesma "câmera" do Médio/Pequeno desktop
+   (pneu bem ampliado, vazando a esquerda e a borda inferior via top/height
+   em %, que já se adaptam sozinhos ao novo tamanho); só os valores em PX
+   (logo, fonte, offset horizontal do pneu) precisam de ajuste próprio pela
+   altura bem mais apertada. */
+/* O pneu é dimensionado por % da ALTURA (top/height), então em 752×225 —
+   proporção bem mais "quadrada" que o Médio desktop (1920×393) — a mesma
+   ampliação ocupa uma fatia bem maior da LARGURA disponível. Preciso de um
+   height% menor (herdar os 220% do desktop encostava no texto) e do
+   headline mais pra direita pra abrir espaço. */
+.banner-mobile.banner-medio .artcl-logo-wrap { bottom: 8px; }
+.banner-mobile.banner-medio .artcl-logo      { height: 18px; }
+.banner-mobile.banner-medio .artcl-headline  { left: 250px; right: 20px; }
+.banner-mobile.banner-medio .artcl-titulo    { font-size: 18px; margin-bottom: 4px; }
+.banner-mobile.banner-medio .artcl-cta       { font-size: 12px; padding: 4px 10px; }
+.banner-mobile.banner-medio .artcl-tire      { left: -60px; top: 120%; transform: translateY(-50%); height: 175%; }
+
+/* ── Pequeno mobile — 1760×358 — proporção quase idêntica ao Médio desktop
+   (ver mesmo raciocínio em ".art"), valores em px = Médio desktop × 0,916
+   (top/height do pneu já são % — não precisam de conversão). */
+.banner-mobile.banner-pequeno .artcl-logo-wrap { bottom: 15px; }
+.banner-mobile.banner-pequeno .artcl-logo      { height: 27px; }
+.banner-mobile.banner-pequeno .artcl-headline  { left: 412px; right: 147px; }
+.banner-mobile.banner-pequeno .artcl-titulo    { font-size: 32px; margin-bottom: 8px; }
+.banner-mobile.banner-pequeno .artcl-cta       { font-size: 23px; padding: 5px 13px; }
+.banner-mobile.banner-pequeno .artcl-tire      { left: -183px; top: 120%; transform: translateY(-50%); height: 220%; }
 
 /* ── MODELO: ARTE DE PNEU DE FRENTE (sem IA — fundo fixo da marca) ───────── */
 .artpf {

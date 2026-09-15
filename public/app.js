@@ -645,9 +645,21 @@ const BANNER_TAMANHOS_MOBILE = {
 // para quem precisa do tamanho lógico do canvas (escala de preview, export,
 // medição de texto). Use esta função em vez de ler FORMATOS[...] direto
 // sempre que precisar de width/height reais.
+// Também resolve o recorte mobile quando estado.bannerDispositivo === 'mobile'
+// — usado só pela pré-visualização (toggle Desktop/Mobile na sidebar); a
+// exportação sempre gera os dois independente desse estado (ver
+// exportarBannerDuplo), então esse campo nunca chega no back-end.
 function formatoAtivoInfo() {
   if (estado.formato === 'banner') {
     const tamanho = BANNER_TAMANHOS[estado.bannerTamanho];
+    if (estado.bannerDispositivo === 'mobile') {
+      const dimsMobile = BANNER_TAMANHOS_MOBILE[estado.bannerTamanho];
+      return {
+        ...dimsMobile,
+        label: `${FORMATOS.banner.label} (${tamanho.label} · Mobile)`,
+        desc: `${dimsMobile.width} × ${dimsMobile.height} px`
+      };
+    }
     return { ...tamanho, label: `${FORMATOS.banner.label} (${tamanho.label})` };
   }
   return FORMATOS[estado.formato];
@@ -712,6 +724,7 @@ const estado = {
   modeloMedida:   'unica',  // chave de MODELOS_MEDIDA — só relevante quando tipoArte === 'medida'
   formato:        'feed',
   bannerTamanho:  'grande', // chave de BANNER_TAMANHOS — só relevante quando formato === 'banner'
+  bannerDispositivo: 'desktop', // 'desktop' | 'mobile' — só afeta a PRÉ-VISUALIZAÇÃO (ver formatoAtivoInfo); a exportação sempre gera os dois juntos, ver exportarBannerDuplo
   objetivo:       'promocao',
   produto:        0,
   pneu1:          0, // modelo "3 pneus"
@@ -975,8 +988,11 @@ function vincularEventos() {
       estado[campo] = valor;
       if (formatoMudou) {
         document.getElementById('app-root').dataset.formato = valor;
-        atualizarMeta();
       }
+      // bannerDispositivo (toggle Desktop/Mobile) também muda o que
+      // formatoAtivoInfo() resolve (ver função) — precisa atualizar o texto
+      // de dimensões acima do canvas igual já acontece ao trocar o formato.
+      if (formatoMudou || campo === 'bannerDispositivo') atualizarMeta();
       if (!estado.promptEditado) atualizarSugestaoPrompt();
       renderTudo();
       atualizarEscala();
@@ -1277,11 +1293,16 @@ function limparErro() {
 // Classes de formato compartilhadas por todos os canvases de Arte Livre —
 // `format-<formato>` sempre, mais `banner-<tamanho>` quando o formato ativo
 // for Banner (Grande/Médio/Pequeno), para o CSS conseguir ajustar posição/
-// fonte por tamanho igual já é feito na Arte Livre Padrão.
+// fonte por tamanho igual já é feito na Arte Livre Padrão. `banner-mobile`
+// entra também quando o toggle Desktop/Mobile da sidebar está em "Mobile" —
+// é a MESMA classe que capturarCanvas() adiciona no clone durante a
+// exportação (ver exportarBannerDuplo), então a pré-visualização mostra
+// fielmente o recorte mobile antes de exportar.
 function classesFormatoLivre() {
   return [
     `format-${estado.formato}`,
-    estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : ''
+    estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : '',
+    (estado.formato === 'banner' && estado.bannerDispositivo === 'mobile') ? 'banner-mobile' : ''
   ];
 }
 
@@ -1864,6 +1885,12 @@ async function capturarCanvas(overrides = {}) {
   const height = overrides.height ?? info.height;
 
   const clone = original.cloneNode(true);
+  // Remove primeiro, independente do que for pedido — o canvas ORIGINAL pode
+  // já estar com "banner-mobile" (usuário deixou o toggle Desktop/Mobile da
+  // sidebar em "Mobile" antes de exportar) e cloneNode copia essa classe
+  // junto; sem este remove, a passada "desktop" de exportarBannerDuplo
+  // herdaria o layout mobile por engano.
+  clone.classList.remove('banner-mobile');
   if (overrides.extraClass) clone.classList.add(overrides.extraClass);
   // O clone vai direto para o <body>, fora de #app-root — então não herda as
   // regras de visibilidade que dependem de .app[data-tipo-arte]/[data-modelo].

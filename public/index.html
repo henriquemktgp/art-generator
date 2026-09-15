@@ -84,6 +84,16 @@
           </select>
         </div>
 
+        <!-- Só troca a PRÉ-VISUALIZAÇÃO — export sempre gera desktop + mobile
+             juntos (ver exportarBannerDuplo em app.js), independente disso. -->
+        <fieldset class="control-group" id="grupo-banner-dispositivo">
+          <legend class="control-label">Pré-visualizar</legend>
+          <div class="btn-group" role="group" aria-label="Escolha o dispositivo de pré-visualização">
+            <button type="button" class="btn-opt active" data-field="bannerDispositivo" data-val="desktop" aria-pressed="true">Desktop</button>
+            <button type="button" class="btn-opt"        data-field="bannerDispositivo" data-val="mobile"  aria-pressed="false">Mobile</button>
+          </div>
+        </fieldset>
+
         <fieldset class="control-group" id="grupo-objetivo">
           <legend class="control-label">Objetivo</legend>
           <div class="btn-group" role="group" aria-label="Escolha o objetivo">
