@@ -629,6 +629,17 @@ const BANNER_TAMANHOS = {
   pequeno: { label: 'Pequeno',         width: 1920, height: 195, desc: '1920 × 195 px' }
 };
 
+// Contraparte mobile de cada tamanho de Banner — usada só na exportação (ver
+// exportarBannerDuplo()). Não tem select próprio: o usuário escolhe o
+// tamanho uma vez (grande/medio/pequeno) e PNG/PDF geram os dois recortes
+// (desktop + mobile) juntos. O fundo gerado por IA é o mesmo nos dois — só
+// muda o enquadramento (object-fit: cover reagindo à nova proporção).
+const BANNER_TAMANHOS_MOBILE = {
+  grande:  { width: 562,  height: 750 },
+  medio:   { width: 752,  height: 225 },
+  pequeno: { width: 1760, height: 358 }
+};
+
 // Retorna {label, desc, width, height} do formato/tamanho ativo — único ponto
 // que resolve a dimensão real do Banner (que não é fixa, ver BANNER_TAMANHOS)
 // para quem precisa do tamanho lógico do canvas (escala de preview, export,
@@ -1746,6 +1757,15 @@ function atualizarEscala() {
 // EXPORTAÇÃO
 // =============================================================================
 
+// Fator de super-amostragem do html2canvas (ver capturarCanvas) — também usado
+// por processarImgExport/imagemParaPngComFit para pré-renderizar logo/fotos
+// já na resolução final. Sem isso, a pré-renderização usa o tamanho CSS do
+// container e o html2canvas amplia esse bitmap depois (na hora de aplicar o
+// scale), borrando qualquer imagem cujo container seja pequeno na tela —
+// mais perceptível quanto menor o container (ex.: logo/pneu do Banner Médio
+// mobile, com containers bem menores que os do Banner desktop).
+const EXPORT_SCALE = 2;
+
 // Sufixo do nome do arquivo exportado, conforme tipo de arte / modelo ativo
 function sufixoArquivo() {
   if (estado.tipoArte === 'medida') {
@@ -1758,11 +1778,12 @@ async function exportarPNG() {
   const btn = document.getElementById('btn-png');
   definirEstadoBtn(btn, true, 'PNG...');
   try {
-    const c = await capturarCanvas();
-    const link = document.createElement('a');
-    link.download = `${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.png`;
-    link.href = c.toDataURL('image/png');
-    link.click();
+    if (estado.formato === 'banner') {
+      await exportarBannerDuplo('png');
+    } else {
+      const c = await capturarCanvas();
+      baixarPNG(c, `${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.png`);
+    }
   } catch (e) {
     console.error('[Delinte] Erro PNG:', e);
     mostrarErro('Não foi possível exportar o PNG. Verifique o console.');
@@ -1775,18 +1796,13 @@ async function exportarPDF() {
   const btn = document.getElementById('btn-pdf');
   definirEstadoBtn(btn, true, 'PDF...');
   try {
-    const { width, height } = formatoAtivoInfo();
-    const c = await capturarCanvas();
-    const imgData = c.toDataURL('image/png');
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: width >= height ? 'landscape' : 'portrait',
-      unit: 'px',
-      format: [width, height],
-      hotfixes: ['px_scaling']
-    });
-    pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-    pdf.save(`${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.pdf`);
+    if (estado.formato === 'banner') {
+      await exportarBannerDuplo('pdf');
+    } else {
+      const { width, height } = formatoAtivoInfo();
+      const c = await capturarCanvas();
+      baixarPDF(c, width, height, `${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.pdf`);
+    }
   } catch (e) {
     console.error('[Delinte] Erro PDF:', e);
     mostrarErro('Não foi possível exportar o PDF. Verifique o console.');
@@ -1795,12 +1811,60 @@ async function exportarPDF() {
   }
 }
 
+function baixarPNG(canvas, nomeArquivo) {
+  const link = document.createElement('a');
+  link.download = nomeArquivo;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function baixarPDF(canvas, width, height, nomeArquivo) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({
+    orientation: width >= height ? 'landscape' : 'portrait',
+    unit: 'px',
+    format: [width, height],
+    hotfixes: ['px_scaling']
+  });
+  pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, width, height);
+  pdf.save(nomeArquivo);
+}
+
+// Banner gera desktop + mobile juntos, num único clique — 2 arquivos (o
+// mobile reaproveita o mesmo fundo de IA, só re-enquadrado via CSS/
+// object-fit: cover; nenhuma nova chamada à API). Ver BANNER_TAMANHOS_MOBILE.
+async function exportarBannerDuplo(tipo) {
+  const base = `${estado.marca}-banner-${estado.bannerTamanho}${sufixoArquivo()}-arte`;
+  const desktop = BANNER_TAMANHOS[estado.bannerTamanho];
+  const mobile  = BANNER_TAMANHOS_MOBILE[estado.bannerTamanho];
+
+  const versoes = [
+    { device: 'desktop', ...desktop, extraClass: '' },
+    { device: 'mobile',  ...mobile,  extraClass: 'banner-mobile' }
+  ];
+
+  for (const v of versoes) {
+    const c = await capturarCanvas({ width: v.width, height: v.height, extraClass: v.extraClass });
+    if (tipo === 'png') {
+      baixarPNG(c, `${base}-${v.device}.png`);
+    } else {
+      baixarPDF(c, v.width, v.height, `${base}-${v.device}.pdf`);
+    }
+  }
+}
+
 // ── Captura via clone off-screen ─────────────────────────────────────────────
-async function capturarCanvas() {
+// overrides: { width, height, extraClass } — usado pela exportação dupla de
+// Banner para capturar o recorte mobile do MESMO canvas/estado (ver
+// exportarBannerDuplo). Sem overrides, comportamento idêntico ao anterior.
+async function capturarCanvas(overrides = {}) {
   const original = document.getElementById(canvasAtivoId());
-  const { width, height } = formatoAtivoInfo();
+  const info = formatoAtivoInfo();
+  const width  = overrides.width  ?? info.width;
+  const height = overrides.height ?? info.height;
 
   const clone = original.cloneNode(true);
+  if (overrides.extraClass) clone.classList.add(overrides.extraClass);
   // O clone vai direto para o <body>, fora de #app-root — então não herda as
   // regras de visibilidade que dependem de .app[data-tipo-arte]/[data-modelo].
   // "display" e "hidden" precisam ser forçados aqui (estilo inline sempre
@@ -1829,7 +1893,7 @@ async function capturarCanvas() {
   let resultado;
   try {
     resultado = await html2canvas(clone, {
-      scale:           2,
+      scale:           EXPORT_SCALE,
       useCORS:         false,
       allowTaint:      false,
       width,
@@ -1898,7 +1962,9 @@ async function processarImgExport(img) {
   // corte/enquadramento certo antes do html2canvas varrer o clone.
   if (ehSvg || objFit === 'cover' || objFit === 'contain') {
     const fit = objFit === 'cover' ? 'cover' : 'contain';
-    dataUrl = await imagemParaPngComFit(dataUrl, containerW, containerH, objPos, fit, svgText);
+    dataUrl = await imagemParaPngComFit(
+      dataUrl, containerW * EXPORT_SCALE, containerH * EXPORT_SCALE, objPos, fit, svgText
+    );
   }
 
   // Aplica e aguarda o carregamento completo antes do html2canvas varrer o clone

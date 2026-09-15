@@ -992,12 +992,15 @@ body {
 
 .banner-medio .art-img-wrap { right: 0; top: 0; bottom: 0; width: 460px; }
 
-.banner-medio .art-text { left: 320px; right: 500px; }
+/* align-items:center — mesmo tratamento do Pequeno (ver comentário lá
+   embaixo): título/subtítulo/CTA encolhem pro próprio conteúdo e ficam
+   centralizados entre si, em vez do CTA esticar/ficar preso à esquerda. */
+.banner-medio .art-text { left: 320px; right: 500px; align-items: center; }
 
-.banner-medio .art-pname  { font-size: 18px; margin-bottom: 5px; }
-.banner-medio .art-title  { font-size: 66px; margin-bottom: 14px; line-height: 0.92; }
-.banner-medio .art-sub    { font-size: 25px; margin-bottom: 18px; }
-.banner-medio .art-cta    { font-size: 19px; padding: 10px 22px; margin-bottom: 12px; align-self: flex-start; }
+.banner-medio .art-pname  { font-size: 18px; margin-bottom: 5px; text-align: center; }
+.banner-medio .art-title  { font-size: 66px; margin-bottom: 14px; line-height: 0.92; text-align: center; }
+.banner-medio .art-sub    { font-size: 25px; margin-bottom: 18px; text-align: center; }
+.banner-medio .art-cta    { font-size: 19px; padding: 10px 22px; margin-bottom: 12px; }
 
 .banner-medio.no-product .art-text { left: 160px; right: 160px; }
 
@@ -1028,6 +1031,89 @@ body {
 .banner-pequeno .art-cta   { font-size: 20px; padding: 9px 22px; margin-bottom: 0; }
 
 .banner-pequeno.no-product .art-text { left: 160px; right: 160px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORMATO: BANNER HORIZONTAL — recortes MOBILE (ver BANNER_TAMANHOS_MOBILE em
+   app.js). Aplicados só na exportação (classe "banner-mobile" some junto com
+   o clone off-screen, ver capturarCanvas/exportarBannerDuplo) — a pré-
+   visualização editável sempre mostra o desktop. Sem mockup do marketing
+   para estes três: Grande é retrato, então reaproveita a composição "foto
+   cheia + gradiente + texto embaixo" que o Feed/Story já usa (ver
+   FORMATO: STORY acima); Médio/Pequeno mobile são paisagem estreita — Pequeno
+   mobile (1760×358) tem quase a mesma proporção do Médio desktop (1920×393),
+   então seus valores são o Médio desktop escalado a ~0.916; Médio mobile
+   (752×225) é bem mais apertado (225px de altura), então usa valores próprios
+   priorizando legibilidade em vez de escala estrita (pname sacrificado, igual
+   já acontece no Pequeno desktop). */
+
+/* ── Grande mobile — 562 × 750 px (retrato) ───────────────────────────────── */
+.banner-mobile.banner-grande .art-stripe { width: 8px; }
+.banner-mobile.banner-grande .art-elem   { display: none; }
+
+.banner-mobile.banner-grande .art-header { left: 24px; top: 24px; gap: 8px; }
+.banner-mobile.banner-grande .art-logo   { height: 34px; max-width: 130px; }
+.banner-mobile.banner-grande .art-badge  { font-size: 12px; padding: 5px 12px; }
+
+/* Foto ocupa o canvas inteiro (como no Story) — sem isso herdaria
+   right/top/bottom/width do .banner-grande desktop (regra de menor
+   especificidade, mas ainda válida para as propriedades que não
+   sobrescrevemos aqui) e ficaria uma faixa estreita de 660px. */
+.banner-mobile.banner-grande .art-img-wrap { left: 0; right: 0; top: 0; bottom: 0; width: auto; }
+.banner-mobile.banner-grande .art-product  { object-position: center 22%; }
+.banner-mobile.banner-grande .art-img-grad {
+  background: linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.55) 72%, rgba(0,0,0,0.9) 100%);
+}
+
+.banner-mobile.banner-grande .art-text { top: auto; bottom: 24px; left: 24px; right: 24px; }
+
+.banner-mobile.banner-grande .art-pname  { font-size: 13px; margin-bottom: 4px; }
+.banner-mobile.banner-grande .art-title  { font-size: 44px; margin-bottom: 8px; line-height: 0.95; }
+.banner-mobile.banner-grande .art-sub    { font-size: 16px; margin-bottom: 12px; }
+.banner-mobile.banner-grande .art-cta    { font-size: 14px; padding: 8px 18px; margin-bottom: 0; align-self: flex-start; }
+
+/* ── Médio mobile — 752 × 225 px (paisagem estreita) ──────────────────────── */
+.banner-mobile.banner-medio .art-stripe { width: 6px; }
+.banner-mobile.banner-medio .art-elem   { display: none; }
+
+.banner-mobile.banner-medio .art-header { left: 20px; top: 14px; gap: 4px; }
+.banner-mobile.banner-medio .art-logo   { height: 24px; max-width: 100px; }
+.banner-mobile.banner-medio .art-badge  { font-size: 10px; padding: 4px 9px; }
+
+.banner-mobile.banner-medio .art-img-wrap { right: 0; top: 0; bottom: 0; width: 200px; }
+
+.banner-mobile.banner-medio .art-text { left: 20px; right: 220px; align-items: center; }
+
+.banner-mobile.banner-medio .art-pname  { display: none; }
+.banner-mobile.banner-medio .art-title  { font-size: 28px; margin-bottom: 6px; line-height: 0.92; text-align: center; }
+.banner-mobile.banner-medio .art-sub    { font-size: 13px; margin-bottom: 8px; text-align: center; }
+.banner-mobile.banner-medio .art-cta    { font-size: 13px; padding: 6px 14px; margin-bottom: 0; }
+
+.banner-mobile.banner-medio.no-product .art-text { left: 20px; right: 20px; }
+
+/* ── Pequeno mobile — 1760 × 358 px (paisagem estreita) ───────────────────── */
+/* Proporção quase idêntica ao Médio desktop (1920×393) — valores abaixo são
+   o Médio desktop escalado a ~0.916 (1760/1920), arredondados. */
+.banner-mobile.banner-pequeno .art-stripe { width: 9px; }
+.banner-mobile.banner-pequeno .art-elem   { display: none; }
+
+.banner-mobile.banner-pequeno .art-header { left: 146px; top: 29px; gap: 9px; }
+.banner-mobile.banner-pequeno .art-logo   { height: 38px; max-width: 174px; }
+.banner-mobile.banner-pequeno .art-badge  { font-size: 15px; padding: 6px 15px; }
+
+.banner-mobile.banner-pequeno .art-img-wrap { right: 0; top: 0; bottom: 0; width: 421px; }
+
+.banner-mobile.banner-pequeno .art-text { left: 293px; right: 458px; align-items: center; }
+
+/* display:block explícito — sem isso herdariam "display:none" do
+   ".banner-pequeno .art-pname/.art-sub" desktop (linha ~1026: no Pequeno
+   desktop, 195px de altura, esses dois campos são sacrificados por espaço).
+   O Pequeno mobile tem 358px de altura, sobra espaço pra manter os dois. */
+.banner-mobile.banner-pequeno .art-pname  { display: block; font-size: 16px; margin-bottom: 5px; text-align: center; }
+.banner-mobile.banner-pequeno .art-title  { font-size: 60px; margin-bottom: 13px; line-height: 0.92; text-align: center; }
+.banner-mobile.banner-pequeno .art-sub    { display: block; font-size: 23px; margin-bottom: 16px; text-align: center; }
+.banner-mobile.banner-pequeno .art-cta    { font-size: 17px; padding: 9px 20px; margin-bottom: 11px; }
+
+.banner-mobile.banner-pequeno.no-product .art-text { left: 146px; right: 146px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CANVAS DA ARTE — MODO "ARTE DE MEDIDA"
