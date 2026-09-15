@@ -273,6 +273,19 @@ body {
 .app[data-modelo="pneufrente"] .prompt-section,
 .app[data-modelo="pneufrente"] #btn-gerar { display: none; }
 
+/* Realce do fundo de IA: não existe onde não há fundo de IA (tabela/
+   tabeladupla nunca geram; "pneu de frente" usa fundo fixo da marca). Filtro
+   de cor da marca é exclusivo Denali — Delinte nem gera esse fundo "fora do
+   tom" que o filtro corrige. */
+.app[data-modelo-medida="tabela"]      #grupo-filtro-marca,
+.app[data-modelo-medida="tabeladupla"] #grupo-filtro-marca,
+.app[data-modelo="pneufrente"]         #grupo-filtro-marca,
+.app:not([data-marca="denali"])        #grupo-filtro-marca { display: none; }
+
+.app[data-modelo-medida="tabela"]      #grupo-escurecer-fundo,
+.app[data-modelo-medida="tabeladupla"] #grupo-escurecer-fundo,
+.app[data-modelo="pneufrente"]         #grupo-escurecer-fundo { display: none; }
+
 /* Canvas: só um fica visível por vez. #art-canvas-medida e os demais canvases
    de modelo são display:flex (coluna) — não "block" — porque todos empilham
    suas faixas com flex-direction:column. */
@@ -1068,6 +1081,15 @@ body {
 
 .banner-mobile.banner-grande .art-pname  { font-size: 13px; margin-bottom: 4px; }
 .banner-mobile.banner-grande .art-title  { font-size: 44px; margin-bottom: 8px; line-height: 0.95; }
+/* .format-banner[data-marca="denali"] .art-title (mais abaixo, linha ~1477)
+   tem a MESMA especificidade (2 seletores) que a regra acima — e como vem
+   depois no arquivo, ganhava o empate e aplicava 62px fixo em qualquer
+   tamanho de banner, inclusive aqui no mobile (a Nasalization, fonte da
+   Denali, já é mais "larga" que a Anton da Delinte no mesmo font-size, por
+   isso esse ajuste flat existe pro desktop — só que ele não fazia sentido
+   pros 3 tamanhos mobile, cada um com sua própria escala). Uma seletor a
+   mais aqui garante prioridade sobre aquela regra. */
+.banner-mobile.banner-grande[data-marca="denali"] .art-title { font-size: 30px; }
 .banner-mobile.banner-grande .art-sub    { font-size: 16px; margin-bottom: 12px; }
 .banner-mobile.banner-grande .art-cta    { font-size: 14px; padding: 8px 18px; margin-bottom: 0; align-self: flex-start; }
 
@@ -1085,6 +1107,8 @@ body {
 
 .banner-mobile.banner-medio .art-pname  { display: none; }
 .banner-mobile.banner-medio .art-title  { font-size: 28px; margin-bottom: 6px; line-height: 0.92; text-align: center; }
+/* ver comentário equivalente no Grande mobile acima */
+.banner-mobile.banner-medio[data-marca="denali"] .art-title { font-size: 19px; }
 .banner-mobile.banner-medio .art-sub    { font-size: 13px; margin-bottom: 8px; text-align: center; }
 .banner-mobile.banner-medio .art-cta    { font-size: 13px; padding: 6px 14px; margin-bottom: 0; }
 
@@ -1110,10 +1134,60 @@ body {
    O Pequeno mobile tem 358px de altura, sobra espaço pra manter os dois. */
 .banner-mobile.banner-pequeno .art-pname  { display: block; font-size: 16px; margin-bottom: 5px; text-align: center; }
 .banner-mobile.banner-pequeno .art-title  { font-size: 60px; margin-bottom: 13px; line-height: 0.92; text-align: center; }
+/* ver comentário equivalente no Grande mobile acima */
+.banner-mobile.banner-pequeno[data-marca="denali"] .art-title { font-size: 40px; }
 .banner-mobile.banner-pequeno .art-sub    { display: block; font-size: 23px; margin-bottom: 16px; text-align: center; }
 .banner-mobile.banner-pequeno .art-cta    { font-size: 17px; padding: 9px 20px; margin-bottom: 11px; }
 
 .banner-mobile.banner-pequeno.no-product .art-text { left: 146px; right: 146px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REALCE DO FUNDO GERADO POR IA — "Filtro de cor da marca" (só Denali) e
+   "Escurecer fundo" (as duas marcas). Classes aplicadas no canvas por
+   classesRealceFundo() (app.js) conforme os botões da sidebar.
+
+   Pseudo-elemento ::after/::before no próprio canvas — funciona em
+   qualquer modelo sem precisar de HTML extra, porque todos eles (.art,
+   .art3p, .artp45, .artcl, .artcf) têm position:relative na raiz com o
+   fundo de IA cobrindo o elemento inteiro (inset:0). z-index 3 fica sempre
+   entre o fundo/overlay de cada modelo (0-2) e o conteúdo (4-5).
+
+   ".artm" (Medida Única) é EXCEÇÃO: o fundo de IA vive só na faixa central
+   (.artm-photo-zone), não no canvas inteiro (que também tem o mosaico/
+   cabeçalho fixos acima) — por isso tem sua própria regra, direto em
+   .artm-photo-zone, com a regra genérica desligada (content:none) pra não
+   duplicar/cobrir o canvas inteiro à toa.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.filtro-marca[data-marca="denali"]::after,
+.escurecer-fundo::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+}
+.filtro-marca[data-marca="denali"]::after {
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-2));
+  mix-blend-mode: color;
+  opacity: 0.55;
+}
+.escurecer-fundo::before {
+  background: rgba(0,0,0,0.45);
+}
+
+.artm.filtro-marca[data-marca="denali"]::after,
+.artm.escurecer-fundo::before { content: none; }
+
+/* .artm-photo-zone já é position:relative (ver definição acima) */
+.artm.filtro-marca[data-marca="denali"] .artm-photo-zone::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-2));
+  mix-blend-mode: color;
+  opacity: 0.55;
+}
+.artm.escurecer-fundo .artm-photo-zone::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: rgba(0,0,0,0.45);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CANVAS DA ARTE — MODO "ARTE DE MEDIDA"

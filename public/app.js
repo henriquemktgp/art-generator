@@ -725,6 +725,8 @@ const estado = {
   formato:        'feed',
   bannerTamanho:  'grande', // chave de BANNER_TAMANHOS — só relevante quando formato === 'banner'
   bannerDispositivo: 'desktop', // 'desktop' | 'mobile' — só afeta a PRÉ-VISUALIZAÇÃO (ver formatoAtivoInfo); a exportação sempre gera os dois juntos, ver exportarBannerDuplo
+  filtroMarca:    'nao', // 'sim' | 'nao' — só Denali; sobrepõe o gradiente da marca no fundo de IA (ver classesRealceFundo)
+  escurecerFundo: 'nao', // 'sim' | 'nao' — as duas marcas; escurece o fundo de IA pra não brigar com o texto
   objetivo:       'promocao',
   produto:        0,
   pneu1:          0, // modelo "3 pneus"
@@ -1302,7 +1304,22 @@ function classesFormatoLivre() {
   return [
     `format-${estado.formato}`,
     estado.formato === 'banner' ? `banner-${estado.bannerTamanho}` : '',
-    (estado.formato === 'banner' && estado.bannerDispositivo === 'mobile') ? 'banner-mobile' : ''
+    (estado.formato === 'banner' && estado.bannerDispositivo === 'mobile') ? 'banner-mobile' : '',
+    ...classesRealceFundo()
+  ];
+}
+
+// Classes de realce do fundo gerado por IA — "filtro-marca" (só Denali,
+// sobrepõe o gradiente da marca pra puxar a cor do fundo pro tom oficial) e
+// "escurecer-fundo" (as duas marcas, escurece o fundo pra não brigar com o
+// texto). Compartilhada entre classesFormatoLivre() (Arte Livre) e
+// renderArtMedida (Medida Única) — os únicos modelos com fundo de IA.
+// "pneufrente" fica de fora: usa fundo fixo da marca, sem IA (ver README).
+function classesRealceFundo() {
+  if (estado.modelo === 'pneufrente') return [];
+  return [
+    (estado.marca === 'denali' && estado.filtroMarca === 'sim') ? 'filtro-marca' : '',
+    estado.escurecerFundo === 'sim' ? 'escurecer-fundo' : ''
   ];
 }
 
@@ -1383,7 +1400,7 @@ function renderArtMedida() {
   const produto = produtoAtual();
   const semProd = estado.produto === 0;
 
-  canvas.className = ['artm', `artm-${estado.formato}`].filter(Boolean).join(' ');
+  canvas.className = ['artm', `artm-${estado.formato}`, ...classesRealceFundo()].filter(Boolean).join(' ');
   canvas.dataset.marca = estado.marca;
 
   montarMarquee(semProd ? '' : produto.apelido);
@@ -1910,6 +1927,23 @@ async function capturarCanvas(overrides = {}) {
 
   document.body.appendChild(clone);
   await esperarFrames(2); // deixa o browser computar o layout do clone
+
+  // Garante que cada <img> já decodificou antes de medir offsetWidth/Height
+  // (processarImgExport usa esses valores pra calcular o object-fit) — um
+  // <img> clonado com width:auto (só height explícito, ex.: a logo) reporta
+  // offsetWidth 0 até o navegador conhecer as dimensões intrínsecas da
+  // imagem. Normalmente esperarFrames(2) já é tempo suficiente (cache HTTP
+  // resolve rápido), mas em exportarBannerDuplo (2 capturas em sequência) a
+  // segunda passada às vezes lê 0 antes do decode terminar — offsetWidth 0
+  // caía no fallback de emergência (|| 400), calculando o "contain" numa
+  // caixa errada e esticando a imagem (mais visível em imagens bem
+  // "anisotrópicas", como uma logo bem mais larga que alta). decode() é a
+  // forma correta/garantida de esperar isso, ao contrário de contar frames.
+  await Promise.all(
+    Array.from(clone.querySelectorAll('img')).map(img =>
+      img.decode ? img.decode().catch(() => {}) : Promise.resolve()
+    )
+  );
 
   await Promise.all(
     Array.from(clone.querySelectorAll('img')).map(img => processarImgExport(img))

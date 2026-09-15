@@ -261,6 +261,26 @@
         </div>
       </div>
 
+      <!-- ── Realce do fundo gerado por IA ───────────────────────────────
+           Filtro de marca: só Denali, sobrepõe o gradiente oficial da marca
+           (mix-blend-mode:color) pra puxar a cor do fundo pro tom certo.
+           Escurecer fundo: as duas marcas, pra não brigar com o texto. -->
+      <div class="control-group" id="grupo-filtro-marca">
+        <label class="control-label">Filtro de cor da marca</label>
+        <div class="btn-group" role="group" aria-label="Aplicar filtro de cor da marca no fundo gerado">
+          <button type="button" class="btn-opt active" data-field="filtroMarca" data-val="nao" aria-pressed="true">Não</button>
+          <button type="button" class="btn-opt"        data-field="filtroMarca" data-val="sim" aria-pressed="false">Sim</button>
+        </div>
+      </div>
+
+      <div class="control-group" id="grupo-escurecer-fundo">
+        <label class="control-label">Escurecer fundo (legibilidade do texto)</label>
+        <div class="btn-group" role="group" aria-label="Escurecer o fundo gerado por IA">
+          <button type="button" class="btn-opt active" data-field="escurecerFundo" data-val="nao" aria-pressed="true">Não</button>
+          <button type="button" class="btn-opt"        data-field="escurecerFundo" data-val="sim" aria-pressed="false">Sim</button>
+        </div>
+      </div>
+
       <!-- ── Área de ação ─────────────────────────────────────────────── -->
       <div class="action-section">
 
