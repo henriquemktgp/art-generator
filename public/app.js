@@ -546,6 +546,197 @@ const PRODUTOS_DENALI = [
   }
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO SENTURY
+//
+// Marca nova (manual em public/assets/sentury/). Só tem 1 produto com fotos
+// prontas hoje — Qirin 990 (UHP esportivo, ver Manual da Marca.pdf, pág. 6-7).
+// Pasta "quirin990" tem variante com roda (pneu_45_roda.png) e sem roda de
+// frente (só pneu_frente.png — sem "_roda"), então `fotoFrente` cai pro
+// mesmo padrão de fallback já usado em outros produtos sem essa variante.
+// specs/título/sub/CTA/parágrafo abaixo são RASCUNHO (a marca não enviou
+// copy oficial ainda) — revisar com marketing antes de campanha real.
+// ─────────────────────────────────────────────────────────────────────────────
+const PRODUTOS_SENTURY = [
+  {
+    nome:   "Sem produto",
+    specs:  "",  foto:   "",
+    titulo: "",  sub:    "",  cta: "",
+    linha:  "institucional",
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
+  },
+  {
+    nome:   "Qirin 990",
+    specs:  "Ultra High Performance · pneu esportivo de alto desempenho",
+    foto:   "assets/sentury/foto_pneus/quirin990/pneu_45_roda.png",
+    titulo: "SIMPLES ASSIM",
+    sub:    "Pneu é isso. Performance de verdade, sem enrolação — simples assim.",
+    cta:    "CONHEÇA O QIRIN 990",
+    linha:  "esportiva",
+    apelido: "Qirin 990",
+    foto45:     "assets/sentury/foto_pneus/quirin990/pneu_45.png",
+    fotoPerfil: "assets/sentury/foto_pneus/quirin990/pneu_perfil.png",
+    paragrafo: "Sem vaidade, sem ostentação: o Qirin 990 foi desenvolvido para entregar aderência e controle de alta performance, na medida certa para o seu dia a dia.",
+    sufixoMedida: "", fotoFrente: "assets/sentury/foto_pneus/quirin990/pneu_frente.png"
+  }
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO SAMSON (pasta de assets "sampson" — grafia usada nos arquivos
+// enviados; a marca oficial se chama "Samson Pneus", ver Manual da Marca.pdf)
+//
+// Marca nova, especializada em pneus de carga pesada (caminhão/ônibus — aros
+// 17.5"/22.5", ver medidas gravadas nas próprias fotos). Por isso todo o
+// catálogo usa linha:"carga" (mesma categoria/cenas de fundo já usadas para
+// picapes e utilitários Delinte — hub logístico, rodovia industrial etc.,
+// que também servem bem para caminhão). Nenhuma pasta tem variante "_roda"
+// (comum em pneu de aro de aço, sem roda de liga à mostra), então `foto` e
+// `fotoFrente` sempre usam a foto simples (mesmo padrão de fallback já usado
+// quando um produto não tem a variante com roda). specs/título/sub/CTA/
+// parágrafo abaixo são RASCUNHO (a marca não enviou copy oficial, e os
+// códigos das linhas — GC-A/GL-S1/GR-A/GL265D etc. — não vieram com
+// descrição de posição/aplicação) — revisar com marketing antes de campanha
+// real.
+// ─────────────────────────────────────────────────────────────────────────────
+const PARAGRAFO_CARGA_SAMSON =
+  "Depend on Samson: estrutura reforçada e rodagem confiável para quem não pode parar — pensado para a exigência do transporte de carga pesada.";
+
+const PRODUTOS_SAMSON = [
+  {
+    nome:   "Sem produto",
+    specs:  "",  foto:   "",
+    titulo: "",  sub:    "",  cta: "",
+    linha:  "institucional",
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
+  },
+  {
+    nome:   "GC-A",
+    specs:  "Linha de carga · rodagem em costela · longa distância",
+    foto:   "assets/sampson/foto_pneus/Linha GC-A/pneu_45.png",
+    titulo: "RODAGEM QUE NÃO PARA",
+    sub:    "Banda em costela para rodagem estável e baixo desgaste em longa distância.",
+    cta:    "CONHEÇA O GC-A",
+    linha:  "carga",
+    apelido: "GC-A",
+    foto45:     "assets/sampson/foto_pneus/Linha GC-A/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GC-A/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GC-A/pneu_frente.png"
+  },
+  {
+    nome:   "GL-S1",
+    specs:  "Linha de carga · alta quilometragem · rodovia",
+    foto:   "assets/sampson/foto_pneus/Linha GL-S1/pneu_45.png",
+    titulo: "QUILOMETRAGEM QUE VALE A PENA",
+    sub:    "Desenvolvido para rodovia, com foco em alta quilometragem e economia no transporte de carga.",
+    cta:    "CONHEÇA O GL-S1",
+    linha:  "carga",
+    apelido: "GL-S1",
+    foto45:     "assets/sampson/foto_pneus/Linha GL-S1/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL-S1/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL-S1/pneu_frente.png"
+  },
+  {
+    nome:   "GL265D",
+    specs:  "Linha de carga · tração reforçada",
+    foto:   "assets/sampson/foto_pneus/Linha GL265D/pneu_45.png",
+    titulo: "TRAÇÃO PARA O TRABALHO PESADO",
+    sub:    "Estrutura reforçada para tração confiável mesmo com carga pesada.",
+    cta:    "CONHEÇA O GL265D",
+    linha:  "carga",
+    apelido: "GL265D",
+    foto45:     "assets/sampson/foto_pneus/Linha GL265D/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL265D/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL265D/pneu_frente.png"
+  },
+  {
+    nome:   "GL267D",
+    specs:  "Linha de carga · tração reforçada",
+    foto:   "assets/sampson/foto_pneus/Linha GL267D/pneu_45.png",
+    titulo: "TRAÇÃO PARA O TRABALHO PESADO",
+    sub:    "Estrutura reforçada para tração confiável mesmo com carga pesada.",
+    cta:    "CONHEÇA O GL267D",
+    linha:  "carga",
+    apelido: "GL267D",
+    foto45:     "assets/sampson/foto_pneus/Linha GL267D/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL267D/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL267D/pneu_frente.png"
+  },
+  {
+    nome:   "GL283A",
+    specs:  "Linha de carga · versatilidade em rodovia e cidade",
+    foto:   "assets/sampson/foto_pneus/Linha GL283A/pneu_45.png",
+    titulo: "FEITO PARA A ROTINA PESADA",
+    sub:    "Equilíbrio entre durabilidade e desempenho para a rotina do transporte de carga.",
+    cta:    "CONHEÇA O GL283A",
+    linha:  "carga",
+    apelido: "GL283A",
+    foto45:     "assets/sampson/foto_pneus/Linha GL283A/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL283A/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL283A/pneu_frente.png"
+  },
+  {
+    nome:   "GL289A",
+    specs:  "Linha de carga · versatilidade em rodovia e cidade",
+    foto:   "assets/sampson/foto_pneus/Linha GL289A/pneu_45.png",
+    titulo: "FEITO PARA A ROTINA PESADA",
+    sub:    "Equilíbrio entre durabilidade e desempenho para a rotina do transporte de carga.",
+    cta:    "CONHEÇA O GL289A",
+    linha:  "carga",
+    apelido: "GL289A",
+    foto45:     "assets/sampson/foto_pneus/Linha GL289A/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL289A/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL289A/pneu_frente.png"
+  },
+  {
+    nome:   "GL296A",
+    specs:  "Linha de carga · versatilidade em rodovia e cidade",
+    foto:   "assets/sampson/foto_pneus/Linha GL296A/pneu_45.png",
+    titulo: "FEITO PARA A ROTINA PESADA",
+    sub:    "Equilíbrio entre durabilidade e desempenho para a rotina do transporte de carga.",
+    cta:    "CONHEÇA O GL296A",
+    linha:  "carga",
+    apelido: "GL296A",
+    foto45:     "assets/sampson/foto_pneus/Linha GL296A/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GL296A/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GL296A/pneu_frente.png"
+  },
+  {
+    nome:   "GR-A",
+    specs:  "Linha de carga · rodagem em costela · longa distância",
+    foto:   "assets/sampson/foto_pneus/Linha GR-A/pneu_45.png",
+    titulo: "RODAGEM QUE NÃO PARA",
+    sub:    "Banda em costela para rodagem estável e baixo desgaste em longa distância.",
+    cta:    "CONHEÇA O GR-A",
+    linha:  "carga",
+    apelido: "GR-A",
+    foto45:     "assets/sampson/foto_pneus/Linha GR-A/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GR-A/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GR-A/pneu_frente.png"
+  },
+  {
+    nome:   "GR-D",
+    specs:  "Linha de carga · rodagem em costela · longa distância",
+    foto:   "assets/sampson/foto_pneus/Linha GR-D/pneu_45.png",
+    titulo: "RODAGEM QUE NÃO PARA",
+    sub:    "Banda em costela para rodagem estável e baixo desgaste em longa distância.",
+    cta:    "CONHEÇA O GR-D",
+    linha:  "carga",
+    apelido: "GR-D",
+    foto45:     "assets/sampson/foto_pneus/Linha GR-D/pneu_45.png",
+    fotoPerfil: "assets/sampson/foto_pneus/Linha GR-D/pneu_perfil.png",
+    paragrafo: PARAGRAFO_CARGA_SAMSON,
+    sufixoMedida: "", fotoFrente: "assets/sampson/foto_pneus/Linha GR-D/pneu_frente.png"
+  }
+];
+
 // Sugestões de cena exibidas ao usuário no painel "Personalizar Prompt"
 // Chave: linha × objetivo — descrição em PT-BR para facilitar edição
 const SUGESTOES_CENA = {
@@ -606,6 +797,16 @@ const MARCAS = {
     label: 'Denali',
     logo:  'assets/denali/logo/logo-denali-branca.png',
     produtos: PRODUTOS_DENALI
+  },
+  sentury: {
+    label: 'Sentury',
+    logo:  'assets/sentury/logo/Sentury png branco.png',
+    produtos: PRODUTOS_SENTURY
+  },
+  samson: {
+    label: 'Samson',
+    logo:  'assets/sampson/logos/Logo Samson Monocormatico.png',
+    produtos: PRODUTOS_SAMSON
   }
 };
 
@@ -690,7 +891,7 @@ const LIMITES = {
 };
 
 // Marcas com suporte ao modo "Arte de Medida"
-const MARCAS_COM_ARTE_MEDIDA = new Set(['delinte', 'denali']);
+const MARCAS_COM_ARTE_MEDIDA = new Set(['delinte', 'denali', 'sentury', 'samson']);
 
 // ─── Modelos disponíveis dentro do modo "Arte Livre" ─────────────────────────
 // Cada modelo tem seu próprio <div> de canvas (ids abaixo) e seu próprio

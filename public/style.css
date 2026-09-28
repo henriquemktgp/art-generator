@@ -56,6 +56,75 @@
   --font-display:   'Nasalization', 'Poppins', sans-serif;
 }
 
+/* Sentury: manual da marca definia as cores oficiais como só preto + branco,
+   sem cor de apoio — por isso o "accent" (normalmente a cor de destaque da
+   marca) também vira branco aqui: badges/CTA/divisórias renderizam como
+   formas brancas sólidas sobre o fundo preto do canvas, o mesmo visual "sem
+   vaidade, sem ostentação" do brandbook. Fonte de título oficial é "Akira
+   Expanded" — não é uma Google Font e não veio arquivo da fonte junto com
+   os assets da marca, então por ora usamos "Bungee" (Google Fonts) como
+   substituta visual (também um display expandido/bold) até a equipe
+   conseguir o arquivo oficial. */
+.app[data-marca="sentury"],
+.art[data-marca="sentury"],
+.artm[data-marca="sentury"],
+.art3p[data-marca="sentury"], .artp45[data-marca="sentury"],
+.artcf[data-marca="sentury"], .artcl[data-marca="sentury"], .artpf[data-marca="sentury"],
+.artt[data-marca="sentury"], .arttd[data-marca="sentury"] {
+  --brand-accent:   #FFFFFF;
+  --accent-rgb:     255,255,255;
+  --brand-accent-2: #FFFFFF;
+  --brand-black:    #000000;
+  --brand-white:    #FFFFFF;
+  --white-rgb:      255,255,255;
+  --font-display:   'Bungee', 'Poppins', sans-serif;
+}
+
+/* Samson (pasta de assets "sampson"): cores oficiais em Cores da marca.pdf —
+   vermelho principal + branco, preto como cor secundária. Fonte de título
+   "Montserrat Black" (peso 900) — Montserrat é Google Font, mas carrega no
+   peso 400 se não for pedido; o bloco de font-weight logo abaixo força 900
+   nos textos de destaque do canvas (ver comentário ali). */
+.app[data-marca="samson"],
+.art[data-marca="samson"],
+.artm[data-marca="samson"],
+.art3p[data-marca="samson"], .artp45[data-marca="samson"],
+.artcf[data-marca="samson"], .artcl[data-marca="samson"], .artpf[data-marca="samson"],
+.artt[data-marca="samson"], .arttd[data-marca="samson"] {
+  --brand-accent:   #EC2127;
+  --accent-rgb:     236,33,39;
+  --brand-accent-2: #EC2127;
+  --brand-black:    #000000;
+  --brand-white:    #FFFFFF;
+  --white-rgb:      255,255,255;
+  --font-display:   'Montserrat', 'Poppins', sans-serif;
+}
+
+/* Montserrat (Samson) carrega no peso 400 por padrão — diferente de Anton/
+   Nasalization/Bungee, que são fontes de exibição já "bold" por natureza e
+   só existem numa variante. Força peso 900 (Black, o mesmo usado no
+   logotipo oficial da Samson) em todo texto de destaque dos canvases —
+   listado explicitamente em vez de amarrado a var(--font-display) porque
+   nem todo elemento com essa fonte deve engordar (ex.: nenhum caso hoje,
+   mas evita acoplar peso a uma variável pensada só pra família da fonte). */
+.art[data-marca="samson"] .art-title,
+.artm[data-marca="samson"] .artm-marquee-brand,
+.artm[data-marca="samson"] .artm-marquee-nick,
+.artm[data-marca="samson"] .artm-specs-label,
+.artm[data-marca="samson"] .artm-specs-value,
+.artm[data-marca="samson"] .artm-specs-nick,
+.artm[data-marca="samson"] .artm-specs-suffix,
+.art3p[data-marca="samson"] .art3p-headline-lg,
+.art3p[data-marca="samson"] .art3p-tire-name,
+.art3p[data-marca="samson"] .art3p-footer-bold,
+.artp45[data-marca="samson"] .artp45-titulo,
+.artp45[data-marca="samson"] .artp45-apelido,
+.artcf[data-marca="samson"] .artcf-titulo,
+.artcl[data-marca="samson"] .artcl-titulo,
+.artpf[data-marca="samson"] .artpf-titulo {
+  font-weight: 900;
+}
+
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
@@ -747,7 +816,9 @@ body {
   pointer-events: none;
   user-select: none;
 }
-.art[data-marca="denali"] .art-elem { display: none; }
+.art[data-marca="denali"] .art-elem,
+.art[data-marca="sentury"] .art-elem,
+.art[data-marca="samson"] .art-elem { display: none; }
 
 /* Tira de acento vertical esquerda */
 .art-stripe {
@@ -1089,7 +1160,9 @@ body {
    isso esse ajuste flat existe pro desktop — só que ele não fazia sentido
    pros 3 tamanhos mobile, cada um com sua própria escala). Uma seletor a
    mais aqui garante prioridade sobre aquela regra. */
-.banner-mobile.banner-grande[data-marca="denali"] .art-title { font-size: 30px; }
+.banner-mobile.banner-grande[data-marca="denali"]  .art-title { font-size: 30px; }
+.banner-mobile.banner-grande[data-marca="sentury"] .art-title { font-size: 30px; }
+.banner-mobile.banner-grande[data-marca="samson"]  .art-title { font-size: 30px; }
 .banner-mobile.banner-grande .art-sub    { font-size: 16px; margin-bottom: 12px; }
 .banner-mobile.banner-grande .art-cta    { font-size: 14px; padding: 8px 18px; margin-bottom: 0; align-self: flex-start; }
 
@@ -1108,7 +1181,9 @@ body {
 .banner-mobile.banner-medio .art-pname  { display: none; }
 .banner-mobile.banner-medio .art-title  { font-size: 28px; margin-bottom: 6px; line-height: 0.92; text-align: center; }
 /* ver comentário equivalente no Grande mobile acima */
-.banner-mobile.banner-medio[data-marca="denali"] .art-title { font-size: 19px; }
+.banner-mobile.banner-medio[data-marca="denali"]  .art-title { font-size: 19px; }
+.banner-mobile.banner-medio[data-marca="sentury"] .art-title { font-size: 19px; }
+.banner-mobile.banner-medio[data-marca="samson"]  .art-title { font-size: 19px; }
 .banner-mobile.banner-medio .art-sub    { font-size: 13px; margin-bottom: 8px; text-align: center; }
 .banner-mobile.banner-medio .art-cta    { font-size: 13px; padding: 6px 14px; margin-bottom: 0; }
 
@@ -1135,7 +1210,9 @@ body {
 .banner-mobile.banner-pequeno .art-pname  { display: block; font-size: 16px; margin-bottom: 5px; text-align: center; }
 .banner-mobile.banner-pequeno .art-title  { font-size: 60px; margin-bottom: 13px; line-height: 0.92; text-align: center; }
 /* ver comentário equivalente no Grande mobile acima */
-.banner-mobile.banner-pequeno[data-marca="denali"] .art-title { font-size: 40px; }
+.banner-mobile.banner-pequeno[data-marca="denali"]  .art-title { font-size: 40px; }
+.banner-mobile.banner-pequeno[data-marca="sentury"] .art-title { font-size: 40px; }
+.banner-mobile.banner-pequeno[data-marca="samson"]  .art-title { font-size: 40px; }
 .banner-mobile.banner-pequeno .art-sub    { display: block; font-size: 23px; margin-bottom: 16px; text-align: center; }
 .banner-mobile.banner-pequeno .art-cta    { font-size: 17px; padding: 9px 20px; margin-bottom: 11px; }
 
@@ -1485,9 +1562,18 @@ body {
    Nasalization é sensivelmente mais larga que Anton no mesmo tamanho; sem
    isso, títulos longos quebram no meio da palavra na coluna de texto.
    ═══════════════════════════════════════════════════════════════════════════ */
-.format-feed[data-marca="denali"]   .art-title { font-size: 68px; }
-.format-story[data-marca="denali"]  .art-title { font-size: 84px; }
-.format-banner[data-marca="denali"] .art-title { font-size: 62px; }
+.format-feed[data-marca="denali"]    .art-title { font-size: 68px; }
+.format-story[data-marca="denali"]   .art-title { font-size: 84px; }
+.format-banner[data-marca="denali"]  .art-title { font-size: 62px; }
+
+/* Sentury (Bungee) e Samson (Montserrat Black) também são mais largas que a
+   Anton da Delinte — mesmo ajuste da Denali acima, verificado visualmente. */
+.format-feed[data-marca="sentury"]   .art-title { font-size: 68px; }
+.format-story[data-marca="sentury"]  .art-title { font-size: 84px; }
+.format-banner[data-marca="sentury"] .art-title { font-size: 62px; }
+.format-feed[data-marca="samson"]    .art-title { font-size: 68px; }
+.format-story[data-marca="samson"]   .art-title { font-size: 84px; }
+.format-banner[data-marca="samson"]  .art-title { font-size: 62px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ARTE DE MEDIDA — LAYOUT DENALI
@@ -2418,6 +2504,42 @@ body {
 .format-story[data-marca="denali"] .artcl-titulo { font-size: 74px; }
 .format-feed[data-marca="denali"]  .artpf-titulo { font-size: 62px; }
 .format-story[data-marca="denali"] .artpf-titulo { font-size: 76px; }
+
+/* Mesmo ajuste para Sentury (Bungee) e Samson (Montserrat Black) — Anton
+   (Delinte) é uma condensada, então qualquer fonte "normal" de outra marca
+   tende a precisar do mesmo tipo de redução; verificado visualmente, igual
+   ao ajuste da Denali acima. */
+.format-feed[data-marca="sentury"]  .art3p-headline-lg { font-size: 68px; }
+.format-story[data-marca="sentury"] .art3p-headline-lg { font-size: 86px; }
+.format-feed[data-marca="sentury"]  .artp45-titulo { font-size: 58px; }
+.format-story[data-marca="sentury"] .artp45-titulo { font-size: 72px; }
+.format-feed[data-marca="sentury"]  .artcf-titulo { font-size: 46px; }
+.format-story[data-marca="sentury"] .artcf-titulo { font-size: 58px; }
+.format-feed[data-marca="sentury"]  .artcl-titulo { font-size: 62px; }
+.format-story[data-marca="sentury"] .artcl-titulo { font-size: 74px; }
+.format-feed[data-marca="sentury"]  .artpf-titulo { font-size: 62px; }
+.format-story[data-marca="sentury"] .artpf-titulo { font-size: 76px; }
+
+.format-feed[data-marca="samson"]  .art3p-headline-lg { font-size: 68px; }
+.format-story[data-marca="samson"] .art3p-headline-lg { font-size: 86px; }
+.format-feed[data-marca="samson"]  .artp45-titulo { font-size: 58px; }
+.format-story[data-marca="samson"] .artp45-titulo { font-size: 72px; }
+.format-feed[data-marca="samson"]  .artcf-titulo { font-size: 46px; }
+.format-story[data-marca="samson"] .artcf-titulo { font-size: 58px; }
+.format-feed[data-marca="samson"]  .artcl-titulo { font-size: 62px; }
+.format-story[data-marca="samson"] .artcl-titulo { font-size: 74px; }
+.format-feed[data-marca="samson"]  .artpf-titulo { font-size: 62px; }
+.format-story[data-marca="samson"] .artpf-titulo { font-size: 76px; }
+
+/* Ajuste Sentury: "Arte de Pneu de Frente" pinta o fundo com o gradiente
+   var(--brand-accent)→var(--brand-accent-2) por trás do pneu (mesmo
+   tratamento usado pro amarelo da Delinte/laranja da Denali) — mas a
+   Sentury usa branco como "accent" (marca só tem preto+branco, ver
+   comentário do bloco de tokens), então esse fundo virava branco sólido com
+   título/logo brancos por cima (texto e logo invisíveis). Troca o wash por
+   preto só aqui, caindo de volta no mesmo visual "pneu em destaque sobre
+   fundo preto" já usado nos outros 5 modelos de Arte Livre da marca. */
+.artpf[data-marca="sentury"] .artpf-bg { background: var(--brand-black); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVO — UI mobile
