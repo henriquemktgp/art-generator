@@ -14,6 +14,40 @@
   font-display: swap;
 }
 
+/* ── Fonte de destaque Sentury (self-hosted) ──────────────────────────────────
+   Arquivo é a versão demo/promocional da fonte (só o corte "Super Bold" —
+   nome interno do arquivo é "AkiraExpanded-SuperBold"), não a família
+   completa comprada. Confirmar com a Sentury/quem gerou o brandbook se essa
+   licença cobre uso comercial (peças de campanha), ou se é só pra teste —
+   demos de fonte costumam ser "uso pessoal apenas". */
+@font-face {
+  font-family: 'Akira Expanded';
+  src: url('fonts/Akira-Expanded.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Fontes Iron Head (self-hosted — aguardando manual da marca) ─────────────
+   Ainda sem uso no CSS (marca não implementada, ver README) — arquivo já
+   organizado aqui pra quando a Iron Head entrar. */
+@font-face {
+  font-family: 'Kensmark';
+  src: url('fonts/Kensmark-03-Bold.otf') format('opentype'),
+       url('fonts/Kensmark-03-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kensmark';
+  src: url('fonts/Kensmark-03-BoldSlant.otf') format('opentype'),
+       url('fonts/Kensmark-03-BoldSlant.ttf') format('truetype');
+  font-weight: 700;
+  font-style: oblique;
+  font-display: swap;
+}
+
 /* ── Reset & Base ─────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -60,11 +94,9 @@
    sem cor de apoio — por isso o "accent" (normalmente a cor de destaque da
    marca) também vira branco aqui: badges/CTA/divisórias renderizam como
    formas brancas sólidas sobre o fundo preto do canvas, o mesmo visual "sem
-   vaidade, sem ostentação" do brandbook. Fonte de título oficial é "Akira
-   Expanded" — não é uma Google Font e não veio arquivo da fonte junto com
-   os assets da marca, então por ora usamos "Bungee" (Google Fonts) como
-   substituta visual (também um display expandido/bold) até a equipe
-   conseguir o arquivo oficial. */
+   vaidade, sem ostentação" do brandbook. Fonte de título "Akira Expanded"
+   self-hosted (ver @font-face no topo do arquivo — é a versão demo, só um
+   corte de peso). */
 .app[data-marca="sentury"],
 .art[data-marca="sentury"],
 .artm[data-marca="sentury"],
@@ -77,7 +109,7 @@
   --brand-black:    #000000;
   --brand-white:    #FFFFFF;
   --white-rgb:      255,255,255;
-  --font-display:   'Bungee', 'Poppins', sans-serif;
+  --font-display:   'Akira Expanded', 'Poppins', sans-serif;
 }
 
 /* Samson (pasta de assets "sampson"): cores oficiais em Cores da marca.pdf —
@@ -101,7 +133,7 @@
 }
 
 /* Montserrat (Samson) carrega no peso 400 por padrão — diferente de Anton/
-   Nasalization/Bungee, que são fontes de exibição já "bold" por natureza e
+   Nasalization/Akira Expanded, que são fontes de exibição já "bold" por natureza e
    só existem numa variante. Força peso 900 (Black, o mesmo usado no
    logotipo oficial da Samson) em todo texto de destaque dos canvases —
    listado explicitamente em vez de amarrado a var(--font-display) porque
@@ -1581,8 +1613,9 @@ body {
 .format-story[data-marca="denali"]   .art-title { font-size: 84px; }
 .format-banner[data-marca="denali"]  .art-title { font-size: 62px; }
 
-/* Sentury (Bungee) e Samson (Montserrat Black) também são mais largas que a
-   Anton da Delinte — mesmo ajuste da Denali acima, verificado visualmente. */
+/* Sentury (Akira Expanded) e Samson (Montserrat Black) também são mais largas
+   que a Anton da Delinte — mesmo ajuste da Denali acima, verificado
+   visualmente (ver comentário da Denali). */
 .format-feed[data-marca="sentury"]   .art-title { font-size: 68px; }
 .format-story[data-marca="sentury"]  .art-title { font-size: 84px; }
 .format-banner[data-marca="sentury"] .art-title { font-size: 62px; }
@@ -2520,8 +2553,8 @@ body {
 .format-feed[data-marca="denali"]  .artpf-titulo { font-size: 62px; }
 .format-story[data-marca="denali"] .artpf-titulo { font-size: 76px; }
 
-/* Mesmo ajuste para Sentury (Bungee) e Samson (Montserrat Black) — Anton
-   (Delinte) é uma condensada, então qualquer fonte "normal" de outra marca
+/* Mesmo ajuste para Sentury (Akira Expanded) e Samson (Montserrat Black) —
+   Anton (Delinte) é uma condensada, então qualquer fonte "normal" de outra marca
    tende a precisar do mesmo tipo de redução; verificado visualmente, igual
    ao ajuste da Denali acima. */
 .format-feed[data-marca="sentury"]  .art3p-headline-lg { font-size: 68px; }
