@@ -274,6 +274,21 @@ body {
 /* Botões de grupo */
 .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
+/* Marca (5 opções) e Objetivo (4 opções): com flex-wrap comum, o ponto de
+   quebra de linha depende da largura de cada rótulo (ex. "Iron Head",
+   "Lançamento") e da largura da sidebar no momento — o resultado varia e
+   pode quebrar de forma feia ou até sobrepor. Grid com número fixo de
+   colunas garante sempre a mesma divisão em linhas, na ordem em que os
+   botões aparecem no HTML: Marca em 3 colunas (Delinte/Denali/Samson na
+   1ª linha, Sentury/Iron Head na 2ª) e Objetivo em 2 colunas (Promoção/
+   Lançamento na 1ª linha, Aviso/Nenhum na 2ª). */
+#grupo-marca .btn-group,
+#grupo-objetivo .btn-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+#grupo-objetivo .btn-group { grid-template-columns: repeat(2, 1fr); }
+
 .btn-opt {
   flex: 1;
   min-width: 0;
