@@ -266,8 +266,11 @@ body {
 
 /* Tabela Dupla não existe em Story (9:16) — a lista de até 30 linhas não
    cabe de forma legível num formato tão estreito/alto. Banner já não existe
-   pra nenhum modelo de Arte de Medida (ver regra acima) — sobra só Feed. */
-.app[data-modelo-medida="tabeladupla"] .btn-opt[data-field="formato"][data-val="story"] { display: none; }
+   pra nenhum modelo de Arte de Medida (ver regra acima) — sobra só Feed.
+   [data-tipo-arte="medida"] explícito: sem ele, isto escondia "Story" até na
+   Arte Livre depois de visitar Tabela Dupla, porque dataset.modeloMedida
+   fica "preso" no último valor selecionado mesmo trocando de tipo de arte. */
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] .btn-opt[data-field="formato"][data-val="story"] { display: none; }
 
 .app:not([data-tipo-arte="medida"]) #grupo-medida { display: none; }
 
@@ -279,11 +282,15 @@ body {
 /* ── Alternância entre os modelos de Arte de Medida ───────────────────────── */
 /* Campos exclusivos de "Medida Única" (o template original: 1 produto, 1
    medida, fotos do pneu) — somem nos modelos de tabela, que não dependem de
-   produto nenhum, só de uma lista livre de medida+valor. */
-.app[data-modelo-medida="tabela"]      #grupo-produto-unico,
-.app[data-modelo-medida="tabeladupla"] #grupo-produto-unico,
-.app[data-modelo-medida="tabela"]      #grupo-medida,
-.app[data-modelo-medida="tabeladupla"] #grupo-medida { display: none; }
+   produto nenhum, só de uma lista livre de medida+valor. Precisa do
+   [data-tipo-arte="medida"] explícito: sem ele, a regra também escondia
+   #grupo-produto-unico na Arte Livre sempre que o usuário tivesse passado
+   por um modelo de tabela antes (dataset.modeloMedida fica em "tabela" até
+   trocar de novo, mesmo depois de voltar pra Arte Livre). */
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #grupo-produto-unico,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-produto-unico,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #grupo-medida,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-medida { display: none; }
 
 /* Campos exclusivos dos modelos de tabela */
 .app[data-tipo-arte="medida"][data-modelo-medida="unica"] #grupo-tabela-linhas,
@@ -296,11 +303,15 @@ body {
 .app[data-tipo-arte="livre"] #grupo-cta-tabela { display: none; }
 
 /* Nenhum dos dois modelos de tabela gera fundo por IA — é sempre a mesma
-   textura fixa da marca (clara/Denali ou escura/Delinte). */
-.app[data-modelo-medida="tabela"]      #btn-gerar,
-.app[data-modelo-medida="tabeladupla"] #btn-gerar,
-.app[data-modelo-medida="tabela"]      .prompt-section,
-.app[data-modelo-medida="tabeladupla"] .prompt-section { display: none; }
+   textura fixa da marca (clara/Denali ou escura/Delinte). [data-tipo-arte=
+   "medida"] explícito pelo mesmo motivo do comentário em #grupo-produto-
+   unico acima — sem ele, isto escondia o botão "Gerar Fundo com IA" (e o
+   painel de prompt) até na Arte Livre, depois de visitar um modelo de
+   tabela, porque dataset.modeloMedida fica "preso" no último valor. */
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #btn-gerar,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #btn-gerar,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      .prompt-section,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] .prompt-section { display: none; }
 
 /* ── Alternância entre os modelos de Arte Livre ───────────────────────────── */
 /* Produto único: some no modelo "3 pneus" (usa 3 selects próprios) */
@@ -346,13 +357,17 @@ body {
    tabeladupla nunca geram; "pneu de frente" usa fundo fixo da marca). Filtro
    de cor da marca é exclusivo Denali — Delinte nem gera esse fundo "fora do
    tom" que o filtro corrige. */
-.app[data-modelo-medida="tabela"]      #grupo-filtro-marca,
-.app[data-modelo-medida="tabeladupla"] #grupo-filtro-marca,
+/* [data-tipo-arte="medida"] explícito nas duas primeiras linhas de cada bloco
+   pelo mesmo motivo do comentário em #grupo-produto-unico acima: sem isso, o
+   dataset.modeloMedida="tabela" (que fica "preso" até o usuário trocar de
+   modelo de novo) também escondia estes grupos na Arte Livre. */
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #grupo-filtro-marca,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-filtro-marca,
 .app[data-modelo="pneufrente"]         #grupo-filtro-marca,
 .app:not([data-marca="denali"])        #grupo-filtro-marca { display: none; }
 
-.app[data-modelo-medida="tabela"]      #grupo-escurecer-fundo,
-.app[data-modelo-medida="tabeladupla"] #grupo-escurecer-fundo,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #grupo-escurecer-fundo,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-escurecer-fundo,
 .app[data-modelo="pneufrente"]         #grupo-escurecer-fundo { display: none; }
 
 /* Canvas: só um fica visível por vez. #art-canvas-medida e os demais canvases
