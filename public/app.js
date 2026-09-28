@@ -737,6 +737,58 @@ const PRODUTOS_SAMSON = [
   }
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO IRON HEAD
+//
+// Marca nova, ainda SEM brandbook oficial — cores extraídas manualmente da
+// própria logo pelo usuário (ver comentário do bloco de tokens em style.css)
+// e sujeitas a ajuste assim que o manual da marca chegar. Só 2 produtos com
+// fotos prontas hoje: RH1 "Reflex RH01" (185/65R14) e RH2 "Reflex RH02"
+// (195/55R15) — ambos pneus de passeio (tread em costela, roda de liga),
+// mesma sub-linha "Reflex". Únicas pastas de fotos completas (com variante
+// "_roda" tanto de frente quanto a 45°) entre as 3 marcas adicionadas nesta
+// leva — Sentury e Samson não têm essa variante. specs/título/sub/CTA/
+// parágrafo abaixo são RASCUNHO (marca não enviou copy oficial ainda) —
+// revisar com marketing antes de campanha real.
+// ─────────────────────────────────────────────────────────────────────────────
+const PRODUTOS_IRONHEAD = [
+  {
+    nome:   "Sem produto",
+    specs:  "",  foto:   "",
+    titulo: "",  sub:    "",  cta: "",
+    linha:  "institucional",
+    apelido: "", foto45: "", fotoPerfil: "", paragrafo: "", sufixoMedida: "", fotoFrente: ""
+  },
+  {
+    nome:   "Reflex RH01",
+    specs:  "Linha passeio · rodagem silenciosa · economia",
+    foto:   "assets/ironhead/foto_pneus/RH1/pneu_45_roda.png",
+    titulo: "RODAGEM DE CABEÇA DURA",
+    sub:    "Resistência e economia para o seu dia a dia, sem abrir mão do conforto.",
+    cta:    "CONHEÇA O RH01",
+    linha:  "passeio",
+    apelido: "RH01",
+    foto45:     "assets/ironhead/foto_pneus/RH1/pneu_45.png",
+    fotoPerfil: "assets/ironhead/foto_pneus/RH1/pneu_perfil.png",
+    paragrafo: "Resistência e economia para o seu dia a dia, sem abrir mão do conforto na cidade e na estrada.",
+    sufixoMedida: "", fotoFrente: "assets/ironhead/foto_pneus/RH1/pneu_frente_roda.png"
+  },
+  {
+    nome:   "Reflex RH02",
+    specs:  "Linha passeio · aderência e estabilidade",
+    foto:   "assets/ironhead/foto_pneus/RH2/pneu_45_roda.png",
+    titulo: "FIRMEZA QUE SE SENTE",
+    sub:    "Aderência e estabilidade para rodar com confiança em qualquer trajeto urbano.",
+    cta:    "CONHEÇA O RH02",
+    linha:  "passeio",
+    apelido: "RH02",
+    foto45:     "assets/ironhead/foto_pneus/RH2/pneu_45.png",
+    fotoPerfil: "assets/ironhead/foto_pneus/RH2/pneu_perfil.png",
+    paragrafo: "Aderência e estabilidade para rodar com confiança em qualquer trajeto urbano.",
+    sufixoMedida: "", fotoFrente: "assets/ironhead/foto_pneus/RH2/pneu_frente_roda.png"
+  }
+];
+
 // Sugestões de cena exibidas ao usuário no painel "Personalizar Prompt"
 // Chave: linha × objetivo — descrição em PT-BR para facilitar edição
 const SUGESTOES_CENA = {
@@ -807,6 +859,11 @@ const MARCAS = {
     label: 'Samson',
     logo:  'assets/sampson/logos/Logo Samson Monocormatico.png',
     produtos: PRODUTOS_SAMSON
+  },
+  ironhead: {
+    label: 'Iron Head',
+    logo:  'assets/ironhead/logos/Logo Branca+Verde.png',
+    produtos: PRODUTOS_IRONHEAD
   }
 };
 
@@ -891,7 +948,7 @@ const LIMITES = {
 };
 
 // Marcas com suporte ao modo "Arte de Medida"
-const MARCAS_COM_ARTE_MEDIDA = new Set(['delinte', 'denali', 'sentury', 'samson']);
+const MARCAS_COM_ARTE_MEDIDA = new Set(['delinte', 'denali', 'sentury', 'samson', 'ironhead']);
 
 // ─── Modelos disponíveis dentro do modo "Arte Livre" ─────────────────────────
 // Cada modelo tem seu próprio <div> de canvas (ids abaixo) e seu próprio

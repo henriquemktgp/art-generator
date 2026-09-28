@@ -157,6 +157,28 @@
   font-weight: 900;
 }
 
+/* Iron Head: AINDA SEM brandbook oficial — cores abaixo foram extraídas à
+   mão da própria logo (ver public/assets/ironhead/logos/), não de um manual
+   homologado como as demais marcas. Ajustar assim que o brandbook chegar.
+   Verde do elmo/círculo do logo = accent; branco = texto "IRONHEAD" sobre
+   fundo escuro; preto = versão monocromática. Fonte de título "Kensmark"
+   self-hosted (ver @font-face no topo do arquivo) — só tem o corte Bold
+   disponível, sem arquivo de peso mais leve. */
+.app[data-marca="ironhead"],
+.art[data-marca="ironhead"],
+.artm[data-marca="ironhead"],
+.art3p[data-marca="ironhead"], .artp45[data-marca="ironhead"],
+.artcf[data-marca="ironhead"], .artcl[data-marca="ironhead"], .artpf[data-marca="ironhead"],
+.artt[data-marca="ironhead"], .arttd[data-marca="ironhead"] {
+  --brand-accent:   #52AA65;
+  --accent-rgb:     82,170,101;
+  --brand-accent-2: #52AA65;
+  --brand-black:    #000000;
+  --brand-white:    #FFFFFF;
+  --white-rgb:      255,255,255;
+  --font-display:   'Kensmark', 'Poppins', sans-serif;
+}
+
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
@@ -865,7 +887,8 @@ body {
 }
 .art[data-marca="denali"] .art-elem,
 .art[data-marca="sentury"] .art-elem,
-.art[data-marca="samson"] .art-elem { display: none; }
+.art[data-marca="samson"] .art-elem,
+.art[data-marca="ironhead"] .art-elem { display: none; }
 
 /* Tira de acento vertical esquerda */
 .art-stripe {
@@ -1209,7 +1232,8 @@ body {
    mais aqui garante prioridade sobre aquela regra. */
 .banner-mobile.banner-grande[data-marca="denali"]  .art-title { font-size: 30px; }
 .banner-mobile.banner-grande[data-marca="sentury"] .art-title { font-size: 30px; }
-.banner-mobile.banner-grande[data-marca="samson"]  .art-title { font-size: 30px; }
+.banner-mobile.banner-grande[data-marca="samson"]   .art-title { font-size: 30px; }
+.banner-mobile.banner-grande[data-marca="ironhead"] .art-title { font-size: 30px; }
 .banner-mobile.banner-grande .art-sub    { font-size: 16px; margin-bottom: 12px; }
 .banner-mobile.banner-grande .art-cta    { font-size: 14px; padding: 8px 18px; margin-bottom: 0; align-self: flex-start; }
 
@@ -1230,7 +1254,8 @@ body {
 /* ver comentário equivalente no Grande mobile acima */
 .banner-mobile.banner-medio[data-marca="denali"]  .art-title { font-size: 19px; }
 .banner-mobile.banner-medio[data-marca="sentury"] .art-title { font-size: 19px; }
-.banner-mobile.banner-medio[data-marca="samson"]  .art-title { font-size: 19px; }
+.banner-mobile.banner-medio[data-marca="samson"]   .art-title { font-size: 19px; }
+.banner-mobile.banner-medio[data-marca="ironhead"] .art-title { font-size: 19px; }
 .banner-mobile.banner-medio .art-sub    { font-size: 13px; margin-bottom: 8px; text-align: center; }
 .banner-mobile.banner-medio .art-cta    { font-size: 13px; padding: 6px 14px; margin-bottom: 0; }
 
@@ -1259,7 +1284,8 @@ body {
 /* ver comentário equivalente no Grande mobile acima */
 .banner-mobile.banner-pequeno[data-marca="denali"]  .art-title { font-size: 40px; }
 .banner-mobile.banner-pequeno[data-marca="sentury"] .art-title { font-size: 40px; }
-.banner-mobile.banner-pequeno[data-marca="samson"]  .art-title { font-size: 40px; }
+.banner-mobile.banner-pequeno[data-marca="samson"]   .art-title { font-size: 40px; }
+.banner-mobile.banner-pequeno[data-marca="ironhead"] .art-title { font-size: 40px; }
 .banner-mobile.banner-pequeno .art-sub    { display: block; font-size: 23px; margin-bottom: 16px; text-align: center; }
 .banner-mobile.banner-pequeno .art-cta    { font-size: 17px; padding: 9px 20px; margin-bottom: 11px; }
 
@@ -1613,15 +1639,18 @@ body {
 .format-story[data-marca="denali"]   .art-title { font-size: 84px; }
 .format-banner[data-marca="denali"]  .art-title { font-size: 62px; }
 
-/* Sentury (Akira Expanded) e Samson (Montserrat Black) também são mais largas
-   que a Anton da Delinte — mesmo ajuste da Denali acima, verificado
-   visualmente (ver comentário da Denali). */
+/* Sentury (Akira Expanded), Samson (Montserrat Black) e Iron Head (Kensmark)
+   também são mais largas que a Anton da Delinte — mesmo ajuste da Denali
+   acima, verificado visualmente (ver comentário da Denali). */
 .format-feed[data-marca="sentury"]   .art-title { font-size: 68px; }
 .format-story[data-marca="sentury"]  .art-title { font-size: 84px; }
 .format-banner[data-marca="sentury"] .art-title { font-size: 62px; }
-.format-feed[data-marca="samson"]    .art-title { font-size: 68px; }
-.format-story[data-marca="samson"]   .art-title { font-size: 84px; }
-.format-banner[data-marca="samson"]  .art-title { font-size: 62px; }
+.format-feed[data-marca="samson"]     .art-title { font-size: 68px; }
+.format-story[data-marca="samson"]    .art-title { font-size: 84px; }
+.format-banner[data-marca="samson"]   .art-title { font-size: 62px; }
+.format-feed[data-marca="ironhead"]   .art-title { font-size: 68px; }
+.format-story[data-marca="ironhead"]  .art-title { font-size: 84px; }
+.format-banner[data-marca="ironhead"] .art-title { font-size: 62px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ARTE DE MEDIDA — LAYOUT DENALI
@@ -2553,10 +2582,10 @@ body {
 .format-feed[data-marca="denali"]  .artpf-titulo { font-size: 62px; }
 .format-story[data-marca="denali"] .artpf-titulo { font-size: 76px; }
 
-/* Mesmo ajuste para Sentury (Akira Expanded) e Samson (Montserrat Black) —
-   Anton (Delinte) é uma condensada, então qualquer fonte "normal" de outra marca
-   tende a precisar do mesmo tipo de redução; verificado visualmente, igual
-   ao ajuste da Denali acima. */
+/* Mesmo ajuste para Sentury (Akira Expanded), Samson (Montserrat Black) e
+   Iron Head (Kensmark) — Anton (Delinte) é uma condensada, então qualquer
+   fonte "normal" de outra marca tende a precisar do mesmo tipo de redução;
+   verificado visualmente, igual ao ajuste da Denali acima. */
 .format-feed[data-marca="sentury"]  .art3p-headline-lg { font-size: 68px; }
 .format-story[data-marca="sentury"] .art3p-headline-lg { font-size: 86px; }
 .format-feed[data-marca="sentury"]  .artp45-titulo { font-size: 58px; }
@@ -2578,6 +2607,17 @@ body {
 .format-story[data-marca="samson"] .artcl-titulo { font-size: 74px; }
 .format-feed[data-marca="samson"]  .artpf-titulo { font-size: 62px; }
 .format-story[data-marca="samson"] .artpf-titulo { font-size: 76px; }
+
+.format-feed[data-marca="ironhead"]  .art3p-headline-lg { font-size: 68px; }
+.format-story[data-marca="ironhead"] .art3p-headline-lg { font-size: 86px; }
+.format-feed[data-marca="ironhead"]  .artp45-titulo { font-size: 58px; }
+.format-story[data-marca="ironhead"] .artp45-titulo { font-size: 72px; }
+.format-feed[data-marca="ironhead"]  .artcf-titulo { font-size: 46px; }
+.format-story[data-marca="ironhead"] .artcf-titulo { font-size: 58px; }
+.format-feed[data-marca="ironhead"]  .artcl-titulo { font-size: 62px; }
+.format-story[data-marca="ironhead"] .artcl-titulo { font-size: 74px; }
+.format-feed[data-marca="ironhead"]  .artpf-titulo { font-size: 62px; }
+.format-story[data-marca="ironhead"] .artpf-titulo { font-size: 76px; }
 
 /* Ajuste Sentury: "Arte de Pneu de Frente" pinta o fundo com o gradiente
    var(--brand-accent)→var(--brand-accent-2) por trás do pneu (mesmo
