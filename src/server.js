@@ -1,7 +1,8 @@
 require('dotenv').config();
 
-const express = require('express');
-const path    = require('path');
+const express     = require('express');
+const compression = require('compression');
+const path        = require('path');
 const { montarPrompt, montarPromptMedida, montarPromptCarro } = require('./prompts');
 const { gerarImagemMagnific } = require('./magnific');
 
@@ -28,6 +29,22 @@ const FORMATOS_VALIDOS_SEM_BANNER = FORMATOS_VALIDOS_MEDIDA;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
 app.use(express.json());
+// gzip/brotli nas respostas — sem isso, app.js + style.css (~240 KB somados)
+// e o JSON de /api/gerar-fundo trafegam sem compressão nenhuma.
+app.use(compression());
+
+// Fotos/logos/fontes praticamente não mudam depois de cadastrados (e quando
+// mudam, é sempre trocando o conteúdo de um arquivo já versionado no git, não
+// o nome) — cache longo aqui é seguro e elimina re-download a cada visita.
+// app.js/style.css/index.html ficam de fora de propósito: mudam com
+// frequência durante o desenvolvimento, e sem nome de arquivo versionado
+// (hash/query string), um cache agressivo neles serviria versão desatualizada
+// pro time depois de um deploy. Middlewares são avaliados na ordem declarada,
+// então estes dois precisam vir ANTES do express.static(public) genérico
+// abaixo, senão ele responderia primeiro (sem o maxAge) pra essas mesmas rotas.
+const UM_DIA = 24 * 60 * 60 * 1000;
+app.use('/assets', express.static(path.join(__dirname, '..', 'public', 'assets'), { maxAge: 30 * UM_DIA }));
+app.use('/fonts',  express.static(path.join(__dirname, '..', 'public', 'fonts'),  { maxAge: 30 * UM_DIA }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // ── Rota de geração de fundo ──────────────────────────────────────────────────
@@ -92,13 +109,41 @@ app.post('/api/gerar-fundo', async (req, res) => {
 // html2canvas não captura recursos cross-origin sem CORS.
 // Este endpoint busca a imagem no servidor e a devolve com CORS liberado.
 // GET /api/proxy-img?url=https://...
+//
+// Domínios externos usados nos assets das marcas (logo via CDN etc.) — o
+// front-end só chama este proxy pra quem é de fato cross-origin (ver
+// processarImgExport em app.js); tudo que é local (public/assets, public/
+// fonts) é servido direto, sem passar por aqui. Adicione um domínio novo
+// só quando uma marca realmente precisar de um asset externo.
+const DOMINIOS_PROXY_PERMITIDOS = new Set([
+  'cdn.jsdelivr.net', // logo/elemento decorativo da Delinte
+]);
+
 app.get('/api/proxy-img', async (req, res) => {
   const { url } = req.query;
-  if (!url || !/^https?:\/\//i.test(url)) {
+  if (typeof url !== 'string') {
     return res.status(400).json({ erro: 'URL inválida.' });
   }
+
+  // Valida com o parser de URL de verdade (não regex/startsWith) — um valor
+  // como "https://cdn.jsdelivr.net@evil.com/x" começa com o domínio esperado
+  // mas aponta pro host depois do "@" (evil.com). Sem isso (e sem checar o
+  // host contra uma lista fechada), qualquer um podia usar este endpoint
+  // como proxy aberto pra sondar endereços internos da VPS (ex.: serviços em
+  // localhost, metadata da nuvem em 169.254.169.254) ou qualquer site
+  // externo, com o servidor fazendo a requisição por ele.
+  let alvo;
   try {
-    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    alvo = new URL(url);
+  } catch {
+    return res.status(400).json({ erro: 'URL inválida.' });
+  }
+  if (alvo.protocol !== 'https:' || !DOMINIOS_PROXY_PERMITIDOS.has(alvo.hostname)) {
+    return res.status(400).json({ erro: 'URL inválida.' });
+  }
+
+  try {
+    const r = await fetch(alvo.href, { headers: { 'User-Agent': 'Mozilla/5.0' } });
     if (!r.ok) return res.status(r.status).end();
     const buf = await r.arrayBuffer();
     res.set('Content-Type', r.headers.get('content-type') || 'image/png');
