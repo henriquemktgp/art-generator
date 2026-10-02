@@ -2249,12 +2249,25 @@ async function processarImgExport(img) {
     ? src
     : new URL(src, location.href).href;
 
-  // Busca imagens externas via proxy (evita taint de CORS). Imagens que já
-  // chegam como data:/blob: (ex.: fundo gerado por IA, que vem em base64 da
-  // nossa própria API) não precisam disso — pulam direto pro passo de baixo.
-  if (!srcAbsoluto.startsWith('data:') && !srcAbsoluto.startsWith('blob:')) {
+  // Mesma origem (toda foto/logo local, servida pelo nosso próprio Express)
+  // nunca "mancha" o canvas por CORS — só quem é de fato de outro domínio
+  // precisa do proxy (ex.: logo da Delinte, via CDN). Buscar uma imagem local
+  // pelo proxy faria o SERVIDOR pedir pra ele mesmo, pela rede, um arquivo
+  // que já está em disco — um vai-e-volta todo evitável, em dobro (navegador
+  // → servidor → servidor de novo → navegador).
+  const mesmaOrigem = srcAbsoluto.startsWith(`${location.origin}/`);
+
+  // Busca via proxy só quando realmente precisa: imagem de outro domínio, ou
+  // local mas SVG (precisa do texto bruto do arquivo pra extrairTamanhoSvg
+  // abaixo — PNG/JPEG não). Imagens que já chegam como data:/blob: (ex.:
+  // fundo gerado por IA, que vem em base64 da nossa própria API) não entram
+  // aqui de jeito nenhum. PNG/JPEG local nem isso: segue com dataUrl = src
+  // (valor inicial lá em cima), sem request nenhum.
+  if (!srcAbsoluto.startsWith('data:') && !srcAbsoluto.startsWith('blob:') && (ehSvg || !mesmaOrigem)) {
     try {
-      const res = await fetch(`/api/proxy-img?url=${encodeURIComponent(srcAbsoluto)}`);
+      const res = mesmaOrigem
+        ? await fetch(srcAbsoluto)
+        : await fetch(`/api/proxy-img?url=${encodeURIComponent(srcAbsoluto)}`);
       if (!res.ok) return;
       const ct   = res.headers.get('content-type') || '';
       const blob = await res.blob();
