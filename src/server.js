@@ -1,8 +1,16 @@
-require('dotenv').config();
+const path = require('path');
+
+// Caminho explícito (relativo a este arquivo, não ao diretório de onde o
+// processo foi iniciado): sem isso, dotenv procura o .env no cwd do
+// processo — funciona hoje só porque "npm start"/"npm run dev" rodam
+// "node src/server.js" a partir da raiz do projeto. Se o processo for
+// iniciado de outro jeito na VPS (systemd/pm2 com WorkingDirectory em
+// src/, por exemplo), o .env na raiz deixaria de ser encontrado e a
+// MAGNIFIC_API_KEY ficaria vazia sem erro nenhum — só o aviso no console.
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const express     = require('express');
 const compression = require('compression');
-const path        = require('path');
 const { montarPrompt, montarPromptMedida, montarPromptCarro } = require('./prompts');
 const { gerarImagemMagnific } = require('./magnific');
 
