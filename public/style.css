@@ -1992,7 +1992,7 @@ body {
 .format-feed .art3p { padding: 60px 60px 50px; }
 .format-feed .art3p-headline { margin-top: 24px; }
 .format-feed .art3p-footer   { margin-top: 24px; }
-.format-feed .art3p-logo { height: 64px; }
+.format-feed .art3p-logo { height: 64px; margin-top: 30px; }
 .format-feed .art3p-headline-sm { font-size: 26px; margin-bottom: 4px; }
 .format-feed .art3p-headline-lg { font-size: 88px; }
 .format-feed .art3p-tires { padding-bottom: 10px; }
@@ -2008,12 +2008,12 @@ body {
 .format-story .art3p { padding: 90px 50px 70px; }
 .format-story .art3p-headline { margin-top: 36px; }
 .format-story .art3p-footer   { margin-top: 36px; }
-.format-story .art3p-logo { height: 76px; }
+.format-story .art3p-logo { height: 76px; margin-top: 30px; }
 .format-story .art3p-headline-sm { font-size: 30px; margin-bottom: 6px; }
 .format-story .art3p-headline-lg { font-size: 110px; }
 .format-story .art3p-tires { padding-bottom: 10px; }
 .format-story .art3p-divider   { margin: 0 9px; }
-.format-story .art3p-tire-name { font-size: 32px; margin-bottom: 16px; }
+.format-story .art3p-tire-name { font-size: 40px; margin-bottom: 16px; }
 .format-story .art3p-tire-img  { height: 380px; }
 /* Lado a lado igual ao Feed/Banner (não mais empilhado) — "Exclusivo para"
    / "LOJISTAS" à esquerda, divisória na cor da marca, texto à direita. */
