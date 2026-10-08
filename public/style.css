@@ -333,6 +333,12 @@ body {
 /* Seletor "Tamanho do Banner" só faz sentido com Banner ativo */
 .app:not([data-formato="banner"]) #grupo-banner-tamanho { display: none; }
 
+/* "Pré-visualizar: Desktop/Mobile" só faz sentido com Banner ativo — só esse
+   formato tem recorte mobile (ver BANNER_TAMANHOS_MOBILE em app.js). Não
+   tinha regra nenhuma até agora, por isso aparecia pra qualquer formato/
+   modelo, inclusive onde Mobile não existe (Feed, Story, Arte de Medida). */
+.app:not([data-formato="banner"]) #grupo-banner-dispositivo { display: none; }
+
 /* Tabela Dupla não existe em Story (9:16) — a lista de até 30 linhas não
    cabe de forma legível num formato tão estreito/alto. Banner já não existe
    pra nenhum modelo de Arte de Medida (ver regra acima) — sobra só Feed.
@@ -417,10 +423,16 @@ body {
 .app[data-modelo="pneu45"]:not([data-formato="banner"])    #grupo-cta,
 .app[data-modelo="carrolado"]:not([data-formato="banner"]) #grupo-cta { display: none; }
 
-/* Objetivo/fundo por IA: "pneu de frente" usa fundo fixo da marca (sem IA) */
-.app[data-modelo="pneufrente"] #grupo-objetivo,
+/* Fundo por IA: "pneu de frente" usa fundo fixo da marca (sem IA) */
 .app[data-modelo="pneufrente"] .prompt-section,
 .app[data-modelo="pneufrente"] #btn-gerar { display: none; }
+
+/* Caixa "Objetivo" (selo PROMOÇÃO/LANÇAMENTO/AVISO) só existe de verdade na
+   Arte Livre Padrão — é o único modelo com o elemento .art-badge na própria
+   marcação (ver index.html); 3 Pneus, Pneu 45°, Carro de Frente/Lado e Pneu
+   de Frente não têm esse selo em lugar nenhum do layout, então o controle
+   não fazia sentido aparecer pra eles. */
+.app[data-tipo-arte="livre"]:not([data-modelo="padrao"]) #grupo-objetivo { display: none; }
 
 /* Realce do fundo de IA: não existe onde não há fundo de IA (tabela/
    tabeladupla nunca geram; "pneu de frente" usa fundo fixo da marca). Filtro
