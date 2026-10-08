@@ -879,23 +879,23 @@ const FORMATOS = {
 };
 
 // ─── Tamanhos disponíveis do Banner Horizontal ───────────────────────────────
-// "grande" é o padrão (tamanho oficial do site) — os outros dois são opções
-// adicionais para espaços menores (ex.: banners intermediários/rodapé).
+// "grande" é o Header (tamanho oficial do site) — "medio" é a opção para
+// espaços menores (ex.: banners intermediários/rodapé). Chave interna
+// continua "grande"/"medio" por simplicidade (evita renomear ~160 seletores
+// CSS que dependem de .banner-grande/.banner-medio) — só o label mudou.
 const BANNER_TAMANHOS = {
-  grande:  { label: 'Grande (padrão)', width: 1920, height: 664, desc: '1920 × 664 px' },
-  medio:   { label: 'Médio',           width: 1920, height: 393, desc: '1920 × 393 px' },
-  pequeno: { label: 'Pequeno',         width: 1920, height: 195, desc: '1920 × 195 px' }
+  grande: { label: 'Header (padrão)', width: 1920, height: 400, desc: '1920 × 400 px' },
+  medio:  { label: 'Médio',           width: 1200, height: 250, desc: '1200 × 250 px' }
 };
 
 // Contraparte mobile de cada tamanho de Banner — usada só na exportação (ver
 // exportarBannerDuplo()). Não tem select próprio: o usuário escolhe o
-// tamanho uma vez (grande/medio/pequeno) e PNG/PDF geram os dois recortes
+// tamanho uma vez (grande/medio) e PNG/PDF geram os dois recortes
 // (desktop + mobile) juntos. O fundo gerado por IA é o mesmo nos dois — só
 // muda o enquadramento (object-fit: cover reagindo à nova proporção).
 const BANNER_TAMANHOS_MOBILE = {
-  grande:  { width: 562,  height: 750 },
-  medio:   { width: 752,  height: 225 },
-  pequeno: { width: 1760, height: 358 }
+  grande: { width: 700, height: 400 },
+  medio:  { width: 700, height: 280 }
 };
 
 // Retorna {label, desc, width, height} do formato/tamanho ativo — único ponto
@@ -1552,7 +1552,7 @@ function limparErro() {
 
 // Classes de formato compartilhadas por todos os canvases de Arte Livre —
 // `format-<formato>` sempre, mais `banner-<tamanho>` quando o formato ativo
-// for Banner (Grande/Médio/Pequeno), para o CSS conseguir ajustar posição/
+// for Banner (Header/Médio), para o CSS conseguir ajustar posição/
 // fonte por tamanho igual já é feito na Arte Livre Padrão. `banner-mobile`
 // entra também quando o toggle Desktop/Mobile da sidebar está em "Mobile" —
 // é a MESMA classe que capturarCanvas() adiciona no clone durante a
