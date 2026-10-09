@@ -145,7 +145,6 @@
 .artm[data-marca="samson"] .artm-specs-label,
 .artm[data-marca="samson"] .artm-specs-value,
 .artm[data-marca="samson"] .artm-specs-nick,
-.artm[data-marca="samson"] .artm-specs-suffix,
 .art3p[data-marca="samson"] .art3p-headline-lg,
 .art3p[data-marca="samson"] .art3p-tire-name,
 .art3p[data-marca="samson"] .art3p-footer-bold,
@@ -1478,6 +1477,12 @@ body {
   font-family: var(--font-display);
   color: var(--brand-accent);
   text-transform: uppercase;
+  /* white-space:pre-line — respeita o "\n" inserido por quebrarComLimite()
+     (app.js) quando a medida digitada passa de 35 caracteres, mantendo o
+     quebra-automático normal pro resto. text-align:center alinha a 2ª
+     linha mesmo quando ela tem largura diferente da primeira. */
+  white-space: pre-line;
+  text-align: center;
 }
 
 .artm-specs-nick {
@@ -1485,13 +1490,6 @@ body {
   color: var(--brand-white);
   text-transform: uppercase;
 }
-
-.artm-specs-suffix {
-  font-family: var(--font-display);
-  color: var(--brand-white);
-  text-transform: uppercase;
-}
-.artm-specs-suffix:empty { display: none; }
 
 /* ── Parágrafo descritivo ─────────────────────────────────────────────────── */
 .artm-paragrafo {
@@ -1531,17 +1529,15 @@ body {
 .artm-feed .artm-stripe { height: 32px; }
 
 .artm-feed .artm-specs      { padding: 22px 40px 0; }
-/* row só para Delinte: as duas linhas ficam lado a lado, reproduzindo a
-   leitura original em linha única ("MEDIDAS valor  apelido sufixo") — o \n
-   só existe no Story dela, onde o espaço horizontal é mais apertado. Denali
-   NÃO entra aqui — ela empilha MEDIDA/valor/apelido também no Feed (ver
-   seção "ARTE DE MEDIDA — LAYOUT DENALI"), então cai no padrão em coluna. */
-.artm-feed[data-marca="delinte"] .artm-specs-box { flex-direction: row; gap: 16px 22px; padding: 18px 30px; }
+.artm-feed .artm-specs-box  { gap: 12px; padding: 18px 30px; }
 .artm-feed .artm-specs-line { gap: 16px 22px; }
 .artm-feed .artm-specs-label{ font-size: 36px; }
 .artm-feed .artm-specs-value,
-.artm-feed .artm-specs-nick,
-.artm-feed .artm-specs-suffix{ font-size: 54px; }
+.artm-feed .artm-specs-nick{ font-size: 45px; }
+/* Medida quebrada em 2 linhas (ver app.js) — fonte menor só nesse caso,
+   senão a caixa cresce demais e espreme a área da foto do pneu logo
+   acima (.artm-photo-zone é flex:1, ver comentário lá). */
+.artm-feed .artm-specs-value--quebrada { font-size: 40px; }
 
 .artm-feed .artm-paragrafo { padding: 24px 110px 0; font-size: 30px; }
 
@@ -1568,15 +1564,15 @@ body {
 .artm-story .artm-stripe { height: 36px; }
 
 .artm-story .artm-specs      { padding: 30px 48px 0; }
-/* column (herdado da base): "MEDIDAS + valor" sempre na 1ª linha,
-   "apelido + sufixo" sempre na 2ª — quebra garantida por estrutura (dois
-   <div class="artm-specs-line"> no HTML), não por wrap de texto. */
 .artm-story .artm-specs-box  { gap: 18px; padding: 22px 34px; }
 .artm-story .artm-specs-line { gap: 24px; }
 .artm-story .artm-specs-label{ font-size: 44px; }
 .artm-story .artm-specs-value,
-.artm-story .artm-specs-nick,
-.artm-story .artm-specs-suffix{ font-size: 64px; }
+.artm-story .artm-specs-nick{ font-size: 64px; }
+/* Medida quebrada em 2 linhas (ver app.js/quebrarComLimite) — mesmo
+   tratamento do Feed (ver .artm-feed .artm-specs-value--quebrada): fonte
+   menor só quando quebra, pra caixa não crescer demais. */
+.artm-story .artm-specs-value--quebrada { font-size: 46px; }
 
 /* Parágrafo cola naturalmente embaixo das medidas — ajuste esse padding-top
    pra aproximar/afastar o texto explicativo da caixa MEDIDAS. */
@@ -1655,10 +1651,9 @@ body {
    assim que a foto chega (art-bg-img.loaded cobre 100% da faixa). */
 .artm[data-marca="denali"] .artm-photo-zone { background: #e6e6e9; }
 
-/* Textos escuros (fundo claro), não brancos — texto do pneu em preto puro
+/* Texto escuro (fundo claro), não branco — texto do pneu em preto puro
    (não var(--brand-black), que é #0B0B0B e lia meio acinzentado). */
-.artm[data-marca="denali"] .artm-specs-label,
-.artm[data-marca="denali"] .artm-specs-suffix {
+.artm[data-marca="denali"] .artm-specs-label {
   color: var(--brand-black);
 }
 .artm[data-marca="denali"] .artm-paragrafo {
@@ -1666,24 +1661,13 @@ body {
   font-weight: 400;
 }
 
-/* Apelido também em laranja (mesma cor do valor da medida) */
+/* Nome completo do pneu também em laranja (mesma cor do valor da medida) */
 .artm[data-marca="denali"] .artm-specs-nick {
   color: var(--brand-accent);
 }
 
 /* Sem a caixa com borda branca da Delinte — Denali só empilha texto centralizado */
 .artm[data-marca="denali"] .artm-specs-box { border: none; }
-
-/* Valor, apelido e sufixo empilham cada um na sua própria linha, sempre
-   centralizados entre si (align-items:center) — sem isso, cada span herdava
-   align-items:baseline (que em flex-direction:column não centraliza nada,
-   só alinha à esquerda), e o apelido "pulava" de posição conforme o
-   tamanho do texto da medida ao lado dele mudava a largura da linha. */
-.artm[data-marca="denali"] .artm-specs-line {
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
 
 /* Sublinhado decorativo sob "MEDIDA" e sob o valor, esmaecendo nas pontas —
    mesmo efeito do modelo de referência */

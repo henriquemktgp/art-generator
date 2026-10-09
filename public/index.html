@@ -135,12 +135,12 @@
         <div class="control-group" id="grupo-medida">
           <label class="control-label" for="inp-medida">
             Medida do Pneu
-            <span class="char-count" id="cnt-medida" aria-live="polite">0 / 30</span>
+            <span class="char-count" id="cnt-medida" aria-live="polite">0 / 60</span>
           </label>
           <input
             type="text" id="inp-medida" class="ctrl-input"
             placeholder="Ex: 235 45 ZRF19 95W"
-            maxlength="30"
+            maxlength="60"
           >
         </div>
 
@@ -405,8 +405,16 @@
                 </div>
                 <div class="artm-specs-line">
                   <span class="artm-specs-value" id="artm-specs-value"></span>
-                  <span class="artm-specs-nick"  id="artm-specs-nick"></span>
-                  <span class="artm-specs-suffix" id="artm-specs-suffix"></span>
+                </div>
+                <!-- "nick" no nome da classe/id é histórico (mostrava o apelido);
+                     agora mostra o nome completo do pneu, numa linha própria. Já
+                     inclui o que "sufixoMedida" costumava acrescentar (ex. "DH3
+                     Run Flat" já diz "Run Flat" sozinho) — por isso o antigo
+                     <span class="artm-specs-suffix"> foi removido daqui: com os
+                     dois juntos, o texto aparecia duplicado (ex. "...XL RUN
+                     FLAT" na linha de cima e "DH3 Run Flat" embaixo). -->
+                <div class="artm-specs-line">
+                  <span class="artm-specs-nick" id="artm-specs-nick"></span>
                 </div>
               </div>
             </div>

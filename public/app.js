@@ -292,7 +292,7 @@ const PRODUTOS_DELINTE = [
     apelido: "DH3",
     foto45:     "assets/delinte/foto_pneus/DH3/pneu_45.png",
     fotoPerfil: "assets/delinte/foto_pneus/DH3/pneu_perfil.png",
-    paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
+    paragrafo: "Continue rodando até 80 km mesmo com pneu furado. Sem sustos na estrada.",
     sufixoMedida: "RUN FLAT", fotoFrente: "assets/delinte/foto_pneus/DH3/pneu_frente.png"
   },
   {
@@ -306,7 +306,7 @@ const PRODUTOS_DELINTE = [
     apelido: "DH6",
     foto45:     "assets/delinte/foto_pneus/DH6/pneu_45.png",
     fotoPerfil: "assets/delinte/foto_pneus/DH6/pneu_perfil.png",
-    paragrafo: "O pneu ideal para sua segurança! A tecnologia Run Flat oferece maior resistência em situações extremas, nas quais o pneu perde toda a pressão do ar e permite que o motorista chegue a um local seguro para realizar a troca.",
+    paragrafo: "Tecnologia run flat de alto desempenho. Continuidade garantida quando importa.",
     sufixoMedida: "RUN FLAT", fotoFrente: "assets/delinte/foto_pneus/DH6/pneu_frente.png"
   },
   {
@@ -943,7 +943,7 @@ function objetivoParaFundo() {
 
 // ─── Limites de caracteres ───────────────────────────────────────────────────
 const LIMITES = {
-  titulo: 40, sub: 80, cta: 25, medida: 30, destaque: 20, sugestaoCarro: 60,
+  titulo: 40, sub: 80, cta: 25, medida: 60, destaque: 20, sugestaoCarro: 60,
   linhaMedida: 60, linhaValor: 20, validadeTabela: 20, ctaTabela: 80
 };
 
@@ -1652,6 +1652,21 @@ function montarMarquee(apelido) {
   }
 }
 
+// Quebra `texto` em 2 linhas quando passa de `limite` caracteres — usado na
+// medida digitada (ver renderArtMedida), que não tem textarea pra o usuário
+// decidir onde quebrar sozinho. Prefere quebrar no último espaço até o
+// limite (não corta palavra ao meio); se não achar espaço nenhum (uma
+// palavra/código só, maior que o limite), quebra na marca exata. O "\n"
+// resultante só vira quebra de linha visual com white-space:pre-line no
+// elemento que recebe o texto (ver .artm-specs-value em style.css).
+function quebrarComLimite(texto, limite) {
+  if (texto.length <= limite) return texto;
+  const corte = texto.lastIndexOf(' ', limite);
+  return corte > 0
+    ? `${texto.slice(0, corte)}\n${texto.slice(corte + 1)}`
+    : `${texto.slice(0, limite)}\n${texto.slice(limite)}`;
+}
+
 // Renderiza o canvas do modo "Arte de Medida"
 function renderArtMedida() {
   const canvas  = document.getElementById('art-canvas-medida');
@@ -1682,10 +1697,24 @@ function renderArtMedida() {
   document.getElementById('artm-tire-perfil').src = temPerfil ? produto.fotoPerfil : '';
   tiresWrap.classList.toggle('sem-foto', !tem45 && !temPerfil);
 
-  // Caixa MEDIDAS
-  document.getElementById('artm-specs-value').textContent  = estado.medida || 'MEDIDA';
-  document.getElementById('artm-specs-nick').textContent   = semProd ? '' : produto.apelido;
-  document.getElementById('artm-specs-suffix').textContent = semProd ? '' : (produto.sufixoMedida || '');
+  // Caixa MEDIDAS — acima de 35 caracteres quebra pra uma 2ª linha (ver
+  // quebrarComLimite), senão medidas longas (pneus de caminhão, por
+  // exemplo) estourariam a largura da caixa numa linha só.
+  const medidaQuebrada = quebrarComLimite(estado.medida || 'MEDIDA', 35);
+  const specsValueEl = document.getElementById('artm-specs-value');
+  specsValueEl.textContent = medidaQuebrada;
+  // Fonte menor só quando quebra em 2 linhas — no Feed (canvas quadrado,
+  // pouca sobra vertical) a caixa de medidas cresce e espreme a área da
+  // foto do pneu (.artm-photo-zone é flex:1, ver renderArtMedida/CSS);
+  // encolher só quando precisa evita diminuir à toa a maioria das medidas
+  // (que cabem numa linha só e ficam melhores no tamanho padrão).
+  specsValueEl.classList.toggle('artm-specs-value--quebrada', medidaQuebrada.includes('\n'));
+  // Nome completo do pneu (não mais o apelido) — fica em linha própria,
+  // abaixo da medida, ver estrutura em index.html. `produto.sufixoMedida`
+  // não é mais exibido aqui: ele existia pra completar o apelido curto (ex.
+  // "DH3" + "RUN FLAT"), mas o nome completo já inclui esse mesmo texto
+  // (ex. "DH3 Run Flat") — mostrar os dois juntos duplicava a palavra.
+  document.getElementById('artm-specs-nick').textContent   = semProd ? '' : produto.nome;
 
   // Parágrafo descritivo
   document.getElementById('artm-paragrafo').textContent =
