@@ -399,6 +399,12 @@ body {
 .app:not([data-modelo="3pneus"]) #grupo-destaque,
 .app[data-modelo="3pneus"][data-formato="banner"] #grupo-destaque { display: none; }
 
+/* Nome do pneu (apelido/nome completo): mesma lógica do Destaque acima —
+   só existe no modelo "3 pneus", e o botão não tem efeito no Banner (ver
+   renderArt3Pneus em app.js), então some lá também pra não confundir. */
+.app:not([data-modelo="3pneus"]) #grupo-art3p-nome,
+.app[data-modelo="3pneus"][data-formato="banner"] #grupo-art3p-nome { display: none; }
+
 /* Sugestão de carro: só existe nos modelos com carro-herói gerado por IA */
 .app:not([data-modelo="carrofrente"]):not([data-modelo="carrolado"]) #grupo-sugestao-carro { display: none; }
 
@@ -1981,7 +1987,14 @@ body {
 .format-feed .art3p-headline-lg { font-size: 88px; }
 .format-feed .art3p-tires { padding-bottom: 10px; }
 .format-feed .art3p-divider   { margin: 0 11px; }
-.format-feed .art3p-tire-name { font-size: 30px; margin-bottom: 14px; }
+/* max-width — permite o nome completo (botão "Nome do pneu" na sidebar)
+   quebrar em 2+ linhas sozinho, sem precisar contar caractere: o navegador
+   já decide onde quebrar, então funciona igual em qualquer marca/fonte (ver
+   problema parecido resolvido com char-count na Arte de Medida). Também
+   evita que o nome mais longo force a coluna a crescer, o que empurraria os
+   outros 2 pneus. 300px cabe com folga nas 3 colunas lado a lado (960px de
+   área útil no Feed, ver .format-feed .art3p acima). */
+.format-feed .art3p-tire-name { font-size: 30px; margin-bottom: 14px; max-width: 300px; }
 .format-feed .art3p-tire-img  { height: 320px; }
 .format-feed .art3p-footer { padding: 22px 30px; }
 .format-feed .art3p-footer > * + * { margin-left: 26px; }
@@ -1997,7 +2010,15 @@ body {
 .format-story .art3p-headline-lg { font-size: 110px; }
 .format-story .art3p-tires { padding-bottom: 10px; }
 .format-story .art3p-divider   { margin: 0 9px; }
-.format-story .art3p-tire-name { font-size: 40px; margin-bottom: 16px; }
+/* max-width — as 3 fotos deste formato já "vazam" de propósito pra fora da
+   área útil (380px cada × 3 = 1140px, mais largo que os 980px disponíveis;
+   ver comentário em .art3p-divider). Sem travar a largura do nome, ele
+   tentaria ficar do tamanho da foto do lado (que pode estar parcialmente
+   fora do canvas) e cortava palavra no meio nas colunas das pontas — a foto
+   vazando não incomoda (photo com borda arredondada, corte discreto), texto
+   cortado sim. 300px fica dentro da área útil mesmo nas pontas, igual ao
+   Feed (ver .format-feed .art3p-tire-name acima). */
+.format-story .art3p-tire-name { font-size: 40px; margin-bottom: 16px; max-width: 300px; }
 .format-story .art3p-tire-img  { height: 380px; }
 /* Lado a lado igual ao Feed/Banner (não mais empilhado) — "Exclusivo para"
    / "LOJISTAS" à esquerda, divisória na cor da marca, texto à direita. */

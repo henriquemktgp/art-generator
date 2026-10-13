@@ -990,6 +990,7 @@ const estado = {
   pneu1:          0, // modelo "3 pneus"
   pneu2:          0,
   pneu3:          0,
+  art3pNomeCompleto: 'nao', // 'sim' | 'nao' — modelo "3 pneus": nome completo em vez do apelido embaixo da foto. Só Feed/Story (ver renderArt3Pneus) — Banner sempre mostra apelido.
   titulo:         '',
   sub:            '',
   cta:            '',
@@ -1731,10 +1732,18 @@ function renderArt3Pneus() {
   const produtos = MARCAS[estado.marca].produtos;
   document.getElementById('art3p-headline-lg').textContent = `${MARCAS[estado.marca].label.toUpperCase()}?`;
 
+  // Nome completo em vez do apelido — só em Feed/Story (botão "Nome do
+  // pneu" na sidebar). No Banner sempre usa o apelido: já é um formato
+  // apertado, sem espaço pra validar nomes bem mais longos. A quebra de
+  // linha do nome completo não conta caractere (ver .art3p-tire-name no
+  // CSS) — o texto quebra sozinho dentro da largura que a própria foto do
+  // pneu já ocupa, então funciona igual em qualquer marca/fonte.
+  const nomeCompleto = estado.art3pNomeCompleto === 'sim' && estado.formato !== 'banner';
   [estado.pneu1, estado.pneu2, estado.pneu3].forEach((idx, i) => {
     const p = produtos[idx] ?? produtos[0];
     const semP = idx === 0;
-    document.getElementById(`art3p-nome-${i + 1}`).textContent = semP ? '' : (p.apelido || p.nome);
+    document.getElementById(`art3p-nome-${i + 1}`).textContent =
+      semP ? '' : (nomeCompleto ? p.nome : (p.apelido || p.nome));
     document.getElementById(`art3p-foto-${i + 1}`).src = semP ? '' : (foto45ArteLivre(p) || '');
   });
 

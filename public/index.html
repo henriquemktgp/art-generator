@@ -120,6 +120,16 @@
           <select id="sel-pneu3" class="ctrl-select"></select>
         </fieldset>
 
+        <!-- Só afeta Feed/Story — no Banner sempre mostra o apelido (formato
+             já é apertado, ver renderArt3Pneus em app.js). -->
+        <div class="control-group" id="grupo-art3p-nome">
+          <label class="control-label">Nome do pneu (abaixo da foto)</label>
+          <div class="btn-group" role="group" aria-label="Nome do pneu exibido no modelo 3 Pneus">
+            <button type="button" class="btn-opt active" data-field="art3pNomeCompleto" data-val="nao" aria-pressed="true">Apelido</button>
+            <button type="button" class="btn-opt"        data-field="art3pNomeCompleto" data-val="sim" aria-pressed="false">Nome completo</button>
+          </div>
+        </div>
+
         <div class="control-group" id="grupo-destaque">
           <label class="control-label" for="inp-destaque">
             Destaque (caixa inferior)
