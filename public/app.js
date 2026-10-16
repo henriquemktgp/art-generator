@@ -895,7 +895,7 @@ const BANNER_TAMANHOS = {
 // muda o enquadramento (object-fit: cover reagindo à nova proporção).
 const BANNER_TAMANHOS_MOBILE = {
   grande: { width: 700, height: 400 },
-  medio:  { width: 700, height: 280 }
+  medio:  { width: 400, height: 280 }
 };
 
 // Retorna {label, desc, width, height} do formato/tamanho ativo — único ponto

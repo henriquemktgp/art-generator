@@ -1230,29 +1230,31 @@ body {
 
 .banner-mobile.banner-grande.no-product .art-text { left: 24px; right: 24px; }
 
-/* ── Médio mobile — 700 × 280 px ──────────────────────────────────────────── */
-.banner-mobile.banner-medio .art-stripe { width: 6px; }
+/* ── Médio mobile — 400 × 280 px (pedido explícito: era 700×280, só a
+   largura mudou) — bem mais estreito que antes, então o layout lateral
+   (texto + foto lado a lado) precisou encolher bastante pra caber. ── */
+.banner-mobile.banner-medio .art-stripe { width: 4px; }
 .banner-mobile.banner-medio .art-elem   { display: none; }
 
-.banner-mobile.banner-medio .art-header { left: 18px; top: 16px; gap: 5px; }
-.banner-mobile.banner-medio .art-logo   { height: 26px; max-width: 100px; }
-.banner-mobile.banner-medio .art-badge  { font-size: 10px; padding: 4px 10px; }
+.banner-mobile.banner-medio .art-header { left: 12px; top: 14px; gap: 4px; }
+.banner-mobile.banner-medio .art-logo   { height: 22px; max-width: 80px; }
+.banner-mobile.banner-medio .art-badge  { font-size: 9px; padding: 3px 8px; }
 
-.banner-mobile.banner-medio .art-img-wrap { right: 0; top: 0; bottom: 0; width: 190px; }
+.banner-mobile.banner-medio .art-img-wrap { right: 0; top: 0; bottom: 0; width: 130px; }
 
-.banner-mobile.banner-medio .art-text { left: 18px; right: 210px; align-items: center; }
+.banner-mobile.banner-medio .art-text { left: 12px; right: 142px; align-items: center; }
 
 .banner-mobile.banner-medio .art-pname  { display: none; }
-.banner-mobile.banner-medio .art-title  { font-size: 32px; margin-bottom: 8px; line-height: 0.92; text-align: center; }
+.banner-mobile.banner-medio .art-title  { font-size: 24px; margin-bottom: 7px; line-height: 0.95; text-align: center; }
 /* ver comentário equivalente no Header mobile acima */
 .banner-mobile.banner-medio[data-marca="denali"]  .art-title,
 .banner-mobile.banner-medio[data-marca="sentury"] .art-title,
 .banner-mobile.banner-medio[data-marca="samson"]  .art-title,
-.banner-mobile.banner-medio[data-marca="ironhead"] .art-title { font-size: 22px; }
-.banner-mobile.banner-medio .art-sub    { font-size: 14px; margin-bottom: 10px; text-align: center; }
-.banner-mobile.banner-medio .art-cta    { font-size: 14px; padding: 7px 16px; margin-bottom: 0; }
+.banner-mobile.banner-medio[data-marca="ironhead"] .art-title { font-size: 17px; }
+.banner-mobile.banner-medio .art-sub    { font-size: 11px; margin-bottom: 8px; text-align: center; }
+.banner-mobile.banner-medio .art-cta    { font-size: 11px; padding: 5px 10px; margin-bottom: 0; }
 
-.banner-mobile.banner-medio.no-product .art-text { left: 18px; right: 18px; }
+.banner-mobile.banner-medio.no-product .art-text { left: 12px; right: 12px; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    REALCE DO FUNDO GERADO POR IA — "Filtro de cor da marca" (só Denali) e
@@ -2228,15 +2230,18 @@ body {
 .banner-mobile.banner-grande .artp45-tire      { left: auto; right: -40px; bottom: 35px; height: 320px; }
 
 /* ── Médio mobile — 700 × 280 px ──────────────────────────────────────────── */
-.banner-mobile.banner-medio .artp45-logo-wrap { bottom: 9px; left: 20px; }
-.banner-mobile.banner-medio .artp45-logo      { height: 22px; }
-.banner-mobile.banner-medio .artp45-text      { top: 16px; left: 20px; right: 240px; }
-.banner-mobile.banner-medio .artp45-apelido   { font-size: 17px; margin-bottom: 6px; }
-.banner-mobile.banner-medio .artp45-titulo    { font-size: 28px; margin-bottom: 11px; }
+/* 400×280 (pedido explícito: era 700×280, só a largura mudou) — bem mais
+   estreito, então o recuo do texto e o tamanho dos pneus à direita
+   encolheram bastante pra caber. */
+.banner-mobile.banner-medio .artp45-logo-wrap { bottom: 9px; left: 14px; }
+.banner-mobile.banner-medio .artp45-logo      { height: 18px; }
+.banner-mobile.banner-medio .artp45-text      { top: 12px; left: 14px; right: 140px; }
+.banner-mobile.banner-medio .artp45-apelido   { font-size: 13px; margin-bottom: 4px; }
+.banner-mobile.banner-medio .artp45-titulo    { font-size: 20px; margin-bottom: 7px; }
 .banner-mobile.banner-medio .artp45-sub       { display: none; }
-.banner-mobile.banner-medio .artp45-cta       { font-size: 11px; padding: 4px 10px; }
-.banner-mobile.banner-medio .artp45-tire      { left: auto; right: 85px; bottom: -62px; height: 185px; }
-.banner-mobile.banner-medio .artp45-tire-2    { left: auto; right: 45px; bottom: -67px; height: 185px; }
+.banner-mobile.banner-medio .artp45-cta       { font-size: 10px; padding: 4px 8px; }
+.banner-mobile.banner-medio .artp45-tire      { left: auto; right: 30px; bottom: 20px; height: 190px; }
+.banner-mobile.banner-medio .artp45-tire-2    { left: auto; right: -15px; bottom: 5px; height: 190px; }
 
 /* ── MODELO: PNEU + CARRO DE FRENTE ──────────────────────────────────────── */
 .artcf {
@@ -2387,12 +2392,15 @@ body {
    que o Médio desktop (4,8:1), então a mesma ampliação do pneu ocuparia uma
    fatia bem maior da largura — height% reduzido (mesmo ajuste descrito
    originalmente aqui para o antigo 752×225 vs 1920×393). */
+/* 400×280 (pedido explícito: era 700×280, só a largura mudou) — a coluna de
+   texto ficou bem mais estreita (de 476px pra 176px), por isso fonte do
+   título/CTA menor e a caixa um pouco mais larga (left/right ajustados). */
 .banner-mobile.banner-medio .artcl-logo-wrap { bottom: 11px; }
 .banner-mobile.banner-medio .artcl-logo      { height: 21px; }
-.banner-mobile.banner-medio .artcl-headline  { left: 164px; right: 60px; }
-.banner-mobile.banner-medio .artcl-titulo    { font-size: 25px; margin-bottom: 7px; }
-.banner-mobile.banner-medio .artcl-cta       { font-size: 18px; padding: 4px 10px; }
-.banner-mobile.banner-medio .artcl-tire      { left: -73px; top: 50%; transform: translateY(-50%); height: 110%; }
+.banner-mobile.banner-medio .artcl-headline  { left: 150px; right: 50px; }
+.banner-mobile.banner-medio .artcl-titulo    { font-size: 20px; margin-bottom: 6px; }
+.banner-mobile.banner-medio .artcl-cta       { font-size: 14px; padding: 4px 9px; }
+.banner-mobile.banner-medio .artcl-tire      { left: -73px; top: 50%; transform: translateY(-50%); height: 100%; }
 
 /* ── MODELO: ARTE DE PNEU DE FRENTE (sem IA — fundo fixo da marca) ───────── */
 .artpf {
