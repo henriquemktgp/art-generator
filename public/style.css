@@ -456,6 +456,28 @@ body {
 .app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-escurecer-fundo,
 .app[data-modelo="pneufrente"]         #grupo-escurecer-fundo { display: none; }
 
+/* Aviso "quer um carro em destaque?" — só faz sentido nos modelos onde o
+   pneu é o herói e o veículo é propositalmente escondido (ver prompts.js,
+   TEMPLATE_BASE). Nos modelos "Pneu + Carro de Frente/Lado" o carro já é o
+   herói por design (nenhum aviso necessário), e na Arte de Medida o carro
+   também já é o herói (montarPromptMedida) embora sem o campo "Sugestão de
+   Carro" na UI. */
+#prompt-hint-carro { display: none; }
+.app[data-tipo-arte="livre"][data-modelo="padrao"]  #prompt-hint-carro,
+.app[data-tipo-arte="livre"][data-modelo="3pneus"]  #prompt-hint-carro,
+.app[data-tipo-arte="livre"][data-modelo="pneu45"]  #prompt-hint-carro { display: block; }
+
+/* "Pneu com roda" só tem efeito nos modelos que exibem a foto do pneu a 45°
+   (foto45ArteLivre): Padrão, 3 Pneus, Pneu 45° e Arte de Medida (única). Nos
+   demais (Carro de Frente/Lado, Pneu de Frente, Tabela/Tabela Dupla) o pneu
+   aparece só de perfil/frente — sem par com/sem roda no catálogo — então o
+   controle fica escondido pra não sugerir um efeito que não existe ali. */
+.app[data-tipo-arte="medida"][data-modelo-medida="tabela"]      #grupo-pneu-roda,
+.app[data-tipo-arte="medida"][data-modelo-medida="tabeladupla"] #grupo-pneu-roda,
+.app[data-modelo="carrofrente"]        #grupo-pneu-roda,
+.app[data-modelo="carrolado"]          #grupo-pneu-roda,
+.app[data-modelo="pneufrente"]         #grupo-pneu-roda { display: none; }
+
 /* Canvas: só um fica visível por vez. #art-canvas-medida e os demais canvases
    de modelo são display:flex (coluna) — não "block" — porque todos empilham
    suas faixas com flex-direction:column. */
@@ -909,6 +931,36 @@ body {
 }
 
 .art-bg-img.loaded { opacity: 1; }
+
+/* Escurecimento via CSS, independente do que a IA gerou — garante contraste
+   pro logo e pro texto (que não têm fundo opaco próprio, diferente do CTA/
+   badge) mesmo se a foto de fundo sair clara ali. Direção do gradiente varia
+   por formato (ver regras .format-X abaixo), sempre cobrindo a zona de texto/
+   logo e ficando transparente na zona do pneu. */
+.art-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+/* Feed: texto fica à esquerda, pneu à direita — mesma curva (ângulo
+   diagonal, cai rápido pra quase zero) já usada com sucesso em
+   .artp45-overlay (Pneu 45°): lê como luz direcional de verdade, não como
+   uma faixa sólida colada na imagem. */
+.format-feed .art-overlay {
+  background: linear-gradient(100deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 38%, rgba(0,0,0,0.08) 56%, transparent 68%);
+}
+/* Story: logo/badge no topo, pneu no meio, texto embaixo — escurece topo e
+   base com a mesma curva suave, deixa o meio (onde a foto do pneu real
+   entra) claro. */
+.format-story .art-overlay {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.08) 16%, transparent 26%, transparent 54%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.7) 100%);
+}
+/* Banner: tarja/logo/texto à esquerda, pneu à direita — mesma curva do Feed,
+   só que a faixa escura cobre mais largura (texto ocupa mais da metade). */
+.format-banner .art-overlay {
+  background: linear-gradient(100deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.42) 42%, rgba(0,0,0,0.08) 60%, transparent 70%);
+}
 
 /* Elemento xadrez decorativo — asset exclusivo Delinte, sem equivalente Denali ainda */
 .art-elem {
@@ -2274,13 +2326,18 @@ body {
 
 .format-feed .artcf-headline { top: 70px; }
 .format-feed .artcf-titulo { font-size: 56px; }
-.format-feed .artcf-tire   { bottom: -760px; width: 1300px; }
+/* Pneu menor e mais baixo, cobrindo só o terço inferior (altura do para-choque/
+   roda) — com o motor "fluid" o carro agora é desenhado fiel ao briefing
+   (herói, preenchendo o quadro), e o tamanho/posição antigos (calibrados num
+   motor que seguia o prompt mais fracamente e tendia a gerar carros menores/
+   mais distantes) cobriam o carro até o para-brisa. */
+.format-feed .artcf-tire   { bottom: -430px; width: 820px; }
 .format-feed .artcf-logo-wrap { bottom: 44px; }
 .format-feed .artcf-logo   { height: 52px; }
 
 .format-story .artcf-headline { top: 110px; }
 .format-story .artcf-titulo { font-size: 70px; }
-.format-story .artcf-tire   { bottom: -390px; width: 1350px; }
+.format-story .artcf-tire   { bottom: -440px; width: 820px; }
 .format-story .artcf-logo-wrap { bottom: 70px; }
 .format-story .artcf-logo   { height: 62px; }
 

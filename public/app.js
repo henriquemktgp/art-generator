@@ -253,6 +253,20 @@ const PRODUTOS_DELINTE = [
     sufixoMedida: "BANDIT A/T", fotoFrente: "assets/delinte/foto_pneus/DX-10/pneu_frente.png"
   },
   {
+    nome:   "DX-10 Bandit A/T Letra Branca",
+    specs:  "All-terrain · on e off-road · visual exclusivo com letras brancas",
+    foto:   "assets/delinte/foto_pneus/DX-10 Letra Branca/pneu_45_roda.png",
+    titulo: "ON E OFF COM VISUAL PRÓPRIO",
+    sub:    "All-terrain que transita entre asfalto e trilha, com visual de letras brancas.",
+    cta:    "CONHEÇA O DX-10 LB",
+    linha:  "offroad",
+    apelido: "DX-10 LB",
+    foto45:     "assets/delinte/foto_pneus/DX-10 Letra Branca/pneu_45.png",
+    fotoPerfil: "assets/delinte/foto_pneus/DX-10 Letra Branca/pneu_perfil.png",
+    paragrafo: "All-terrain que transita entre asfalto e trilha, com visual de letras brancas.",
+    sufixoMedida: "BANDIT A/T LB", fotoFrente: "assets/delinte/foto_pneus/DX-10 Letra Branca/pneu_frente.png"
+  },
+  {
     nome:   "DX-12 Bandit R/T",
     specs:  "Rugged terrain · tração reforçada · trilhas e asfalto",
     foto:   "assets/delinte/foto_pneus/DX-12/pneu_45_roda.png",
@@ -986,6 +1000,7 @@ const estado = {
   filtroMarca:    'nao', // 'sim' | 'nao' — só Denali; sobrepõe o gradiente da marca no fundo de IA (ver classesRealceFundo)
   escurecerFundo: 'nao', // 'sim' | 'nao' — as duas marcas; escurece o fundo de IA pra não brigar com o texto
   objetivo:       'promocao',
+  pneuComRoda:    'sim', // 'sim' | 'nao' — todas as marcas e modelos; troca a foto do pneu a 45° (com/sem roda), mantendo a mesma posição. Ver foto45ArteLivre()
   produto:        0,
   pneu1:          0, // modelo "3 pneus"
   pneu2:          0,
@@ -1055,11 +1070,16 @@ function produtoAtual() {
   return MARCAS[estado.marca].produtos[estado.produto];
 }
 
-// Foto do pneu a 45° COM roda usada nos modelos de Arte Livre "3 Pneus" e
-// "Pneu 45°" (produto.foto — pneu_45_roda.png) — NÃO usada na Arte de
-// Medida, que sempre lê produto.foto45 diretamente (pneu_45.png, sem roda).
+// Foto do pneu a 45° — resolve entre "com roda" (produto.foto, pneu_45_roda.png)
+// e "sem roda" (produto.foto45, pneu_45.png) conforme a escolha do usuário em
+// estado.pneuComRoda (checkbox "Pneu com roda" na sidebar, vale pra todas as
+// marcas e todos os modelos que mostram essa foto: Padrão, 3 Pneus, Pneu 45°
+// e Arte de Medida). Cai pro outro campo se o produto não tiver cadastrada a
+// foto da opção escolhida (ver dados do catálogo).
 function foto45ArteLivre(produto) {
-  return produto.foto;
+  return estado.pneuComRoda === 'nao'
+    ? (produto.foto45 || produto.foto)
+    : (produto.foto || produto.foto45);
 }
 
 // Repopula os <select> de produtos (único + os 3 do modelo "3 pneus") com o
@@ -1619,7 +1639,7 @@ function renderArt() {
   } else {
     document.getElementById('art-pname').textContent = produto.nome;
     document.getElementById('art-specs').textContent = produto.specs;
-    document.getElementById('art-product').src       = produto.foto;
+    document.getElementById('art-product').src       = foto45ArteLivre(produto);
     imgWrap.style.display = '';
   }
 }
@@ -1691,10 +1711,12 @@ function renderArtMedida() {
 
   // Fotos do pneu (45° + perfil) — some com a faixa se ainda não há foto
   // cadastrada para o produto (dados pendentes, ver comentário do catálogo).
+  // A foto a 45° respeita o toggle "Pneu com roda" (ver foto45ArteLivre).
   const tiresWrap = document.getElementById('artm-tires');
-  const tem45     = !semProd && Boolean(produto.foto45);
+  const foto45Resolvida = semProd ? '' : foto45ArteLivre(produto);
+  const tem45     = Boolean(foto45Resolvida);
   const temPerfil = !semProd && Boolean(produto.fotoPerfil);
-  document.getElementById('artm-tire-45').src     = tem45     ? produto.foto45     : '';
+  document.getElementById('artm-tire-45').src     = foto45Resolvida;
   document.getElementById('artm-tire-perfil').src = temPerfil ? produto.fotoPerfil : '';
   tiresWrap.classList.toggle('sem-foto', !tem45 && !temPerfil);
 

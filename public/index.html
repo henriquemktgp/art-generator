@@ -113,6 +113,14 @@
           </select>
         </div>
 
+        <div class="control-group" id="grupo-pneu-roda">
+          <label class="control-label">Pneu com roda</label>
+          <div class="btn-group" role="group" aria-label="Exibir a foto do pneu com ou sem roda">
+            <button type="button" class="btn-opt active" data-field="pneuComRoda" data-val="sim" aria-pressed="true">Com roda</button>
+            <button type="button" class="btn-opt"        data-field="pneuComRoda" data-val="nao" aria-pressed="false">Sem roda</button>
+          </div>
+        </div>
+
         <fieldset class="control-group" id="grupo-3pneus">
           <legend class="control-label">Pneus (1, 2 e 3)</legend>
           <select id="sel-pneu1" class="ctrl-select"></select>
@@ -255,6 +263,7 @@
 
         <div id="prompt-painel" class="prompt-painel" hidden>
           <p class="prompt-hint">Descreva o cenário do fundo. Edite a sugestão ou escreva do zero.</p>
+          <p class="prompt-hint" id="prompt-hint-carro">Quer um carro em destaque na imagem? Esse modelo mantém o pneu como protagonista — qualquer veículo descrito aqui aparece só como silhueta distante. Troque o <strong>Modelo</strong> para "Pneu + Carro de Frente": lá o carro é o herói da foto, de frente, em primeiro plano ("Pneu + Carro de Lado" também existe, mas nesse o pneu continua sendo o destaque — o carro aparece pequeno, ao fundo).</p>
           <textarea
             id="inp-prompt-custom"
             class="ctrl-input ctrl-textarea prompt-textarea"
@@ -343,6 +352,11 @@
 
             <!-- Camada 1: fundo gerado por IA (fade-in quando chegar) -->
             <img class="art-bg-img" id="art-bg-img" src="" alt="" aria-hidden="true">
+
+            <!-- Camada de escurecimento (CSS, não depende da IA) — garante
+                 legibilidade do logo/texto independente de quão clara a IA
+                 gerou aquela área da foto (ver .art-overlay no style.css). -->
+            <div class="art-overlay"></div>
 
             <!-- Elemento xadrez decorativo -->
             <img class="art-elem" id="art-elem"
