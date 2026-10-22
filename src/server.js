@@ -13,6 +13,7 @@ const express     = require('express');
 const compression = require('compression');
 const { montarPrompt, montarPromptMedida, montarPromptCarro } = require('./prompts');
 const { gerarImagemMagnific } = require('./magnific');
+const { enviarEmailComAnexo } = require('./gmail');
 
 const app  = express();
 const PORT = process.env.PORT ?? 3000;
@@ -22,6 +23,11 @@ if (!process.env.MAGNIFIC_API_KEY) {
   console.warn('\n  ⚠  MAGNIFIC_API_KEY não configurada.');
   console.warn('     Copie .env.example para .env e insira sua chave antes de usar.\n');
 }
+
+// Relatório interno de uso (ver /api/reportar-exportacao abaixo) — recurso
+// opcional: sem REPORT_EMAIL_TO configurado, o endpoint vira um no-op (a
+// exportação do usuário nunca é afetada de nenhum jeito).
+const REPORT_EMAIL_TO = process.env.REPORT_EMAIL_TO ?? '';
 
 // ── Parâmetros aceitos (validação server-side) ────────────────────────────────
 const FORMATOS_VALIDOS        = new Set(['feed', 'story', 'banner']);
@@ -36,7 +42,10 @@ const MODOS_SEM_BANNER            = new Set(['medida', 'carrofrente']);
 const FORMATOS_VALIDOS_SEM_BANNER = FORMATOS_VALIDOS_MEDIDA;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
-app.use(express.json());
+// limit: '20mb' — o padrão (100kb) rejeitaria o corpo de POST /api/reportar-
+// exportacao, que carrega a arte exportada em base64 (pode passar de 1-2MB
+// em exports 2x de formatos maiores, ex. Story/Banner).
+app.use(express.json({ limit: '20mb' }));
 // gzip/brotli nas respostas — sem isso, app.js + style.css (~240 KB somados)
 // e o JSON de /api/gerar-fundo trafegam sem compressão nenhuma.
 app.use(compression());
@@ -110,6 +119,49 @@ app.post('/api/gerar-fundo', async (req, res) => {
     res.status(502).json({
       erro: 'Não foi possível gerar o fundo agora. Verifique sua conexão e tente novamente.'
     });
+  }
+});
+
+// ── Relatório interno de uso ──────────────────────────────────────────────────
+// POST /api/reportar-exportacao
+// Chamado em segundo plano pelo front-end sempre que o usuário exporta uma
+// arte (PNG ou PDF, qualquer modelo/formato — ver capturarCanvas() em
+// app.js). Envia a imagem exportada por e-mail para REPORT_EMAIL_TO, só para
+// acompanhamento interno de uso da ferramenta. O front-end nunca espera nem
+// trata a resposta — uma falha aqui jamais deve impedir o download real do
+// usuário, por isso este endpoint sempre responde 200/204, mesmo em erro.
+const LIMITE_IMAGEM_RELATORIO = 15 * 1024 * 1024; // ~15MB em base64 (~11MB binário)
+
+app.post('/api/reportar-exportacao', async (req, res) => {
+  if (!REPORT_EMAIL_TO) return res.status(204).end();
+
+  const { imagem, marca, formato, modelo, tipoArte, tipoArquivo, nomeArquivo } = req.body ?? {};
+  if (typeof imagem !== 'string' || !imagem) return res.status(204).end();
+  if (imagem.length > LIMITE_IMAGEM_RELATORIO) return res.status(204).end();
+
+  const marcaTxt    = typeof marca === 'string' ? marca : 'desconhecida';
+  const formatoTxt  = typeof formato === 'string' ? formato : 'desconhecido';
+  const modeloTxt   = typeof modelo === 'string' ? modelo : 'desconhecido';
+  const tipoArteTxt = typeof tipoArte === 'string' ? tipoArte : 'desconhecido';
+  const arquivoTxt  = (typeof nomeArquivo === 'string' ? nomeArquivo : 'arte.png').slice(0, 150);
+
+  try {
+    await enviarEmailComAnexo({
+      to:      REPORT_EMAIL_TO,
+      subject: `Arte exportada — ${marcaTxt} · ${formatoTxt} · ${modeloTxt}`,
+      text:
+        `Marca: ${marcaTxt}\n` +
+        `Tipo de arte: ${tipoArteTxt}\n` +
+        `Modelo: ${modeloTxt}\n` +
+        `Formato: ${formatoTxt}\n` +
+        `Tipo de exportação: ${tipoArquivo ?? 'png'}\n` +
+        `Arquivo: ${arquivoTxt}`,
+      attachment: { filename: arquivoTxt, mimeType: 'image/png', base64Data: imagem }
+    });
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('[Relatório] Erro ao enviar e-mail:', err.message ?? err);
+    res.status(204).end();
   }
 });
 

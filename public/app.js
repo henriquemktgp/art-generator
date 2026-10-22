@@ -2286,7 +2286,33 @@ async function capturarCanvas(overrides = {}) {
     document.body.removeChild(clone);
   }
 
+  reportarExportacao(resultado);
   return resultado;
+}
+
+// Dispara em segundo plano, sem nunca bloquear nem poder falhar a
+// exportação real do usuário — um e-mail de relatório com a arte exportada,
+// só para acompanhamento interno de uso da ferramenta (ver POST
+// /api/reportar-exportacao em server.js). Chamado uma vez por captura: PNG/
+// PDF disparam 1, o Banner (que captura desktop + mobile) dispara 2.
+function reportarExportacao(canvas) {
+  try {
+    const base64 = canvas.toDataURL('image/png').split(',')[1];
+    fetch('/api/reportar-exportacao', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imagem:      base64,
+        marca:       estado.marca,
+        tipoArte:    estado.tipoArte,
+        modelo:      estado.tipoArte === 'medida' ? estado.modeloMedida : estado.modelo,
+        formato:     estado.formato,
+        nomeArquivo: `${estado.marca}-${estado.formato}${sufixoArquivo()}-arte.png`
+      })
+    }).catch(() => {});
+  } catch {
+    // Nunca deixa isso interferir na exportação de verdade.
+  }
 }
 
 // Converte uma imagem no clone para data URL PNG (sem tainting, falhas de
