@@ -36,7 +36,13 @@ async function gerarImagemMagnific(prompt, aspectRatio) {
       prompt,
       aspect_ratio: aspectRatio,
       resolution:   '2k',
-      model:        'realism'
+      // "fluid" segue o prompt com muito mais fidelidade que "realism" (ver
+      // docs.magnific.com/api-reference/mystic/post-mystic) — "realism" é
+      // avisado pela própria documentação como fraco fora de cenas genéricas,
+      // o que fazia a IA ignorar os limites de composição (TIRE ZONE) e
+      // inventar veículos genéricos em vez do que foi pedido (ex.: caminhão,
+      // Saveiro). Testado lado a lado antes da troca — ver histórico do chat.
+      model:        'fluid'
     })
   });
 
