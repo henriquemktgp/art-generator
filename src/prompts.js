@@ -12,59 +12,41 @@
 const COMPOSICAO_LAYOUT = {
 
   feed: [
-    'COMPOSITIONAL BRIEF — UI overlay map (1080×1080 canvas):',
+    'COMPOSITIONAL BRIEF for a 1080×1080 square advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'This is ONE single, continuous photograph of a real place, lit by one light source — think a low, warm sun or distant light glowing from the right side of the frame. The right side of the scene naturally reads brighter and more dramatic; the left side is calmer and more shadowed, the ordinary way a photograph looks under one directional light — smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness on the left is not critical: a separate darkening layer is added in post-production over that side for text legibility, so focus on making the scene itself feel real and atmospheric.',
+    'The right side of the frame (roughly the right half) is the TIRE ZONE — SEE TIRE ZONE RULES BELOW.',
 
-    '| ZONE          | X pixels    | Y pixels  | UI element              | What background must do here                              |',
-    '| Logo          | 20–320      | 40–130    | Delinte logo            | Pure near-black, featureless — zero texture               |',
-    '| Badge         | 700–1080    | 40–130    | Campaign badge          | Subtle atmospheric haze, very dark                        |',
-    '| Text column   | 0–540       | 130–1080  | Title, body copy, CTA   | Very dark moody gradient, minimal texture, max legibility |',
-    '| TIRE ZONE     | 540–1080    | 100–1000  | *** TIRE PNG HERE ***   | SEE TIRE ZONE RULES BELOW                                 |',
-
-    'TIRE ZONE RULES (x 540-1080, y 100-1000): The product tire PNG with transparent background will be composited EXACTLY here.',
+    'TIRE ZONE RULES (right half of the frame): The product tire PNG with transparent background will be composited EXACTLY here.',
     'DO NOT place any vehicle, large object, or main subject in this zone — it will be completely hidden by the tire.',
     'This zone must contain ONLY: atmospheric depth, environmental texture (wet road surface, terrain, dust particles, atmospheric haze), dramatic lighting effects, and far-distant scene elements.',
     'Any vehicle must appear ONLY as a tiny silhouette at the extreme far background, very small, partially cropped by the image edge — never as a prominent element.',
 
-    'PERSPECTIVE & LIGHTING: one-point perspective lines (track, road, trail) originate from center-left and converge right.',
-    'Key light source is rear-right, creating a natural rim-light glow in the tire zone and falling into shadow toward the text column.',
-    'This dark-left / lit-right gradient must happen organically through the scene lighting — not through post-processing vignettes.'
+    'PERSPECTIVE: one-point perspective lines (track, road, trail) originate from center-left and converge right, adding depth to the scene.'
   ].join(' '),
 
   story: [
-    'COMPOSITIONAL BRIEF — UI overlay map (1080×1920 canvas, vertical):',
+    'COMPOSITIONAL BRIEF for a 1080×1920 vertical advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'This is ONE single, continuous photograph of a real place. Light descends naturally from above, brightest around the upper-middle of the frame, fading gradually toward the base — the ordinary way ambient light fades with depth and distance, smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness at the very top and very bottom is not critical: a separate darkening layer is added in post-production there for text legibility, so focus on making the scene itself feel real and atmospheric.',
+    'The middle of the frame is the TIRE ZONE, the most lit, dramatic part of the scene — SEE TIRE ZONE RULES BELOW.',
 
-    '| ZONE          | X pixels  | Y pixels    | UI element              | What background must do here                              |',
-    '| Logo          | 64–400    | 64–160      | Delinte logo            | Pure near-black, featureless                              |',
-    '| Badge         | 650–1016  | 64–160      | Campaign badge          | Very dark, subtle atmospheric haze                        |',
-    '| TIRE ZONE     | 80–1000   | 140–1050    | *** TIRE PNG HERE ***   | SEE TIRE ZONE RULES BELOW                                 |',
-    '| Text column   | 64–1016   | 1050–1800   | Title, body copy, CTA   | Progressively darkens top-to-bottom, near-black at base   |',
-
-    'TIRE ZONE RULES (x 80-1000, y 140-1050): The product tire PNG will be composited here, centered horizontally.',
+    'TIRE ZONE RULES (middle of the frame): The product tire PNG will be composited here, centered horizontally.',
     'DO NOT place any vehicle, animal, person, or large foreground object in this zone.',
     'This zone must contain ONLY: dramatic environmental backdrop (towering cliff faces, dense forest canopy, skyline, dramatic clouds), atmospheric depth, rim-light glow from above, particles (dust, rain drops, mist) — purely the STAGE for the tire, never a competing hero element.',
 
-    'VERTICAL COMPOSITION: strong vertical leading lines (cliff edges, tree trunks, building facades, waterfall) frame the tire zone from both sides.',
-    'Key light descends from above-right, creating a natural spotlight effect in the tire zone.',
-    'Lower zone (y 1050-1920) must transition organically to near-black for text legibility — achieved through natural environmental shadow, not artificial fading.'
+    'VERTICAL COMPOSITION: strong vertical leading lines (cliff edges, tree trunks, building facades, waterfall) frame the tire zone from both sides, adding depth to the scene.'
   ].join(' '),
 
   banner: [
-    'COMPOSITIONAL BRIEF — UI overlay map (1440×600 canvas, panoramic):',
+    'COMPOSITIONAL BRIEF for a 1440×600 wide panoramic advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'This is ONE single, continuous photograph of a real place, backlit from the right — think a low sun or distant light glowing from the right edge of the frame. The right side of the scene naturally reads warm and bright; the left side is calmer and more shadowed, the ordinary way a photograph looks under one directional light — smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness on the left is not critical: a separate darkening layer is added in post-production over that side for text legibility, so focus on making the scene itself feel real and atmospheric.',
+    'The right portion of the frame (roughly the right third) is the TIRE ZONE — SEE TIRE ZONE RULES BELOW.',
 
-    '| ZONE          | X pixels  | Y pixels  | UI element              | What background must do here                              |',
-    '| Stripe        | 0–12      | 0–600     | Yellow accent stripe    | Pure black, zero texture                                  |',
-    '| Logo+Badge    | 12–380    | 0–600     | Logo top, badge below   | Deepest black zone, near-featureless                      |',
-    '| Text column   | 380–920   | 0–600     | Title, body copy, CTA   | Dark moody mid-tone, max legibility for white type        |',
-    '| TIRE ZONE     | 920–1440  | 0–600     | *** TIRE PNG HERE ***   | SEE TIRE ZONE RULES BELOW                                 |',
-
-    'TIRE ZONE RULES (x 920-1440, y 0-600): The product tire PNG will be composited EXACTLY here.',
+    'TIRE ZONE RULES (right third of the frame): The product tire PNG will be composited EXACTLY here.',
     'DO NOT place any vehicle or large object in this zone — it will be hidden by the tire.',
     'This zone must contain ONLY: atmospheric environmental depth (receding road, canyon wall, industrial architecture in far distance), dramatic backlighting effects, motion blur streaks, dust or mist particles — purely environmental atmosphere.',
     'Any vehicle must appear ONLY as a distant tiny silhouette near the far-right edge or horizon line, very small.',
 
-    'HORIZONTAL COMPOSITION: strong one-point-perspective lines (road, track, horizon) run left-to-right across the full canvas, vanishing point at x ~1300.',
-    'Key light source is far-right, backlighting the entire scene — creates natural darkness on the left (logo zone) and warm rim-light glow on the right (tire zone).',
-    'This left-dark / right-lit gradient is fundamental to the composition.'
+    'HORIZONTAL COMPOSITION: strong one-point-perspective lines (road, track, horizon) run left-to-right across the full canvas, vanishing point toward the right, adding depth to the scene.'
   ].join(' ')
 
 };
@@ -141,6 +123,75 @@ const CENAS_POR_LINHA = {
 
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DETECÇÃO DE VEÍCULO NO PROMPT DO USUÁRIO — nos modelos "pneu-herói" (Padrão/
+// 3 Pneus/Pneu 45°, todos passam por montarPrompt), o carro só vira um
+// elemento visível de verdade na cena SE o usuário pediu um veículo
+// explicitamente no prompt personalizado. Sem isso, continua só paisagem (ver
+// REGRA FUNDAMENTAL no topo do arquivo) — o pneu segue sendo o único herói.
+// Heurística simples por palavra-chave (PT/EN + marcas comuns no Brasil); não
+// é NLP de verdade, então pode errar em frases muito indiretas.
+// ─────────────────────────────────────────────────────────────────────────────
+const PALAVRAS_VEICULO = [
+  'carro', 'carros', 'caminhao', 'caminhoes', 'caminhonete', 'picape', 'pickup', 'moto', 'motocicleta',
+  'veiculo', 'veiculos', 'van', 'utilitario', 'suv', 'sedan', 'hatch', 'jipe',
+  'fiat', 'volkswagen', 'vw', 'chevrolet', 'gm', 'ford', 'toyota', 'honda', 'hyundai', 'renault', 'nissan',
+  'jeep', 'ram', 'mitsubishi', 'peugeot', 'citroen', 'bmw', 'mercedes', 'audi', 'kia', 'troller', 'byd',
+  'car', 'truck', 'vehicle', 'motorcycle', 'bike'
+];
+
+function removerAcentos(texto) {
+  return texto.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function pedeVeiculo(customPrompt) {
+  if (!customPrompt || !customPrompt.trim()) return false;
+  const normalizado = removerAcentos(customPrompt.toLowerCase());
+  return PALAVRAS_VEICULO.some(palavra => new RegExp(`\\b${palavra}\\b`).test(normalizado));
+}
+
+// Variante de COMPOSICAO_LAYOUT usada quando o usuário pediu um veículo —
+// mesma geometria de TIRE ZONE (pra não conflitar com a foto real do pneu),
+// mas o veículo pode aparecer como elemento visível de verdade na parte
+// restante do quadro, em vez de só silhueta distante.
+const COMPOSICAO_LAYOUT_CARRO = {
+  feed: [
+    'COMPOSITIONAL BRIEF for a 1080×1080 square advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'The user specifically described a vehicle for this scene — it should be a real, clearly visible subject in the photo (not hidden or reduced to a tiny speck), positioned in the LEFT half of the frame, sharp and well-lit.',
+    'This is ONE single, continuous photograph of a real place, lit by one light source — think a low, warm sun or distant light glowing from the right side of the frame. The right side of the scene naturally reads brighter and more dramatic; the left side is calmer and more shadowed — smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness on the left is not critical: a separate darkening layer is added in post-production over that side for text legibility.',
+    'The right side of the frame (roughly the right half) is the TIRE ZONE — SEE TIRE ZONE RULES BELOW.',
+
+    'TIRE ZONE RULES (right half of the frame): A real product tire photo will be composited EXACTLY here, on top of this image — keep the vehicle and any other large object out of this half, it would be hidden behind the tire photo.',
+    'This zone must contain ONLY: atmospheric depth, environmental texture (wet road surface, terrain, dust particles, atmospheric haze), dramatic lighting effects, and far-distant scene elements.',
+
+    'PERSPECTIVE: one-point perspective lines (track, road, trail) originate from center-left and converge right, adding depth to the scene.'
+  ].join(' '),
+
+  story: [
+    'COMPOSITIONAL BRIEF for a 1080×1920 vertical advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'The user specifically described a vehicle for this scene — it should be a real, clearly recognizable presence in the photo (not a tiny silhouette), positioned in the upper portion of the frame, above the tire zone described below.',
+    'This is ONE single, continuous photograph of a real place. Light descends naturally from above, brightest around the upper-middle of the frame, fading gradually toward the base — smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness at the very top and very bottom is not critical: a separate darkening layer is added in post-production there for text legibility.',
+    'The middle of the frame is the TIRE ZONE — SEE TIRE ZONE RULES BELOW.',
+
+    'TIRE ZONE RULES (middle of the frame): A real product tire photo will be composited here, centered horizontally, on top of this image — keep the vehicle and any other large foreground object out of this band, it would be hidden behind the tire photo.',
+    'This zone must contain ONLY: dramatic environmental backdrop, atmospheric depth, rim-light glow from above, particles (dust, rain drops, mist) — purely the STAGE for the tire there.',
+
+    'VERTICAL COMPOSITION: strong vertical leading lines frame the tire zone from both sides, adding depth to the scene.'
+  ].join(' '),
+
+  banner: [
+    'COMPOSITIONAL BRIEF for a 1440×600 wide panoramic advertising campaign photo (not a diagram — do not render any grid, labels, coordinates, or text of any kind, this is purely spatial guidance for you).',
+    'The user specifically described a vehicle for this scene — it should be a real, clearly visible subject in the photo (not hidden or reduced to a tiny speck), positioned in the left two-thirds of the frame, sharp and well-lit.',
+    'This is ONE single, continuous photograph of a real place, backlit from the right — think a low sun or distant light glowing from the right edge of the frame. The right side of the scene naturally reads warm and bright; the left side is calmer and more shadowed — smooth and photographic, never a hard line or a flat painted-on panel. Exact brightness on the left is not critical: a separate darkening layer is added in post-production over that side for text legibility.',
+    'The right portion of the frame (roughly the right third) is the TIRE ZONE — SEE TIRE ZONE RULES BELOW.',
+
+    'TIRE ZONE RULES (right third of the frame): A real product tire photo will be composited EXACTLY here, on top of this image — keep the vehicle and any other large object out of this third, it would be hidden behind the tire photo.',
+    'This zone must contain ONLY: atmospheric environmental depth, dramatic backlighting effects, motion blur streaks, dust or mist particles — purely environmental atmosphere.',
+
+    'HORIZONTAL COMPOSITION: strong one-point-perspective lines run left-to-right across the full canvas, vanishing point toward the right, adding depth to the scene.'
+  ].join(' ')
+};
+
 // Aspect ratio pedido à API (Magnific/Mystic) por formato — o Magnific não
 // aceita largura×altura em pixels, só um enum fixo de proporções.
 const ASPECT_RATIOS = {
@@ -150,14 +201,18 @@ const ASPECT_RATIOS = {
 };
 
 // Template base
-const TEMPLATE_BASE = (cena, composicao) =>
+const TEMPLATE_BASE = (cena, composicao, comVeiculo = false) =>
   `You are a world-class automotive advertising art director creating a photorealistic background plate ` +
   `that will have product UI elements composited on top in post-production. ` +
   `The tire product is the hero — the background is purely the stage. ` +
   `\n\nENVIRONMENTAL SCENE: ${cena}. ` +
   `\n\n${composicao}. ` +
-  `\n\nCOLOR: deep blacks and dark charcoals dominate; warm amber/golden accents only in dynamically lit zones. No flat, bright, or uniformly lit backgrounds. ` +
-  `HARD RESTRICTIONS — violating these ruins the composite: NO text, NO logos, NO brand markings, NO watermarks, NO people, NO faces, NO hands. NO prominent vehicle or large object placed in the tire zone coordinates listed above — any vehicle must be a tiny distant silhouette only. ` +
+  `\n\nCOLOR: natural, moody, cinematic color grading with good dynamic range; avoid flat, overly bright, or uniformly lit scenes. ` +
+  `HARD RESTRICTIONS — violating these ruins the composite: absolutely NO text, NO letters, NO numbers, NO labels, NO diagrams, NO grids, NO logos, NO brand markings, NO watermarks, NO people, NO faces, NO hands — the compositional brief above is spatial guidance for you only, never content to render. This must be ONE single continuous photograph — NO seams, NO hard dividing lines, NO grid or quadrant split, NO flat solid-color panels. ` +
+  (comVeiculo
+    ? `The vehicle described above IS allowed to be a visible, realistic part of the scene — do not reduce it to a tiny silhouette. It must still stay out of the TIRE ZONE mentioned above — a real product photo will be composited exactly on top of that area. `
+    : `NO prominent vehicle or large object placed in the tire zone mentioned above — any vehicle must be a tiny distant silhouette only. `
+  ) +
   `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
 
 /**
@@ -170,9 +225,10 @@ const TEMPLATE_BASE = (cena, composicao) =>
 function montarPrompt(formato, objetivo, linha = 'institucional', customPrompt = '') {
   const cenasLinha = CENAS_POR_LINHA[linha] ?? CENAS_POR_LINHA.institucional;
   const cena       = customPrompt.trim() || cenasLinha[objetivo] || cenasLinha.promocao;
-  const composicao = COMPOSICAO_LAYOUT[formato];
+  const comVeiculo = pedeVeiculo(customPrompt);
+  const composicao = (comVeiculo ? COMPOSICAO_LAYOUT_CARRO : COMPOSICAO_LAYOUT)[formato];
   return {
-    prompt:      TEMPLATE_BASE(cena, composicao),
+    prompt:      TEMPLATE_BASE(cena, composicao, comVeiculo),
     aspectRatio: ASPECT_RATIOS[formato]
   };
 }
