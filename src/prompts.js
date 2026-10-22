@@ -132,16 +132,36 @@ const CENAS_POR_LINHA = {
 // Heurística simples por palavra-chave (PT/EN + marcas comuns no Brasil); não
 // é NLP de verdade, então pode errar em frases muito indiretas.
 // ─────────────────────────────────────────────────────────────────────────────
+const MARCAS_FABRICANTES = [
+  'fiat', 'volkswagen', 'vw', 'chevrolet', 'gm', 'ford', 'toyota', 'honda', 'hyundai', 'renault', 'nissan',
+  'jeep', 'ram', 'mitsubishi', 'peugeot', 'citroen', 'bmw', 'mercedes', 'audi', 'kia', 'troller', 'byd'
+];
+
 const PALAVRAS_VEICULO = [
   'carro', 'carros', 'caminhao', 'caminhoes', 'caminhonete', 'picape', 'pickup', 'moto', 'motocicleta',
   'veiculo', 'veiculos', 'van', 'utilitario', 'suv', 'sedan', 'hatch', 'jipe',
-  'fiat', 'volkswagen', 'vw', 'chevrolet', 'gm', 'ford', 'toyota', 'honda', 'hyundai', 'renault', 'nissan',
-  'jeep', 'ram', 'mitsubishi', 'peugeot', 'citroen', 'bmw', 'mercedes', 'audi', 'kia', 'troller', 'byd',
+  ...MARCAS_FABRICANTES,
   'car', 'truck', 'vehicle', 'motorcycle', 'bike'
 ];
 
 function removerAcentos(texto) {
   return texto.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+// Tira o NOME da montadora do texto que vai pro prompt da IA (nunca do que o
+// usuário digitou/vê na tela — só uma cópia interna usada na montagem do
+// prompt). Sozinha, a instrução "sem logo" (ver REGRA_SEM_LOGO_VEICULO) não
+// é suficiente: o modelo associa fortemente o nome da marca ao emblema dela
+// e tende a desenhar o emblema de qualquer jeito mesmo assim (testado — ver
+// histórico). Tirar a palavra do prompt reduz bastante esse gatilho,
+// mantendo o resto da descrição (modelo, cor, carroceria etc.) intacto.
+function removerMarcaFabricante(texto) {
+  if (!texto) return texto;
+  let resultado = texto;
+  MARCAS_FABRICANTES.forEach(marca => {
+    resultado = resultado.replace(new RegExp(`\\b${marca}\\b`, 'gi'), '');
+  });
+  return resultado.replace(/\s{2,}/g, ' ').trim();
 }
 
 function pedeVeiculo(customPrompt) {
@@ -201,6 +221,22 @@ const ASPECT_RATIOS = {
 };
 
 // Template base
+// ─────────────────────────────────────────────────────────────────────────────
+// REGRA MANDATÓRIA — NENHUM LOGO/EMBLEMA DE FABRICANTE DE VEÍCULO
+// Vale em TODO template que pode mostrar um veículo (TEMPLATE_BASE quando
+// comVeiculo=true, TEMPLATE_BASE_MEDIDA, TEMPLATE_BASE_CARRO): o usuário pode
+// pedir uma marca/modelo específico (ex.: "Fiat Strada") — a IA deve gerar o
+// formato/silhueta correspondente, mas SEM nenhum logo, emblema ou nome da
+// montadora visível no veículo, por questão de direito de marca. Isso é
+// diferente da proibição geral de "logos" já existente nos templates (que
+// fala do logo da MARCA DE PNEU/empresa, composto na camada 2) — esta regra
+// é especificamente sobre o emblema do FABRICANTE DO CARRO na grade, capô,
+// rodas, volante etc., que a IA tende a desenhar sozinha ao reconhecer a
+// marca pedida.
+// ─────────────────────────────────────────────────────────────────────────────
+const REGRA_SEM_LOGO_VEICULO =
+  'MANDATORY LEGAL RULE, applies if any vehicle appears anywhere in this image: the vehicle must NOT show any visible manufacturer logo, badge, emblem, nameplate, or brand marking anywhere on it — not on the grille, hood, trunk, wheels/hubcaps, steering wheel, seats, or body. This applies even when a specific make or model was described above: reproduce its general body shape, proportions and color, but render it as a completely generic, unbranded vehicle — omit, blank out, or blur any manufacturer badge that would otherwise appear. This rule is non-negotiable (trademark/rights reasons) and overrides any instinct to add a realistic badge for a named brand.';
+
 const TEMPLATE_BASE = (cena, composicao, comVeiculo = false) =>
   `You are a world-class automotive advertising art director creating a photorealistic background plate ` +
   `that will have product UI elements composited on top in post-production. ` +
@@ -213,6 +249,7 @@ const TEMPLATE_BASE = (cena, composicao, comVeiculo = false) =>
     ? `The vehicle described above IS allowed to be a visible, realistic part of the scene — do not reduce it to a tiny silhouette. It must still stay out of the TIRE ZONE mentioned above — a real product photo will be composited exactly on top of that area. `
     : `NO prominent vehicle or large object placed in the tire zone mentioned above — any vehicle must be a tiny distant silhouette only. `
   ) +
+  `${REGRA_SEM_LOGO_VEICULO} ` +
   `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
 
 /**
@@ -224,12 +261,19 @@ const TEMPLATE_BASE = (cena, composicao, comVeiculo = false) =>
  */
 function montarPrompt(formato, objetivo, linha = 'institucional', customPrompt = '') {
   const cenasLinha = CENAS_POR_LINHA[linha] ?? CENAS_POR_LINHA.institucional;
-  const cena       = customPrompt.trim() || cenasLinha[objetivo] || cenasLinha.promocao;
   const comVeiculo = pedeVeiculo(customPrompt);
+  // Só mexe no texto quando tem veículo pedido — não vale a pena arriscar
+  // alterar uma descrição de cenário comum à toa.
+  const cena       = (comVeiculo ? removerMarcaFabricante(customPrompt.trim()) : customPrompt.trim())
+    || cenasLinha[objetivo] || cenasLinha.promocao;
   const composicao = (comVeiculo ? COMPOSICAO_LAYOUT_CARRO : COMPOSICAO_LAYOUT)[formato];
   return {
     prompt:      TEMPLATE_BASE(cena, composicao, comVeiculo),
-    aspectRatio: ASPECT_RATIOS[formato]
+    aspectRatio: ASPECT_RATIOS[formato],
+    // Só true quando o usuário pediu um veículo (ver pedeVeiculo) — usado em
+    // server.js pra decidir se roda a checagem de logo (Claude Vision);
+    // poupa a checagem (custo + latência) nos casos sem veículo nenhum.
+    temVeiculo:  comVeiculo
   };
 }
 
@@ -266,6 +310,7 @@ const TEMPLATE_BASE_MEDIDA = (cena, composicao) =>
   `\n\n${composicao}. ` +
   `\n\nCOLOR: photorealistic, natural contrast, cinematic automotive-advertising color grade. ` +
   `HARD RESTRICTIONS — violating these ruins the composite: NO text, NO logos, NO brand markings, NO watermarks, NO people, NO faces, NO hands, NO tire shown large in the right third of the frame (real product photos will be placed there in post-production). ` +
+  `${REGRA_SEM_LOGO_VEICULO} ` +
   `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
 
 // Sempre um retângulo horizontal (proporção 3:2) — só a faixa central da
@@ -281,11 +326,14 @@ const ASPECT_RATIO_MEDIDA = { feed: 'standard_3_2', story: 'standard_3_2' };
  */
 function montarPromptMedida(formato, linha = 'institucional', customPrompt = '') {
   const cenasLinha = CENAS_POR_LINHA[linha] ?? CENAS_POR_LINHA.institucional;
-  const cena       = customPrompt.trim() || cenasLinha.promocao;
+  // Carro é sempre o herói aqui — tira o nome da montadora sempre, não só
+  // quando detectado (ver removerMarcaFabricante).
+  const cena       = removerMarcaFabricante(customPrompt.trim()) || cenasLinha.promocao;
   const composicao = COMPOSICAO_LAYOUT_MEDIDA[formato] ?? COMPOSICAO_LAYOUT_MEDIDA.feed;
   return {
     prompt:      TEMPLATE_BASE_MEDIDA(cena, composicao),
-    aspectRatio: ASPECT_RATIO_MEDIDA[formato] ?? ASPECT_RATIO_MEDIDA.feed
+    aspectRatio: ASPECT_RATIO_MEDIDA[formato] ?? ASPECT_RATIO_MEDIDA.feed,
+    temVeiculo:  true // carro é sempre o herói visível neste modelo
   };
 }
 
@@ -325,11 +373,12 @@ const TEMPLATE_BASE_CARRO = (cena, composicao, sugestaoCarro) =>
   `You are a world-class automotive advertising photographer creating a photorealistic background plate ` +
   `that will have UI elements (headline text, brand logo) composited on top in post-production, plus a real ` +
   `tire product photo composited directly over part of the scene. ` +
-  `\n\nVEHICLE: ${sugestaoCarro || 'a modern SUV or sedan, dark metallic paint'}. ` +
+  `\n\nVEHICLE: ${sugestaoCarro || 'a modern SUV or sedan, dark metallic paint'} — a generic, unbranded vehicle of this body style, with a completely blank/badge-free grille, hood, and wheels (no manufacturer logo or nameplate anywhere on it, see mandatory rule below). ` +
   `\n\nSCENE & ATMOSPHERE: ${cena}. ` +
   `\n\n${composicao}. ` +
   `\n\nCOLOR: photorealistic, natural contrast, cinematic automotive-advertising color grade. ` +
   `HARD RESTRICTIONS — violating these ruins the composite: NO text, NO logos, NO brand markings, NO watermarks, NO people, NO faces, NO hands. ` +
+  `${REGRA_SEM_LOGO_VEICULO} ` +
   `Deliver ultra-high-detail photographic realism suitable as a professional advertising background plate.`;
 
 /**
@@ -342,11 +391,13 @@ const TEMPLATE_BASE_CARRO = (cena, composicao, sugestaoCarro) =>
  */
 function montarPromptCarro(formato, vista, linha = 'institucional', sugestaoCarro = '', customPrompt = '') {
   const cenasLinha = CENAS_POR_LINHA[linha] ?? CENAS_POR_LINHA.institucional;
-  const cena       = customPrompt.trim() || cenasLinha.promocao;
-  const composicao = (COMPOSICAO_CARRO[formato] ?? COMPOSICAO_CARRO.feed)[vista] ?? COMPOSICAO_CARRO.feed.frente;
+  const cena            = customPrompt.trim() || cenasLinha.promocao;
+  const composicao      = (COMPOSICAO_CARRO[formato] ?? COMPOSICAO_CARRO.feed)[vista] ?? COMPOSICAO_CARRO.feed.frente;
+  const veiculoSemMarca = removerMarcaFabricante(sugestaoCarro);
   return {
-    prompt:      TEMPLATE_BASE_CARRO(cena, composicao, sugestaoCarro),
-    aspectRatio: ASPECT_RATIOS[formato] ?? ASPECT_RATIOS.feed
+    prompt:      TEMPLATE_BASE_CARRO(cena, composicao, veiculoSemMarca),
+    aspectRatio: ASPECT_RATIOS[formato] ?? ASPECT_RATIOS.feed,
+    temVeiculo:  true // carro é sempre o herói visível neste modelo
   };
 }
 

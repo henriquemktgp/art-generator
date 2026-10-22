@@ -14,6 +14,7 @@ const compression = require('compression');
 const { montarPrompt, montarPromptMedida, montarPromptCarro } = require('./prompts');
 const { gerarImagemMagnific } = require('./magnific');
 const { enviarEmailComAnexo } = require('./gmail');
+const { imagemAprovadaSemLogoVeiculo } = require('./claude-vision');
 
 const app  = express();
 const PORT = process.env.PORT ?? 3000;
@@ -96,22 +97,59 @@ app.post('/api/gerar-fundo', async (req, res) => {
     ? sugestaoCarro.slice(0, 200)
     : '';
 
-  const { prompt, aspectRatio } = modoValido === 'medida'
+  const { prompt, aspectRatio, temVeiculo } = modoValido === 'medida'
     ? montarPromptMedida(formato, linhaValida, promptUsuario)
     : MODOS_CARRO.has(modoValido)
       ? montarPromptCarro(formato, modoValido === 'carrofrente' ? 'frente' : 'lado', linhaValida, sugestaoCarroValida, promptUsuario)
       : montarPrompt(formato, objetivo, linhaValida, promptUsuario);
 
-  try {
-    const imagemUrl = await gerarImagemMagnific(prompt, aspectRatio);
+  // Checagem de logo de fabricante (Claude Vision) — regra mandatória de
+  // direito de marca (ver REGRA_SEM_LOGO_VEICULO em prompts.js). O prompt
+  // sozinho não garante 100% (Magnific não tem negative prompt), então toda
+  // imagem que PODE ter um veículo passa por essa verificação antes de ser
+  // entregue; sem veículo nenhum (temVeiculo=false), pula a checagem — não
+  // há logo de carro pra aparecer, não vale o custo/latência extra.
+  // Até MAX_TENTATIVAS gerações completas; se nenhuma passar, erro explícito
+  // pro usuário tentar de novo manualmente (nunca entrega uma imagem não
+  // aprovada por padrão).
+  const MAX_TENTATIVAS = 3;
 
-    // Magnific devolve uma URL, não base64 — baixa aqui pra manter o mesmo
-    // contrato de resposta que o frontend já espera ({ imagem: '<base64>' }).
-    const imgRes = await fetch(imagemUrl);
-    if (!imgRes.ok) throw new Error('Não foi possível baixar a imagem gerada pelo Magnific.');
-    const buffer = await imgRes.arrayBuffer();
-    const b64    = Buffer.from(buffer).toString('base64');
-    return res.json({ imagem: b64 });
+  try {
+    let buffer;
+    let aprovado = false;
+
+    for (let tentativa = 1; tentativa <= MAX_TENTATIVAS && !aprovado; tentativa++) {
+      const imagemUrl = await gerarImagemMagnific(prompt, aspectRatio);
+
+      // Magnific devolve uma URL, não base64 — baixa aqui pra manter o mesmo
+      // contrato de resposta que o frontend já espera ({ imagem: '<base64>' }).
+      const imgRes = await fetch(imagemUrl);
+      if (!imgRes.ok) throw new Error('Não foi possível baixar a imagem gerada pelo Magnific.');
+      buffer = Buffer.from(await imgRes.arrayBuffer());
+
+      if (!temVeiculo) { aprovado = true; break; }
+
+      try {
+        aprovado = await imagemAprovadaSemLogoVeiculo(buffer.toString('base64'));
+      } catch (errVisao) {
+        // Falha na própria checagem (ex.: Claude indisponível) — trata como
+        // reprovado (mesma lógica de falha segura do módulo), força nova
+        // tentativa em vez de arriscar entregar sem verificar.
+        console.error('[Claude Vision] Erro ao verificar imagem:', errVisao.message ?? errVisao);
+      }
+
+      if (!aprovado) {
+        console.warn(`[Claude Vision] Tentativa ${tentativa}/${MAX_TENTATIVAS} reprovada (logo de fabricante aparente) — gerando outra imagem.`);
+      }
+    }
+
+    if (!aprovado) {
+      return res.status(422).json({
+        erro: 'Não foi possível gerar uma imagem sem marcas de fabricante aparentes após 3 tentativas. Tente novamente ou ajuste a descrição do veículo.'
+      });
+    }
+
+    return res.json({ imagem: buffer.toString('base64') });
 
   } catch (err) {
     // Log interno com detalhes — usuário vê apenas mensagem amigável

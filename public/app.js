@@ -1529,6 +1529,23 @@ function resetarFundo() {
   atualizarNota();
 }
 
+// Mensagens da tela de carregamento, trocadas por tempo decorrido (não
+// refletem o progresso real do servidor — é só uma estimativa visual, ver
+// decisão em conversa). Modelos com veículo passam por uma checagem extra
+// via Claude Vision (ver /api/gerar-fundo em server.js, regra mandatória de
+// "sem logo de fabricante"), que pode levar a imagem gerada de novo até 3x —
+// por isso o processo todo pode demorar bem mais que os ~90s de uma geração
+// única; as últimas mensagens refletem essa espera mais longa.
+const MENSAGENS_CARREGAMENTO = [
+  'Processando cena automotiva...',
+  'Validando imagem...',
+  'Removendo marcas de fabricante aparentes...',
+  'Gerando uma nova tentativa...',
+  'Quase lá...'
+];
+const INTERVALO_MENSAGEM_MS = 9000;
+let intervaloMensagemCarregamento = null;
+
 function setEstadoGerando(gerando) {
   const btn = document.getElementById('btn-gerar');
   const overlay = document.getElementById('loading-overlay');
@@ -1538,6 +1555,19 @@ function setEstadoGerando(gerando) {
   btn.querySelector('.btn-text').textContent = gerando ? 'Gerando...' : (
     estado.fundoGerado ? 'Gerar Novamente' : 'Gerar Fundo com IA'
   );
+
+  clearInterval(intervaloMensagemCarregamento);
+  const sub = overlay.querySelector('.loading-sub');
+  if (gerando) {
+    let passo = 0;
+    sub.textContent = MENSAGENS_CARREGAMENTO[0];
+    intervaloMensagemCarregamento = setInterval(() => {
+      passo = Math.min(passo + 1, MENSAGENS_CARREGAMENTO.length - 1);
+      sub.textContent = MENSAGENS_CARREGAMENTO[passo];
+    }, INTERVALO_MENSAGEM_MS);
+  } else {
+    sub.textContent = MENSAGENS_CARREGAMENTO[0];
+  }
 }
 
 function atualizarBtnGerar() {
