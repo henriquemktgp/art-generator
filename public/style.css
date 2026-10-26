@@ -2331,13 +2331,13 @@ body {
    (herói, preenchendo o quadro), e o tamanho/posição antigos (calibrados num
    motor que seguia o prompt mais fracamente e tendia a gerar carros menores/
    mais distantes) cobriam o carro até o para-brisa. */
-.format-feed .artcf-tire   { bottom: -430px; width: 820px; }
+.format-feed .artcf-tire   { bottom: -800px; width: 1300px; }
 .format-feed .artcf-logo-wrap { bottom: 44px; }
 .format-feed .artcf-logo   { height: 52px; }
 
 .format-story .artcf-headline { top: 110px; }
 .format-story .artcf-titulo { font-size: 70px; }
-.format-story .artcf-tire   { bottom: -440px; width: 820px; }
+.format-story .artcf-tire   { bottom: -800px; width: 1600px; }
 .format-story .artcf-logo-wrap { bottom: 70px; }
 .format-story .artcf-logo   { height: 62px; }
 
