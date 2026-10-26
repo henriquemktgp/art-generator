@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/prompts.test.js test/gmail.test.js test/claude-vision.test.js",
+    "test:live": "node --test test/live/magnific.live.test.js test/live/email.live.test.js"
   },
   "dependencies": {
     "compression": "^1.8.2",

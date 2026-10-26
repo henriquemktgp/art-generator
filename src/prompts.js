@@ -401,4 +401,11 @@ function montarPromptCarro(formato, vista, linha = 'institucional', sugestaoCarr
   };
 }
 
-module.exports = { montarPrompt, montarPromptMedida, montarPromptCarro};
+module.exports = {
+  montarPrompt,
+  montarPromptMedida,
+  montarPromptCarro,
+  // Exportadas só pra teste (ver test/prompts.test.js) — são puras.
+  pedeVeiculo,
+  removerMarcaFabricante
+};

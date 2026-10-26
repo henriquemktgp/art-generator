@@ -97,4 +97,12 @@ async function enviarEmailComAnexo({ to, subject, text, attachment }) {
   return resp.json();
 }
 
-module.exports = { enviarEmailComAnexo };
+module.exports = {
+  enviarEmailComAnexo,
+  // Exportadas só pra teste (ver test/gmail.test.js) — são puras, não fazem
+  // chamada de rede nenhuma, então dá pra testar a montagem do e-mail sem
+  // mandar nada de verdade a cada rodada da suíte.
+  montarEmailComAnexo,
+  quebrarBase64,
+  codificarAssunto
+};
