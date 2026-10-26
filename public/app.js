@@ -1875,6 +1875,7 @@ function renderArtCarroFrente() {
   canvas.dataset.marca = estado.marca;
 
   document.getElementById('artcf-titulo').textContent = (estado.titulo || 'TÍTULO DA ARTE').toUpperCase();
+  document.getElementById('artcf-sub').textContent    = estado.sub || 'Descrição do produto.';
   document.getElementById('artcf-tire').src           = semProd ? '' : (produto.fotoFrente || '');
 }
 

@@ -411,11 +411,12 @@ body {
 /* Título: não existe no modelo "3 pneus" (headline institucional fixa) */
 .app[data-modelo="3pneus"] #grupo-titulo { display: none; }
 
-/* Subtítulo: só existe nos modelos com parágrafo curto (padrão / pneu 45°) —
-   nos modelos com carro-herói e no "pneu de frente" a frase toda vem do
+/* Subtítulo: existe no padrão, no "pneu 45°" e no "Carro de Frente" (ver
+   .artcf-sub) — pessoal usa o Título pra medida do pneu e precisa de um
+   campo à parte pra descrição específica do produto. Continua sem sentido
+   no "pneu de frente" e no "Carro de Lado", onde a frase toda vem do
    Título (headline única, que pode quebrar em mais de uma linha sozinha). */
 .app[data-modelo="pneufrente"]  #grupo-sub,
-.app[data-modelo="carrofrente"] #grupo-sub,
 .app[data-modelo="carrolado"]   #grupo-sub { display: none; }
 
 /* CTA: só faz sentido no modelo padrão — e, no "3 pneus", "pneu 45°" e
@@ -2320,12 +2321,21 @@ body {
   font-family: var(--font-display); color: var(--brand-white); text-transform: uppercase;
   line-height: 1.05; text-shadow: 0 4px 24px rgba(0,0,0,0.6);
 }
+/* Descrição do produto — pessoal usa o Título pra medida do pneu, então
+   precisa de um campo à parte pra texto descritivo específico (ver
+   preencherSugestoes em app.js: já vem preenchido com produto.sub ao trocar
+   de produto, mas continua editável igual o Subtítulo do modelo Padrão). */
+.artcf-sub {
+  display: block; font-family: 'Poppins', sans-serif; font-weight: 400;
+  color: var(--brand-white); text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+}
 .artcf-tire { position: absolute; left: 50%; transform: translateX(-50%); object-fit: contain; z-index: 4; display: block; }
 .artcf-logo-wrap { position: absolute; z-index: 5; left: 0; right: 0; display: flex; justify-content: center; }
 .artcf-logo { height: auto; width: auto; object-fit: contain; display: block; }
 
 .format-feed .artcf-headline { top: 70px; }
 .format-feed .artcf-titulo { font-size: 56px; }
+.format-feed .artcf-sub    { font-size: 40px; margin-top: 16px; }
 /* Pneu menor e mais baixo, cobrindo só o terço inferior (altura do para-choque/
    roda) — com o motor "fluid" o carro agora é desenhado fiel ao briefing
    (herói, preenchendo o quadro), e o tamanho/posição antigos (calibrados num
@@ -2337,6 +2347,7 @@ body {
 
 .format-story .artcf-headline { top: 110px; }
 .format-story .artcf-titulo { font-size: 70px; }
+.format-story .artcf-sub    { font-size: 50px; margin-top: 20px; }
 .format-story .artcf-tire   { bottom: -800px; width: 1600px; }
 .format-story .artcf-logo-wrap { bottom: 70px; }
 .format-story .artcf-logo   { height: 62px; }
