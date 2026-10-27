@@ -30,6 +30,12 @@ if (!process.env.MAGNIFIC_API_KEY) {
 // exportação do usuário nunca é afetada de nenhum jeito).
 const REPORT_EMAIL_TO = process.env.REPORT_EMAIL_TO ?? '';
 
+// Contador simples (reinicia a cada restart do processo) só pra dar um id
+// curto a cada chamada de /api/gerar-fundo — ver uso no log dentro da rota.
+// Não precisa ser único entre restarts, só único o bastante pra filtrar o
+// log de uma requisição específica em meio a tráfego concorrente.
+let proximoIdLog = 1;
+
 // ── Parâmetros aceitos (validação server-side) ────────────────────────────────
 const FORMATOS_VALIDOS        = new Set(['feed', 'story', 'banner']);
 const FORMATOS_VALIDOS_MEDIDA = new Set(['feed', 'story']); // banner ainda não existe no modo Arte de Medida
@@ -109,51 +115,97 @@ app.post('/api/gerar-fundo', async (req, res) => {
   // imagem que PODE ter um veículo passa por essa verificação antes de ser
   // entregue; sem veículo nenhum (temVeiculo=false), pula a checagem — não
   // há logo de carro pra aparecer, não vale o custo/latência extra.
-  // Até MAX_TENTATIVAS gerações completas; se nenhuma passar, erro explícito
-  // pro usuário tentar de novo manualmente (nunca entrega uma imagem não
-  // aprovada por padrão).
-  const MAX_TENTATIVAS = 3;
+  //
+  // O mesmo loop de tentativas cobre DOIS motivos de refazer a geração:
+  // reprovação do Claude Vision (logo aparente) E falha de comunicação com o
+  // Magnific (erro de rede, timeout) — antes, uma falha do Magnific pulava
+  // direto pro 502 já na 1ª tentativa, sem chance de recuperar de um blip
+  // passageiro (visto acontecer algumas vezes em teste — ver conversa).
+  // ORCAMENTO_TOTAL_MS existe pra nunca deixar a requisição pendurada
+  // indefinidamente (3 tentativas de até 2min cada do Magnific podiam somar
+  // uns 6min no pior caso) — passado esse teto, para de tentar e devolve erro
+  // claro em vez de arriscar estourar o timeout de algum proxy na frente.
+  const MAX_TENTATIVAS      = 3;
+  const ORCAMENTO_TOTAL_MS  = 180_000; // 3 min
+
+  // Id curto só pra conseguir filtrar/grepar o log de UMA requisição específica
+  // quando várias acontecem ao mesmo tempo (server de produção tem tráfego
+  // concorrente) — sem isso, as linhas de tentativas diferentes se misturam.
+  const idReq  = proximoIdLog++;
+  const inicio = Date.now();
+  const log = (msg) => console.log(`[gerar-fundo #${idReq}] +${((Date.now() - inicio) / 1000).toFixed(1)}s — ${msg}`);
+
+  log(`início — modo=${modoValido} formato=${formato} temVeiculo=${temVeiculo}`);
 
   try {
     let buffer;
-    let aprovado = false;
+    let aprovado  = false;
+    let ultimoErro = null;
 
     for (let tentativa = 1; tentativa <= MAX_TENTATIVAS && !aprovado; tentativa++) {
-      const imagemUrl = await gerarImagemMagnific(prompt, aspectRatio);
-
-      // Magnific devolve uma URL, não base64 — baixa aqui pra manter o mesmo
-      // contrato de resposta que o frontend já espera ({ imagem: '<base64>' }).
-      const imgRes = await fetch(imagemUrl);
-      if (!imgRes.ok) throw new Error('Não foi possível baixar a imagem gerada pelo Magnific.');
-      buffer = Buffer.from(await imgRes.arrayBuffer());
-
-      if (!temVeiculo) { aprovado = true; break; }
-
-      try {
-        aprovado = await imagemAprovadaSemLogoVeiculo(buffer.toString('base64'));
-      } catch (errVisao) {
-        // Falha na própria checagem (ex.: Claude indisponível) — trata como
-        // reprovado (mesma lógica de falha segura do módulo), força nova
-        // tentativa em vez de arriscar entregar sem verificar.
-        console.error('[Claude Vision] Erro ao verificar imagem:', errVisao.message ?? errVisao);
+      if (Date.now() - inicio > ORCAMENTO_TOTAL_MS) {
+        log(`orçamento de ${ORCAMENTO_TOTAL_MS / 1000}s estourado — parando antes da tentativa ${tentativa}`);
+        break;
       }
 
-      if (!aprovado) {
-        console.warn(`[Claude Vision] Tentativa ${tentativa}/${MAX_TENTATIVAS} reprovada (logo de fabricante aparente) — gerando outra imagem.`);
+      log(`tentativa ${tentativa}/${MAX_TENTATIVAS} — gerando no Magnific...`);
+      try {
+        const imagemUrl = await gerarImagemMagnific(prompt, aspectRatio);
+        log(`tentativa ${tentativa}: imagem pronta, baixando...`);
+
+        // Magnific devolve uma URL, não base64 — baixa aqui pra manter o
+        // mesmo contrato de resposta que o frontend já espera.
+        const imgRes = await fetch(imagemUrl);
+        if (!imgRes.ok) throw new Error(`Download da imagem falhou (HTTP ${imgRes.status}).`);
+        buffer = Buffer.from(await imgRes.arrayBuffer());
+        log(`tentativa ${tentativa}: download concluído (${buffer.length} bytes)`);
+
+        if (!temVeiculo) { aprovado = true; break; }
+
+        log(`tentativa ${tentativa}: verificando logo de fabricante (Claude Vision)...`);
+        try {
+          aprovado = await imagemAprovadaSemLogoVeiculo(buffer.toString('base64'));
+        } catch (errVisao) {
+          // Falha na própria checagem (ex.: Claude indisponível) — trata
+          // como reprovado (mesma lógica de falha segura do módulo), força
+          // nova tentativa em vez de arriscar entregar sem verificar.
+          console.error(`[gerar-fundo #${idReq}] [Claude Vision] erro na checagem:`, errVisao.message ?? errVisao);
+          aprovado = false;
+        }
+        log(`tentativa ${tentativa}: ${aprovado ? 'aprovada' : 'reprovada (logo de fabricante aparente)'}`);
+
+      } catch (errTentativa) {
+        // Falha de comunicação com o Magnific (rede, timeout, recusa da API)
+        // — loga e deixa o "for" seguir pra próxima tentativa, em vez de
+        // propagar e devolver 502 já na primeira falha isolada.
+        ultimoErro = errTentativa;
+        log(`tentativa ${tentativa}: falhou na comunicação com o Magnific — ${errTentativa.message ?? errTentativa}`);
+        console.error(`[gerar-fundo #${idReq}] [Magnific] erro na tentativa ${tentativa}:`, errTentativa.message ?? errTentativa);
       }
     }
 
     if (!aprovado) {
+      if (ultimoErro) {
+        log(`concluído sem sucesso — última falha foi de comunicação com o Magnific`);
+        return res.status(502).json({
+          erro: 'Não foi possível gerar o fundo agora (instabilidade na comunicação com a IA). Tente novamente em instantes.'
+        });
+      }
+      log(`concluído sem sucesso — todas as tentativas reprovadas pela checagem de logo`);
       return res.status(422).json({
         erro: 'Não foi possível gerar uma imagem sem marcas de fabricante aparentes após 3 tentativas. Tente novamente ou ajuste a descrição do veículo.'
       });
     }
 
+    log('concluído com sucesso');
     return res.json({ imagem: buffer.toString('base64') });
 
   } catch (err) {
-    // Log interno com detalhes — usuário vê apenas mensagem amigável
-    console.error('[Magnific] Erro ao gerar fundo:', err.message ?? err);
+    // Rede de segurança pra qualquer coisa inesperada fora do loop acima
+    // (não deveria acontecer na prática, já que os dois pontos de falha
+    // conhecidos — Magnific e Claude Vision — já são tratados dentro dele).
+    log(`erro inesperado fora do loop de tentativas: ${err.message ?? err}`);
+    console.error(`[gerar-fundo #${idReq}] Erro inesperado:`, err.message ?? err);
     res.status(502).json({
       erro: 'Não foi possível gerar o fundo agora. Verifique sua conexão e tente novamente.'
     });
